@@ -1,0 +1,250 @@
+/* ===== Stats Section ===== */
+.stats-section {
+  position: relative;
+  z-index: 3;
+  margin-top: -50px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+}
+
+.stats-item {
+  text-align: center;
+}
+
+.stats-item p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ===== Categories Section ===== */
+.categories-section {
+  background: var(--off-white);
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.category-card {
+  padding: 36px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--cat-color, var(--primary));
+  transform: scaleX(0);
+  transition: var(--transition);
+}
+
+.category-card:hover::before {
+  transform: scaleX(1);
+}
+
+.category-card-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  display: inline-block;
+  transition: var(--transition-spring);
+}
+
+.category-card:hover .category-card-icon {
+  transform: scale(1.2) rotate(-5deg);
+}
+
+.category-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.category-card-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.category-card-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: var(--primary-dark);
+  transition: var(--transition);
+}
+
+.category-card:hover .category-card-arrow {
+  background: var(--cat-color, var(--primary));
+  color: var(--white);
+  transform: translateX(4px);
+}
+
+[dir="rtl"] .category-card:hover .category-card-arrow {
+  transform: translateX(-4px);
+}
+
+/* ===== Featured Section ===== */
+.featured-section {
+  background: var(--white);
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.featured-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+
+/* ===== Why Section ===== */
+.why-section {
+  background: var(--off-white);
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.why-card {
+  padding: 36px 24px;
+  text-align: center;
+}
+
+.why-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(123, 180, 69, 0.1), rgba(123, 180, 69, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--primary-dark);
+  transition: var(--transition);
+}
+
+.why-card:hover .why-card-icon {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+  transform: rotateY(180deg);
+}
+
+.why-card h4 {
+  margin-bottom: 10px;
+}
+
+.why-card p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* ===== Testimonials Section ===== */
+.testimonials-section {
+  background: var(--white);
+}
+
+/* ===== CTA Section ===== */
+.cta-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, var(--dark) 0%, #1E3A12 50%, var(--primary-dark) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: rgba(123, 180, 69, 0.1);
+}
+
+.cta-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-content h2 {
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.cta-content p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  margin-bottom: 32px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+}

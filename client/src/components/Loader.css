@@ -1,0 +1,35 @@
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 24px;
+}
+
+.loader-fullpage {
+  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  background: var(--off-white);
+  z-index: 9999;
+}
+
+.loader-spinner {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spin 1.5s linear infinite;
+}
+
+.loader-leaf {
+  font-size: 2rem;
+}
+
+.loader-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}

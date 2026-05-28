@@ -1,0 +1,295 @@
+.about-page {
+  padding-top: var(--navbar-height);
+}
+
+.about-hero {
+  background: linear-gradient(135deg, var(--dark) 0%, #1E3A12 50%, var(--primary-dark) 100%);
+  padding: 80px 0 60px;
+  text-align: center;
+}
+
+.about-hero h1 {
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.about-hero p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Story Section */
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.story-content h2 {
+  font-size: 2.2rem;
+  margin-bottom: 24px;
+}
+
+.story-content p {
+  font-size: 1.05rem;
+  margin-bottom: 20px;
+}
+
+.story-image-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.story-image-wrapper img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.story-badge {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--primary);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+}
+
+[dir="rtl"] .story-badge {
+  right: auto;
+  left: 20px;
+}
+
+/* Mission & Vision */
+.mv-section {
+  background: var(--white);
+}
+
+.mv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.mv-card {
+  padding: 40px;
+  text-align: center;
+}
+
+.mv-icon {
+  color: var(--primary-dark);
+  margin-bottom: 20px;
+}
+
+.mv-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+/* Timeline */
+.timeline-section {
+  background: var(--off-white);
+  position: relative;
+}
+
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.timeline::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  background: var(--border-color);
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -2px;
+  border-radius: var(--radius-full);
+}
+
+[dir="rtl"] .timeline::after {
+  left: 50%;
+  margin-left: -2px;
+}
+
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  width: 50%;
+}
+
+.timeline-item.left {
+  left: 0;
+}
+
+.timeline-item.right {
+  left: 50%;
+}
+
+[dir="rtl"] .timeline-item.left {
+  left: auto;
+  right: 0;
+}
+
+[dir="rtl"] .timeline-item.right {
+  left: auto;
+  right: 50%;
+}
+
+.timeline-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 4px solid var(--white);
+  position: absolute;
+  top: 30px;
+  right: -10px;
+  z-index: 2;
+  box-shadow: var(--shadow-sm);
+}
+
+.timeline-item.right .timeline-dot {
+  left: -10px;
+  right: auto;
+}
+
+[dir="rtl"] .timeline-dot {
+  right: auto;
+  left: -10px;
+}
+
+[dir="rtl"] .timeline-item.right .timeline-dot {
+  left: auto;
+  right: -10px;
+}
+
+.timeline-content {
+  padding: 24px;
+  position: relative;
+}
+
+.timeline-year {
+  display: inline-block;
+  background: var(--light-gray);
+  color: var(--primary-dark);
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.timeline-content h3 {
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+}
+
+.timeline-content p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Certifications */
+.cert-section {
+  background: var(--white);
+}
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.cert-card {
+  padding: 40px 30px;
+  text-align: center;
+}
+
+.cert-icon {
+  color: var(--primary-dark);
+  margin-bottom: 24px;
+}
+
+.cert-card h3 {
+  margin-bottom: 14px;
+  font-size: 1.4rem;
+}
+
+.cert-card p {
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .mv-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cert-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline::after {
+    left: 31px;
+  }
+
+  [dir="rtl"] .timeline::after {
+    left: auto;
+    right: 31px;
+  }
+
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 20px;
+  }
+
+  [dir="rtl"] .timeline-item {
+    padding-left: 20px;
+    padding-right: 70px;
+  }
+
+  .timeline-item.right {
+    left: 0;
+  }
+
+  [dir="rtl"] .timeline-item.right {
+    right: 0;
+  }
+
+  .timeline-dot {
+    left: 21px;
+    right: auto;
+  }
+
+  .timeline-item.right .timeline-dot {
+    left: 21px;
+  }
+
+  [dir="rtl"] .timeline-dot {
+    right: 21px;
+    left: auto;
+  }
+
+  [dir="rtl"] .timeline-item.right .timeline-dot {
+    right: 21px;
+  }
+}
