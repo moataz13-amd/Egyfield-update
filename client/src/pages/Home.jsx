@@ -36,10 +36,10 @@ const Home = () => {
   }, [featuredProducts, categories]);
 
   const stats = [
-    { value: 15, suffix: '+', label: t('stats.years') },
-    { value: 200, suffix: '+', label: t('stats.products') },
-    { value: 35, suffix: '+', label: t('stats.countries') },
-    { value: 500, suffix: '+', label: t('stats.clients') },
+    { value: 9, suffix: '+', label: t('stats.years') },
+    { value: 40, suffix: '+', label: t('stats.products') },
+    { value: 12, suffix: '+', label: t('stats.countries') },
+    { value: 30, suffix: '+', label: t('stats.clients') },
   ];
 
   const whyCards = [
