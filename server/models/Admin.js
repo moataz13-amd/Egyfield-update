@@ -20,6 +20,15 @@ const adminSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    role: {
+      type: String,
+      enum: ['superadmin', 'admin'],
+      default: 'admin',
+    },
+    permissions: {
+      type: [String],
+      default: ['products', 'articles', 'inquiries', 'settings'], // Default standard admin permissions
+    },
   },
   {
     timestamps: true,

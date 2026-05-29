@@ -204,6 +204,25 @@
 
 @media (max-width: 600px) {
   .related-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 10px 4px 20px;
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .related-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .related-grid > * {
+    flex: 0 0 70%;
+    min-width: 240px;
+    max-width: 280px;
   }
 }

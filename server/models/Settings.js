@@ -29,6 +29,32 @@ const settingsSchema = new mongoose.Schema(
       metaDescription: { type: String, default: 'EgyField specializes in premium Egyptian agricultural exports worldwide.' },
       keywords: [{ type: String }],
     },
+    heroImage: {
+      url: { type: String, default: '' },
+      publicId: { type: String, default: '' },
+    },
+    heroImages: [
+      {
+        url: { type: String },
+        publicId: { type: String },
+      }
+    ],
+    heroTitleColor: { type: String, default: '#ffffff' },
+    heroSubtitleColor: { type: String, default: '#ffffff' },
+    heroTitle: {
+      en: { type: String, default: "Egypt's Finest Agricultural Exports" },
+      ar: { type: String, default: 'أجود الحاصلات الزراعية المصرية' },
+      fr: { type: String, default: "Les Meilleures Exportations Agricoles d'Égypte" },
+      it: { type: String, default: "Le Migliori Esportazioni Agricole dell'Egitto" },
+      tr: { type: String, default: "Mısır'ın En Kaliteli Tarım İhracatı" },
+    },
+    heroSubtitle: {
+      en: { type: String, default: 'Premium quality pickles, fresh produce, frozen goods & grains — delivered worldwide' },
+      ar: { type: String, default: 'مخللات ومنتجات طازجة ومجمدة وحبوب بأعلى معايير الجودة — شحن عالمي' },
+      fr: { type: String, default: 'Cornichons de qualité supérieure, produits frais, surgelés et céréales — livrés dans le monde entier' },
+      it: { type: String, default: 'Sottaceti di qualità superiore, prodotti freschi, surgelati e cereali — spediti in tutto il mondo' },
+      tr: { type: String, default: 'Birinci sınıf turşu, taze sebze-meyve, dondurulmuş gıdalar ve bakliyat — dünya çapında teslimat' },
+    },
   },
   { timestamps: true }
 );

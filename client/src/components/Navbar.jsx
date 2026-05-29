@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
-import { Menu, X, Leaf } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import Logo from './Logo';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -26,17 +27,15 @@ const Navbar = () => {
     { path: '/', label: t('nav.home') },
     { path: '/products', label: t('nav.products') },
     { path: '/about', label: t('nav.about') },
+    { path: '/articles', label: language === 'ar' ? 'المقالات' : 'Articles' },
     { path: '/contact', label: t('nav.contact') },
   ];
 
   return (
-    <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
+    <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''} ${isOpen ? 'navbar-open' : ''}`}>
       <div className="container navbar-container">
         <Link to="/" className="navbar-brand">
-          <div className="navbar-logo">
-            <Leaf size={28} />
-          </div>
-          <span className="navbar-brand-text">EgyField</span>
+          <Logo className="navbar-logo-img" variant={(scrolled || isOpen) ? 'dark' : 'light'} />
         </Link>
 
         <div className={`navbar-menu ${isOpen ? 'navbar-menu-open' : ''}`}>
@@ -53,17 +52,13 @@ const Navbar = () => {
             ))}
           </ul>
 
-          <div className="navbar-actions">
-            <Link to="/contact" className="btn btn-primary btn-sm navbar-cta">
-              {t('hero.cta_contact')}
-            </Link>
-          </div>
         </div>
 
         <button
           className="navbar-toggle"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
+          style={{ color: (scrolled || isOpen) ? 'var(--dark)' : 'var(--white)' }}
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>

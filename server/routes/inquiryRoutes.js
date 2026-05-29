@@ -6,14 +6,14 @@ const {
   updateInquiryStatus,
   deleteInquiry,
 } = require('../controllers/inquiryController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, requirePermission } = require('../middleware/authMiddleware');
 
 // Public route
 router.post('/', createInquiry);
 
 // Admin protected routes
-router.get('/', protect, getInquiries);
-router.put('/:id/status', protect, updateInquiryStatus);
-router.delete('/:id', protect, deleteInquiry);
+router.get('/', protect, requirePermission('inquiries'), getInquiries);
+router.put('/:id/status', protect, requirePermission('inquiries'), updateInquiryStatus);
+router.delete('/:id', protect, requirePermission('inquiries'), deleteInquiry);
 
 module.exports = router;

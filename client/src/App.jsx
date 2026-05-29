@@ -17,6 +17,8 @@ import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -27,9 +29,12 @@ import ProductsList from './pages/admin/ProductsList';
 import ProductForm from './pages/admin/ProductForm';
 import CategoriesList from './pages/admin/CategoriesList';
 import InquiriesList from './pages/admin/InquiriesList';
+import ArticlesList from './pages/admin/Articles';
+import ArticleForm from './pages/admin/ArticleForm';
 import Analytics from './pages/admin/Analytics';
 import Settings from './pages/admin/Settings';
 import AboutManager from './pages/admin/AboutManager';
+import AdminAccounts from './pages/admin/AdminAccounts';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +60,8 @@ function App() {
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="/about" element={<About />} />
+                  <Route path="/articles" element={<Articles />} />
+                  <Route path="/articles/:slug" element={<ArticleDetail />} />
                   <Route path="/contact" element={<Contact />} />
 
                   {/* Admin login */}
@@ -68,9 +75,13 @@ function App() {
                     <Route path="products/:id/edit" element={<ProductForm />} />
                     <Route path="categories" element={<CategoriesList />} />
                     <Route path="inquiries" element={<InquiriesList />} />
+                    <Route path="articles" element={<ArticlesList />} />
+                    <Route path="articles/new" element={<ArticleForm />} />
+                    <Route path="articles/:id/edit" element={<ArticleForm />} />
                     <Route path="analytics" element={<Analytics />} />
                     <Route path="settings" element={<Settings />} />
                     <Route path="about" element={<AboutManager />} />
+                    <Route path="accounts" element={<AdminAccounts />} />
                   </Route>
 
                   {/* 404 route */}

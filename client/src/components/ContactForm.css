@@ -1,7 +1,7 @@
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
 }
 
 .contact-form-row {
@@ -10,9 +10,54 @@
   gap: 20px;
 }
 
+/* Input with icon styling */
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-with-icon .input-icon {
+  position: absolute;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: var(--transition-fast);
+  z-index: 10;
+}
+
+/* Direction-aware padding for input icon */
+.input-with-icon .form-control {
+  padding-left: 46px;
+  padding-right: 18px;
+}
+
+[dir="rtl"] .input-with-icon .form-control {
+  padding-right: 46px;
+  padding-left: 18px;
+}
+
+.input-with-icon .input-icon {
+  left: 18px;
+}
+
+[dir="rtl"] .input-with-icon .input-icon {
+  left: auto;
+  right: 18px;
+}
+
+/* Focus effects */
+.input-with-icon .form-control:focus ~ .input-icon,
+.input-with-icon .form-control:focus + .input-icon {
+  color: var(--primary);
+  transform: scale(1.05);
+}
+
 .contact-form-submit {
   width: 100%;
   margin-top: 8px;
+  border: none;
+  transition: var(--transition);
 }
 
 .contact-form-success {
@@ -38,5 +83,6 @@
 @media (max-width: 600px) {
   .contact-form-row {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 }

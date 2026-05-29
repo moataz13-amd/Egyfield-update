@@ -36,6 +36,8 @@ const loginAdmin = asyncHandler(async (req, res) => {
     _id: admin._id,
     username: admin.username,
     email: admin.email,
+    role: admin.role,
+    permissions: admin.permissions,
     token: generateToken(admin._id),
   });
 });
@@ -58,12 +60,21 @@ const registerAdmin = asyncHandler(async (req, res) => {
     throw new Error('Please provide all fields');
   }
 
-  const admin = await Admin.create({ username, email, password });
+  // First admin is always a superadmin with all permissions
+  const admin = await Admin.create({
+    username,
+    email,
+    password,
+    role: 'superadmin',
+    permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
+  });
 
   res.status(201).json({
     _id: admin._id,
     username: admin.username,
     email: admin.email,
+    role: admin.role,
+    permissions: admin.permissions,
     token: generateToken(admin._id),
   });
 });

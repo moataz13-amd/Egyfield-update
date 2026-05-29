@@ -8,17 +8,30 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('egyfield-token');
-    const adminData = localStorage.getItem('egyfield-admin');
+    const initializeAuth = async () => {
+      const token = localStorage.getItem('egyfield-token');
+      const adminData = localStorage.getItem('egyfield-admin');
 
-    if (token && adminData) {
-      try {
-        setAdmin(JSON.parse(adminData));
-      } catch {
-        logout();
+      if (token) {
+        try {
+          if (adminData) {
+            setAdmin(JSON.parse(adminData));
+          }
+          
+          // Fetch up-to-date details
+          const { data } = await api.get('/auth/me');
+          const updatedAdmin = { ...data, token };
+          
+          localStorage.setItem('egyfield-admin', JSON.stringify(updatedAdmin));
+          setAdmin(updatedAdmin);
+        } catch {
+          logout();
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email, password) => {

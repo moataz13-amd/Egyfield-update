@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import {
   LayoutDashboard, Package, Tags, MessageSquare, BarChart3, Settings,
-  LogOut, ChevronLeft, ChevronRight, Leaf, Menu, X, User, Languages, BookOpen
+  LogOut, ChevronLeft, ChevronRight, Leaf, Menu, X, User, Users, Languages, BookOpen, FileText
 } from 'lucide-react';
 import api from '../../services/api';
 import './admin.css';
@@ -51,13 +51,19 @@ const AdminLayout = () => {
 
   const navItems = [
     { path: '/admin', icon: LayoutDashboard, label: t('admin.dashboard'), keyName: 'dashboard', end: true },
-    { path: '/admin/products', icon: Package, label: t('admin.products'), keyName: 'products' },
-    { path: '/admin/categories', icon: Tags, label: t('admin.categories'), keyName: 'categories' },
-    { path: '/admin/inquiries', icon: MessageSquare, label: t('admin.inquiries'), keyName: 'inquiries', badge: newCount },
+    { path: '/admin/products', icon: Package, label: t('admin.products'), keyName: 'products', permission: 'products' },
+    { path: '/admin/categories', icon: Tags, label: t('admin.categories'), keyName: 'categories', permission: 'products' },
+    { path: '/admin/inquiries', icon: MessageSquare, label: t('admin.inquiries'), keyName: 'inquiries', badge: newCount, permission: 'inquiries' },
+    { path: '/admin/articles', icon: FileText, label: language === 'ar' ? 'المقالات والمدونة' : 'Articles & Blog', keyName: 'articles', permission: 'articles' },
     { path: '/admin/analytics', icon: BarChart3, label: t('admin.analytics'), keyName: 'analytics' },
-    { path: '/admin/about', icon: BookOpen, label: language === 'ar' ? 'صفحة من نحن' : 'About Page', keyName: 'about' },
-    { path: '/admin/settings', icon: Settings, label: t('admin.settings'), keyName: 'settings' },
-  ];
+    { path: '/admin/about', icon: BookOpen, label: language === 'ar' ? 'صفحة من نحن' : 'About Page', keyName: 'about', permission: 'settings' },
+    { path: '/admin/settings', icon: Settings, label: t('admin.settings'), keyName: 'settings', permission: 'settings' },
+    { path: '/admin/accounts', icon: Users, label: language === 'ar' ? 'الحسابات والصلاحيات' : 'Admin Accounts', keyName: 'accounts', permission: 'admins' },
+  ].filter(item => {
+    if (!item.permission) return true;
+    if (admin?.role === 'superadmin') return true;
+    return admin?.permissions?.includes(item.permission);
+  });
 
   const currentNav = navItems.find(n =>
     n.end ? location.pathname === n.path : location.pathname.startsWith(n.path)

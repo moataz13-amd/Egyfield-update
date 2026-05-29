@@ -9,8 +9,19 @@ const {
   deleteProduct,
   toggleFeatured,
 } = require('../controllers/productController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, requirePermission } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
+
+// Multer error handling wrapper
+const handleUpload = (uploadFn) => (req, res, next) => {
+  uploadFn(req, res, (err) => {
+    if (err) {
+      console.error('Product image upload error:', err);
+      return res.status(400).json({ message: err.message || 'Image upload failed' });
+    }
+    next();
+  });
+};
 
 // Public routes
 router.get('/', getProducts);
@@ -18,9 +29,9 @@ router.get('/featured', getFeaturedProducts);
 router.get('/:id', getProduct);
 
 // Admin protected routes
-router.post('/', protect, upload.array('images', 5), createProduct);
-router.put('/:id', protect, upload.array('images', 5), updateProduct);
-router.patch('/:id/featured', protect, toggleFeatured);
-router.delete('/:id', protect, deleteProduct);
+router.post('/', protect, requirePermission('products'), handleUpload(upload.array('images', 5)), createProduct);
+router.put('/:id', protect, requirePermission('products'), handleUpload(upload.array('images', 5)), updateProduct);
+router.patch('/:id/featured', protect, requirePermission('products'), toggleFeatured);
+router.delete('/:id', protect, requirePermission('products'), deleteProduct);
 
 module.exports = router;

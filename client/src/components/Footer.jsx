@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
-import { Leaf, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import api from '../services/api';
+import Logo from './Logo';
 import './Footer.css';
 
 const Footer = () => {
@@ -30,12 +31,7 @@ const Footer = () => {
           <div className="footer-grid">
             <div className="footer-brand">
               <div className="footer-logo">
-                <div className="footer-logo-icon">
-                  <Leaf size={24} />
-                </div>
-                <span className="footer-logo-text">
-                  {settings?.companyName?.[currentLang] || settings?.companyName?.en || 'EgyField'}
-                </span>
+                <Logo className="footer-logo-img" variant="light" />
               </div>
               <p className="footer-description">
                 {settings?.tagline?.[currentLang] || settings?.tagline?.en || t('footer.description')}

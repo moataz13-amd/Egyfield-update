@@ -49,7 +49,9 @@ app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/inquiries', require('./routes/inquiryRoutes'));
 app.use('/api/admin/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/admin/settings', require('./routes/settingsRoutes'));
+app.use('/api/admin/accounts', require('./routes/adminRoutes'));
 app.use('/api/about', require('./routes/aboutRoutes'));
+app.use('/api/articles', require('./routes/articleRoutes'));
 app.get('/api/settings', require('./controllers/settingsController').getSettings);
 
 // Health check

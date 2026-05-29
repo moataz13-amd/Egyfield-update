@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
@@ -6,9 +6,8 @@ import { useFeaturedProducts, useCategories } from '../hooks/useProducts';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
 import AnimatedCounter from '../components/AnimatedCounter';
-import TestimonialSlider from '../components/TestimonialSlider';
 import Loader from '../components/Loader';
-import { Shield, Globe, Package, CalendarCheck, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Shield, Globe, Package, CalendarCheck, ArrowRight, ArrowLeft, Leaf, CheckCircle2 } from 'lucide-react';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './Home.css';
 
@@ -17,6 +16,7 @@ const Home = () => {
   const { data: featuredProducts, isLoading: productsLoading } = useFeaturedProducts();
   const { data: categories } = useCategories();
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
+  const isAr = language === 'ar';
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -36,17 +36,17 @@ const Home = () => {
   }, [featuredProducts, categories]);
 
   const stats = [
-    { value: 9, suffix: '+', label: t('stats.years') },
-    { value: 40, suffix: '+', label: t('stats.products') },
-    { value: 12, suffix: '+', label: t('stats.countries') },
-    { value: 30, suffix: '+', label: t('stats.clients') },
+    { value: 15, suffix: '+', label: t('stats.years') },
+    { value: 200, suffix: '+', label: t('stats.products') },
+    { value: 35, suffix: '+', label: t('stats.countries') },
+    { value: 500, suffix: '+', label: t('stats.clients') },
   ];
 
   const whyCards = [
-    { icon: <Shield size={32} />, title: t('why.quality'), desc: t('why.qualityDesc') },
-    { icon: <Globe size={32} />, title: t('why.shipping'), desc: t('why.shippingDesc') },
-    { icon: <Package size={32} />, title: t('why.packaging'), desc: t('why.packagingDesc') },
-    { icon: <CalendarCheck size={32} />, title: t('why.supply'), desc: t('why.supplyDesc') },
+    { icon: <Shield size={28} />, title: t('why.quality'), desc: t('why.qualityDesc'), color: '#7BB445', bg: 'rgba(123, 180, 69, 0.08)' },
+    { icon: <Globe size={28} />, title: t('why.shipping'), desc: t('why.shippingDesc'), color: '#5BA8C8', bg: 'rgba(91, 168, 200, 0.08)' },
+    { icon: <Package size={28} />, title: t('why.packaging'), desc: t('why.packagingDesc'), color: '#D4A843', bg: 'rgba(212, 168, 67, 0.08)' },
+    { icon: <CalendarCheck size={28} />, title: t('why.supply'), desc: t('why.supplyDesc'), color: '#9B6DD7', bg: 'rgba(155, 109, 215, 0.08)' },
   ];
 
   return (
@@ -58,13 +58,15 @@ const Home = () => {
 
       <Hero />
 
-      {/* Stats Bar */}
+      {/* ===== Stats Section ===== */}
       <section className="stats-section">
         <div className="container">
           <div className="stats-grid">
             {stats.map((stat, i) => (
-              <div key={i} className="stats-item reveal reveal-delay-${i + 1}">
-                <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+              <div key={i} className={`stats-item reveal reveal-delay-${i + 1}`}>
+                <div className="stats-counter-wrapper">
+                  <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+                </div>
                 <p>{stat.label}</p>
               </div>
             ))}
@@ -72,28 +74,31 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* ===== Categories ===== */}
       <section className="section categories-section">
         <div className="container">
           <div className="section-header reveal">
             <h2>{t('categories.title')}</h2>
             <p>{t('categories.subtitle')}</p>
           </div>
+          
           <div className="categories-grid">
             {categories?.map((cat, i) => (
               <Link
                 to={`/products?category=${cat._id}`}
                 key={cat._id}
                 className={`category-card glass-card reveal reveal-delay-${i + 1}`}
-                style={{ '--cat-color': cat.color }}
+                style={{ '--cat-color': cat.color || 'var(--primary)' }}
               >
-                <div className="category-card-icon">{getCategoryIcon(cat.slug, 40)}</div>
+                <div className="category-card-icon" style={{ background: cat.color ? `${cat.color}15` : 'rgba(123, 180, 69, 0.15)', color: cat.color || 'var(--primary-dark)' }}>
+                  {getCategoryIcon(cat.slug, 34)}
+                </div>
                 <h3>{cat.name?.[language] || cat.name?.en}</h3>
                 <p className="category-card-count">
                   {cat.productCount || 0} {t('nav.products').toLowerCase()}
                 </p>
                 <div className="category-card-arrow">
-                  <Arrow size={18} />
+                  <Arrow size={16} />
                 </div>
               </Link>
             ))}
@@ -101,7 +106,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* ===== Featured Products ===== */}
       <section className="section featured-section">
         <div className="container">
           <div className="section-header reveal">
@@ -109,20 +114,22 @@ const Home = () => {
             <p>{t('featured.subtitle')}</p>
           </div>
           {productsLoading ? (
-            <Loader />
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
+              <Loader />
+            </div>
           ) : (
             <>
               <div className="featured-grid">
-                {featuredProducts?.map((product, i) => (
-                  <div key={product._id} className={`reveal reveal-delay-${(i % 4) + 1}`}>
+                {featuredProducts?.slice(0, 6).map((product, i) => (
+                  <div key={product._id} className={`reveal reveal-delay-${(i % 3) + 1}`}>
                     <ProductCard product={product} />
                   </div>
                 ))}
               </div>
-              <div className="featured-cta reveal">
-                <Link to="/products" className="btn btn-outline btn-lg">
+              <div className="featured-cta reveal" style={{ marginTop: 50 }}>
+                <Link to="/products" className="btn btn-outline btn-lg" style={{ borderRadius: 'var(--radius-full)' }}>
                   {t('featured.viewAll')}
-                  <Arrow size={20} />
+                  <Arrow size={18} />
                 </Link>
               </div>
             </>
@@ -130,7 +137,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why EgyField */}
+      {/* ===== Why EgyField ===== */}
       <section className="section why-section">
         <div className="container">
           <div className="section-header reveal">
@@ -140,7 +147,9 @@ const Home = () => {
           <div className="why-grid">
             {whyCards.map((card, i) => (
               <div key={i} className={`why-card glass-card reveal reveal-delay-${i + 1}`}>
-                <div className="why-card-icon">{card.icon}</div>
+                <div className="why-card-icon" style={{ background: card.bg, color: card.color }}>
+                  {card.icon}
+                </div>
                 <h4>{card.title}</h4>
                 <p>{card.desc}</p>
               </div>
@@ -149,28 +158,19 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="section testimonials-section">
-        <div className="container">
-          <div className="section-header reveal">
-            <h2>{t('testimonials.title')}</h2>
-            <p>{t('testimonials.subtitle')}</p>
-          </div>
-          <div className="reveal">
-            <TestimonialSlider language={language} />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Banner */}
+      {/* ===== CTA Banner ===== */}
       <section className="cta-section">
+        <div className="cta-section-bg">
+          <div className="cta-section-orb cta-section-orb-1" />
+          <div className="cta-section-orb cta-section-orb-2" />
+        </div>
         <div className="container">
           <div className="cta-content reveal">
             <h2>{t('cta.title')}</h2>
             <p>{t('cta.subtitle')}</p>
-            <Link to="/contact" className="btn btn-accent btn-lg">
+            <Link to="/contact" className="btn btn-accent btn-lg" style={{ borderRadius: 'var(--radius-full)', padding: '16px 36px' }}>
               {t('cta.button')}
-              <Arrow size={20} />
+              <Arrow size={18} />
             </Link>
           </div>
         </div>

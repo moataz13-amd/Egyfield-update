@@ -29,4 +29,23 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
-module.exports = { protect };
+const requirePermission = (permission) => {
+  return (req, res, next) => {
+    if (!req.admin) {
+      res.status(401);
+      return res.json({ message: 'Not authorized' });
+    }
+
+    if (req.admin.role === 'superadmin') {
+      return next();
+    }
+
+    if (req.admin.permissions && req.admin.permissions.includes(permission)) {
+      return next();
+    }
+
+    return res.status(403).json({ message: 'Forbidden - You do not have permission for this area' });
+  };
+};
+
+module.exports = { protect, requirePermission };

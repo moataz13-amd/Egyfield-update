@@ -7,15 +7,15 @@ const {
   updateCategory,
   deleteCategory,
 } = require('../controllers/categoryController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, requirePermission } = require('../middleware/authMiddleware');
 
 // Public routes
 router.get('/', getCategories);
 router.get('/:slug/products', getCategoryProducts);
 
 // Admin protected routes
-router.post('/', protect, createCategory);
-router.put('/:id', protect, updateCategory);
-router.delete('/:id', protect, deleteCategory);
+router.post('/', protect, requirePermission('products'), createCategory);
+router.put('/:id', protect, requirePermission('products'), updateCategory);
+router.delete('/:id', protect, requirePermission('products'), deleteCategory);
 
 module.exports = router;

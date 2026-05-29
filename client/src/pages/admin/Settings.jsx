@@ -3,13 +3,22 @@ import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { LanguageContext } from '../../context/LanguageContext';
 import toast from 'react-hot-toast';
-import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader } from 'lucide-react';
+import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
+
+const SUPPORTED_LANGS = [
+  { code: 'en', name: 'English' },
+  { code: 'ar', name: 'العربية' },
+  { code: 'fr', name: 'Français' },
+  { code: 'it', name: 'Italiano' },
+  { code: 'tr', name: 'Türkçe' },
+];
 
 const Settings = () => {
   const { t, language } = useContext(LanguageContext);
   const [activeTab, setActiveTab] = useState('general');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [settings, setSettings] = useState({
     companyName: { en: 'EgyField', ar: 'إيجي فيلد' },
     tagline: { en: '', ar: '' },
@@ -20,6 +29,12 @@ const Settings = () => {
     address: { en: '', ar: '' },
     social: { facebook: '', instagram: '', linkedin: '', youtube: '' },
     seo: { metaTitle: '', metaDescription: '', keywords: [] },
+    heroTitle: { en: '', ar: '', fr: '', it: '', tr: '' },
+    heroSubtitle: { en: '', ar: '', fr: '', it: '', tr: '' },
+    heroImage: { url: '', publicId: '' },
+    heroImages: [],
+    heroTitleColor: '#ffffff',
+    heroSubtitleColor: '#ffffff',
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -46,21 +61,116 @@ const Settings = () => {
     setSettings(prev => {
       const updated = { ...prev };
       if (nestedField) {
-        updated[tab] = { ...updated[tab], [field]: { ...updated[tab][field], [nestedField]: value } };
-      } else if (typeof updated[tab] === 'object' && !Array.isArray(updated[tab])) {
-        updated[tab] = { ...updated[tab], [field]: value };
+        const targetTab = updated[tab] || {};
+        const targetField = targetTab[field] || {};
+        updated[tab] = {
+          ...targetTab,
+          [field]: {
+            ...targetField,
+            [nestedField]: value
+          }
+        };
       } else {
-        updated[field] = value;
+        const nestedFields = ['companyName', 'tagline', 'address', 'social', 'seo', 'heroTitle', 'heroSubtitle'];
+        if (nestedFields.includes(tab) || (updated[tab] && typeof updated[tab] === 'object' && !Array.isArray(updated[tab]))) {
+          updated[tab] = {
+            ...(updated[tab] || {}),
+            [field]: value
+          };
+        } else {
+          updated[field] = value;
+        }
       }
       return updated;
     });
+  };
+
+  const handleHeroImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setImageUploading(true);
+    const formData = new FormData();
+    formData.append('heroImage', file);
+    
+    try {
+      const { data } = await api.put('/admin/settings/hero-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (data) {
+        setSettings(data);
+        toast.success(language === 'ar' ? 'تم رفع صورة الهيرو بنجاح!' : 'Hero image uploaded successfully!');
+      }
+    } catch (err) {
+      toast.error(language === 'ar' ? 'فشل رفع صورة الهيرو' : 'Failed to upload hero image');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleHeroImageDelete = async () => {
+    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف صورة الهيرو؟' : 'Are you sure you want to delete the hero image?')) return;
+    
+    setImageUploading(true);
+    try {
+      const { data } = await api.delete('/admin/settings/hero-image');
+      if (data) {
+        setSettings(data);
+        toast.success(language === 'ar' ? 'تم حذف صورة الهيرو واستعادة الصورة الافتراضية' : 'Hero image deleted. Default restored.');
+      }
+    } catch (err) {
+      toast.error(language === 'ar' ? 'فشل حذف صورة الهيرو' : 'Failed to delete hero image');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleSliderImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setImageUploading(true);
+    const formData = new FormData();
+    formData.append('heroImage', file);
+    
+    try {
+      const { data } = await api.post('/admin/settings/hero-images', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      if (data) {
+        setSettings(data);
+        toast.success(language === 'ar' ? 'تم رفع صورة المعرض بنجاح!' : 'Slider image uploaded successfully!');
+      }
+    } catch (err) {
+      toast.error(language === 'ar' ? 'فشل رفع صورة المعرض' : 'Failed to upload slider image');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleSliderImageDelete = async (publicId) => {
+    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذه الصورة؟' : 'Are you sure you want to delete this image?')) return;
+    
+    setImageUploading(true);
+    try {
+      const { data } = await api.delete('/admin/settings/hero-images', { data: { publicId } });
+      if (data) {
+        setSettings(data);
+        toast.success(language === 'ar' ? 'تم حذف الصورة بنجاح!' : 'Image deleted successfully!');
+      }
+    } catch (err) {
+      toast.error(language === 'ar' ? 'فشل حذف الصورة' : 'Failed to delete image');
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      await api.put('/admin/settings', settings);
+      const { data } = await api.put('/admin/settings', settings);
+      if (data) setSettings(data);
       toast.success(language === 'ar' ? 'تم حفظ الإعدادات بنجاح!' : 'Settings updated successfully!');
     } catch {
       toast.error(language === 'ar' ? 'فشل حفظ الإعدادات' : 'Failed to save settings');
@@ -109,6 +219,9 @@ const Settings = () => {
         </button>
         <button className={`settings-tab ${activeTab === 'seo' ? 'active' : ''}`} onClick={() => setActiveTab('seo')}>
           {language === 'ar' ? 'إعدادات SEO' : 'SEO Config'}
+        </button>
+        <button className={`settings-tab ${activeTab === 'hero' ? 'active' : ''}`} onClick={() => setActiveTab('hero')}>
+          {language === 'ar' ? 'قسم الهيرو' : 'Hero Section'}
         </button>
         <button className={`settings-tab ${activeTab === 'password' ? 'active' : ''}`} onClick={() => setActiveTab('password')}>
           {language === 'ar' ? 'تغيير كلمة المرور' : 'Change Password'}
@@ -234,6 +347,204 @@ const Settings = () => {
                   <label>{language === 'ar' ? 'الكلمات الدلالية المفتاحية (مفصولة بفاصلة)' : 'Meta Keywords (comma-separated)'}</label>
                   <input className="admin-form-control" value={settings.seo?.keywords?.join(', ') || ''} onChange={e => handleChange('seo', 'keywords', e.target.value.split(',').map(k => k.trim()))} placeholder="egyptian exports, fresh crops, frozen green peas" />
                 </div>
+              </div>
+            )}
+
+            {/* Hero Tab */}
+            {activeTab === 'hero' && (
+              <div>
+                <h4 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 20px' }}>
+                  <ImageIcon size={18} /> {language === 'ar' ? 'إعدادات قسم الهيرو التعريفي' : 'Hero Section Settings'}
+                </h4>
+                
+                {/* Text Colors Management */}
+                <div style={{ marginBottom: 32 }}>
+                  <h5 style={{ marginBottom: 16, fontWeight: '600' }}>
+                    {language === 'ar' ? 'ألوان النصوص' : 'Text Colors'}
+                  </h5>
+                  <div className="admin-form-row">
+                    <div className="admin-form-group">
+                      <label>{language === 'ar' ? 'لون العنوان الرئيسي' : 'Title Text Color'}</label>
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <input 
+                          type="color" 
+                          value={settings.heroTitleColor || '#ffffff'} 
+                          onChange={e => setSettings(p => ({ ...p, heroTitleColor: e.target.value }))}
+                          style={{ width: 44, height: 38, padding: 0, border: '1px solid var(--admin-border)', borderRadius: 6, cursor: 'pointer' }}
+                        />
+                        <input 
+                          type="text" 
+                          className="admin-form-control" 
+                          value={settings.heroTitleColor || '#ffffff'} 
+                          onChange={e => setSettings(p => ({ ...p, heroTitleColor: e.target.value }))}
+                          placeholder="#ffffff"
+                          style={{ textTransform: 'uppercase', maxWidth: 120 }}
+                        />
+                      </div>
+                    </div>
+                    <div className="admin-form-group">
+                      <label>{language === 'ar' ? 'لون العنوان الفرعي' : 'Subtitle Text Color'}</label>
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <input 
+                          type="color" 
+                          value={settings.heroSubtitleColor || '#ffffff'} 
+                          onChange={e => setSettings(p => ({ ...p, heroSubtitleColor: e.target.value }))}
+                          style={{ width: 44, height: 38, padding: 0, border: '1px solid var(--admin-border)', borderRadius: 6, cursor: 'pointer' }}
+                        />
+                        <input 
+                          type="text" 
+                          className="admin-form-control" 
+                          value={settings.heroSubtitleColor || '#ffffff'} 
+                          onChange={e => setSettings(p => ({ ...p, heroSubtitleColor: e.target.value }))}
+                          placeholder="#ffffff"
+                          style={{ textTransform: 'uppercase', maxWidth: 120 }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '24px 0' }} />
+
+                {/* Hero Slider Images Management */}
+                <div className="admin-form-group" style={{ marginBottom: 32 }}>
+                  <label style={{ fontWeight: '600', marginBottom: 16, display: 'block' }}>
+                    {language === 'ar' ? 'معرض صور الخلفية للهيرو (سلايدر)' : 'Hero Background Slider Images'}
+                  </label>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
+                    {/* Render existing slider images */}
+                    {settings.heroImages?.map((img, index) => (
+                      <div key={img._id || index} style={{
+                        height: 140,
+                        borderRadius: 12,
+                        overflow: 'hidden',
+                        border: '1px solid var(--admin-border)',
+                        background: 'rgba(255,255,255,0.05)',
+                        position: 'relative',
+                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                      }}>
+                        <img 
+                          src={img.url} 
+                          alt={`Slider ${index}`} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleSliderImageDelete(img.publicId)}
+                          style={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                            width: 32,
+                            height: 32,
+                            borderRadius: '50%',
+                            background: 'rgba(220, 53, 69, 0.9)',
+                            border: 'none',
+                            color: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = '#dc3545'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'rgba(220, 53, 69, 0.9)'}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+
+                    {/* Upload new image card */}
+                    <label style={{
+                      height: 140,
+                      borderRadius: 12,
+                      border: '2px dashed var(--admin-border)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      background: 'rgba(255,255,255,0.01)',
+                      color: 'var(--admin-text-muted)',
+                      transition: 'border-color 0.2s, background 0.2s',
+                      position: 'relative'
+                    }}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = 'var(--primary)';
+                      e.currentTarget.style.background = 'rgba(123, 180, 69, 0.02)';
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = 'var(--admin-border)';
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.01)';
+                    }}
+                    >
+                      {imageUploading ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                          <Loader size={24} className="spin" />
+                          <span style={{ fontSize: 12 }}>{language === 'ar' ? 'جاري الرفع...' : 'Uploading...'}</span>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: 12, textAlign: 'center' }}>
+                          <Upload size={24} />
+                          <span style={{ fontSize: 13, fontWeight: '600' }}>{language === 'ar' ? 'إضافة صورة جديدة' : 'Add New Image'}</span>
+                          <span style={{ fontSize: 10, opacity: 0.7 }}>{language === 'ar' ? 'بأبعاد 1920×1080' : '1920x1080 Recommended'}</span>
+                        </div>
+                      )}
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleSliderImageUpload} 
+                        style={{ display: 'none' }} 
+                        disabled={imageUploading}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '24px 0' }} />
+
+                {/* Hero Title and Subtitle inputs for all languages */}
+                <h5 style={{ marginBottom: 16, fontWeight: '600' }}>
+                  {language === 'ar' ? 'العناوين والنصوص التعريفية' : 'Title & Subtitle Translations'}
+                </h5>
+
+                {SUPPORTED_LANGS.map(lang => (
+                  <div key={lang.code} style={{ 
+                    padding: 16, 
+                    background: 'rgba(255, 255, 255, 0.02)', 
+                    border: '1px solid var(--admin-border)', 
+                    borderRadius: 8, 
+                    marginBottom: 16 
+                  }}>
+                    <div style={{ fontWeight: '600', fontSize: 13, marginBottom: 12, color: 'var(--primary-light)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ padding: '2px 6px', background: 'rgba(123, 180, 69, 0.15)', borderRadius: 4, fontSize: 11 }}>{lang.code.toUpperCase()}</span>
+                      {lang.name}
+                    </div>
+
+                    <div className="admin-form-group" style={{ marginBottom: 12 }}>
+                      <label style={{ fontSize: 12 }}>{language === 'ar' ? 'العنوان الرئيسي' : 'Main Title'}</label>
+                      <input 
+                        className="admin-form-control" 
+                        value={settings.heroTitle?.[lang.code] || ''} 
+                        onChange={e => handleChange('heroTitle', lang.code, e.target.value)} 
+                        style={{ direction: lang.code === 'ar' ? 'rtl' : 'ltr' }}
+                      />
+                    </div>
+
+                    <div className="admin-form-group" style={{ marginBottom: 0 }}>
+                      <label style={{ fontSize: 12 }}>{language === 'ar' ? 'العنوان الفرعي (الوصف)' : 'Subtitle'}</label>
+                      <textarea 
+                        className="admin-form-control" 
+                        rows={2}
+                        value={settings.heroSubtitle?.[lang.code] || ''} 
+                        onChange={e => handleChange('heroSubtitle', lang.code, e.target.value)} 
+                        style={{ direction: lang.code === 'ar' ? 'rtl' : 'ltr' }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
