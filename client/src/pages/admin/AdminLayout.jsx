@@ -4,8 +4,9 @@ import { AuthContext } from '../../context/AuthContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import {
   LayoutDashboard, Package, Tags, MessageSquare, BarChart3, Settings,
-  LogOut, ChevronLeft, ChevronRight, Leaf, Menu, X, User, Users, Languages, BookOpen, FileText
+  LogOut, ChevronLeft, ChevronRight, Menu, X, User, Users, Languages, BookOpen, FileText
 } from 'lucide-react';
+import egyFieldLogo from '../../assets/egyfield.svg';
 import api from '../../services/api';
 import './admin.css';
 
@@ -28,8 +29,8 @@ const AdminLayout = () => {
       api.get('/inquiries?limit=200').then(r => {
         const inqs = r.data.inquiries || [];
         setNewCount(inqs.filter(i => i.status === 'new').length);
-      }).catch(() => {});
-    }).catch(() => {});
+      }).catch(() => { });
+    }).catch(() => { });
   }, [isAuthenticated, location.pathname]);
 
   const [langOpen, setLangOpen] = useState(false);
@@ -79,11 +80,7 @@ const AdminLayout = () => {
         </button>
 
         <div className="sidebar-header">
-          <div className="sidebar-header-logo"><Leaf size={20} /></div>
-          <div className="sidebar-header-text">
-            <h2>EgyField</h2>
-            <span>{t('admin.adminPanel')}</span>
-          </div>
+          <img src={egyFieldLogo} alt="EgyField" className="sidebar-header-logo-img" />
         </div>
 
         <nav className="sidebar-nav">
@@ -150,8 +147,8 @@ const AdminLayout = () => {
             ))}
           </div>
         )}
-        <button 
-          className="admin-lang-float-btn" 
+        <button
+          className="admin-lang-float-btn"
           onClick={() => setLangOpen(!langOpen)}
           title="Select Language / اختر اللغة"
         >

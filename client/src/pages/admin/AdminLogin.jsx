@@ -2,16 +2,20 @@ import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { AuthContext } from '../../context/AuthContext';
-import { Leaf, LogIn, Loader } from 'lucide-react';
+import { LanguageContext } from '../../context/LanguageContext';
+import { LogIn, Loader, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import egyFieldLogo from '../../assets/egyfield.svg';
 import './admin.css';
 
 const AdminLogin = () => {
   const { login, isAuthenticated } = useContext(AuthContext);
+  const { t, language } = useContext(LanguageContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,38 +33,93 @@ const AdminLogin = () => {
       await login(email, password);
       navigate('/admin');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || (language === 'ar' ? 'فشل تسجيل الدخول' : 'Login failed'));
     } finally {
       setLoading(false);
     }
   };
 
+  const isAr = language === 'ar';
+
   return (
     <>
-      <Helmet><title>Admin Login — EgyField</title></Helmet>
+      <Helmet><title>{isAr ? 'تسجيل الدخول — EgyField' : 'Admin Login — EgyField'}</title></Helmet>
       <div className="admin-login-page">
+        {/* Decorative background elements */}
+        <div className="admin-login-bg-shape admin-login-bg-shape-1" />
+        <div className="admin-login-bg-shape admin-login-bg-shape-2" />
+        <div className="admin-login-bg-shape admin-login-bg-shape-3" />
+
         <div className="admin-login-card">
           <div className="admin-login-logo">
-            <div className="admin-login-logo-icon"><Leaf size={28} /></div>
-            <h1>EgyField Admin</h1>
-            <p>Sign in to your dashboard</p>
+            <img src={egyFieldLogo} alt="EgyField" className="admin-login-logo-img" />
+            <h1>{isAr ? 'لوحة التحكم' : 'Admin Panel'}</h1>
+            <p>{isAr ? 'سجل الدخول للمتابعة' : 'Sign in to your dashboard'}</p>
           </div>
+
           {error && <div className="admin-login-error">{error}</div>}
-          <form onSubmit={handleSubmit}>
-            <div className="admin-form-group">
-              <label>Email Address</label>
-              <input type="email" className="admin-form-control" value={email}
-                onChange={e => setEmail(e.target.value)} placeholder="admin@egyfield.com" required />
+
+          <form onSubmit={handleSubmit} autoComplete="on">
+            <div className="admin-login-field">
+              <label htmlFor="admin-email">
+                <Mail size={14} />
+                {isAr ? 'البريد الإلكتروني' : 'Email Address'}
+              </label>
+              <div className="admin-login-input-wrap">
+                <input
+                  id="admin-email"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder={isAr ? 'admin@egyfield.com' : 'admin@egyfield.com'}
+                  required
+                  autoComplete="email"
+                />
+              </div>
             </div>
-            <div className="admin-form-group">
-              <label>Password</label>
-              <input type="password" className="admin-form-control" value={password}
-                onChange={e => setPassword(e.target.value)} placeholder="••••••••" required />
+
+            <div className="admin-login-field">
+              <label htmlFor="admin-password">
+                <Lock size={14} />
+                {isAr ? 'كلمة المرور' : 'Password'}
+              </label>
+              <div className="admin-login-input-wrap">
+                <input
+                  id="admin-password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="admin-login-eye-btn"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
+
             <button type="submit" className="admin-login-btn" disabled={loading}>
-              {loading ? <Loader size={18} className="spin" /> : <><LogIn size={18} /> Sign In</>}
+              {loading ? (
+                <Loader size={18} className="spin" />
+              ) : (
+                <>
+                  <LogIn size={18} />
+                  {isAr ? 'تسجيل الدخول' : 'Sign In'}
+                </>
+              )}
             </button>
           </form>
+
+          <div className="admin-login-footer">
+            <span>{isAr ? 'مدعوم بواسطة' : 'Powered by'}</span>
+            <strong> EgyField</strong>
+          </div>
         </div>
       </div>
     </>
