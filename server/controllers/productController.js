@@ -6,9 +6,12 @@ const cloudinary = require('../config/cloudinary');
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const { category, search, page = 1, limit = 12, featured } = req.query;
+  const { category, search, page = 1, limit = 12, featured, all } = req.query;
 
-  const query = { isActive: true };
+  const query = {};
+  if (all !== 'true') {
+    query.isActive = true;
+  }
 
   if (category) {
     query.category = category;
@@ -78,7 +81,7 @@ const getProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private (Admin)
 const createProduct = asyncHandler(async (req, res) => {
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured } = req.body;
+  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive } = req.body;
 
   const images = req.files
     ? req.files.map((file) => ({
@@ -97,6 +100,7 @@ const createProduct = asyncHandler(async (req, res) => {
     season: season || 'Year-round',
     certifications: certifications ? JSON.parse(certifications) : [],
     featured: featured === 'true',
+    isActive: isActive === undefined ? true : (isActive === 'true' || isActive === true),
   });
 
   const populatedProduct = await Product.findById(product._id).populate('category', 'name slug icon color');
@@ -193,6 +197,23 @@ const toggleFeatured = asyncHandler(async (req, res) => {
   res.json({ featured: product.featured });
 });
 
+// @desc    Toggle product active status
+// @route   PATCH /api/products/:id/active
+// @access  Private (Admin)
+const toggleActive = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+
+  product.isActive = !product.isActive;
+  await product.save();
+
+  res.json({ isActive: product.isActive });
+});
+
 module.exports = {
   getProducts,
   getFeaturedProducts,
@@ -201,4 +222,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   toggleFeatured,
+  toggleActive,
 };

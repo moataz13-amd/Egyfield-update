@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 /* ===== CSS Reset & Design System ===== */
 :root {
@@ -77,8 +77,18 @@ body {
 }
 
 /* RTL Support */
-[dir="rtl"] body {
+[dir="rtl"] {
+  --font-heading: 'Cairo', sans-serif !important;
+  --font-body: 'Cairo', sans-serif !important;
+}
+
+[dir="rtl"] body,
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select,
+[dir="rtl"] button {
   direction: rtl;
+  font-family: 'Cairo', sans-serif !important;
 }
 
 [dir="rtl"] .container {
@@ -131,6 +141,33 @@ input, textarea, select {
   border: none;
   outline: none;
   font-size: 1rem;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%234F9200' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 14px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 40px !important;
+  cursor: pointer;
+  background-color: var(--white);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(123, 180, 69, 0.15);
+}
+
+[dir="rtl"] select {
+  background-position: left 14px center;
+  padding-right: 14px !important;
+  padding-left: 40px !important;
 }
 
 /* ===== Utility Classes ===== */
@@ -304,6 +341,24 @@ input, textarea, select {
 .form-control:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(123, 180, 69, 0.15);
+}
+
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%234F9200' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 18px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 46px !important;
+  cursor: pointer;
+}
+
+[dir="rtl"] select.form-control {
+  background-position: left 18px center;
+  padding-right: 18px !important;
+  padding-left: 46px !important;
 }
 
 .form-control::placeholder {
@@ -560,6 +615,12 @@ textarea.form-control {
   right: auto;
   left: 28px;
   align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .public-lang-float-container {
+    display: none !important;
+  }
 }
 
 .public-lang-float-btn {

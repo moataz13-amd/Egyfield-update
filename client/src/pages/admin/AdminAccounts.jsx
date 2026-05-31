@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import { 
   Users, Plus, Edit, Trash2, Shield, ShieldAlert, Key, Mail, User, X, Check, Loader
 } from 'lucide-react';
@@ -18,6 +19,7 @@ const ALL_PERMISSIONS = [
 const AdminAccounts = () => {
   const { admin: currentAdmin } = useContext(AuthContext);
   const { language } = useContext(LanguageContext);
+  const confirm = useConfirm();
   const isAr = language === 'ar';
 
   const [admins, setAdmins] = useState([]);
@@ -125,12 +127,14 @@ const AdminAccounts = () => {
       return;
     }
 
-    const conf = window.confirm(
-      isAr 
+    const isConfirmed = await confirm({
+      title: isAr ? 'حذف حساب المسؤول' : 'Delete Admin Account',
+      message: isAr 
         ? `هل أنت متأكد من رغبتك في حذف حساب المسؤول "${adminUsername}" نهائياً؟`
-        : `Are you sure you want to permanently delete the admin account "${adminUsername}"?`
-    );
-    if (!conf) return;
+        : `Are you sure you want to permanently delete the admin account "${adminUsername}"?`,
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
 
     try {
       await api.delete(`/admin/accounts/${id}`);

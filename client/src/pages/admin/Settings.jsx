@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
 
@@ -15,6 +16,7 @@ const SUPPORTED_LANGS = [
 
 const Settings = () => {
   const { t, language } = useContext(LanguageContext);
+  const confirm = useConfirm();
   const [activeTab, setActiveTab] = useState('general');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -109,7 +111,12 @@ const Settings = () => {
   };
 
   const handleHeroImageDelete = async () => {
-    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف صورة الهيرو؟' : 'Are you sure you want to delete the hero image?')) return;
+    const isConfirmed = await confirm({
+      title: language === 'ar' ? 'حذف صورة الهيرو' : 'Delete Hero Image',
+      message: language === 'ar' ? 'هل أنت متأكد من حذف صورة الهيرو؟' : 'Are you sure you want to delete the hero image?',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     
     setImageUploading(true);
     try {
@@ -149,7 +156,12 @@ const Settings = () => {
   };
 
   const handleSliderImageDelete = async (publicId) => {
-    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذه الصورة؟' : 'Are you sure you want to delete this image?')) return;
+    const isConfirmed = await confirm({
+      title: language === 'ar' ? 'حذف الصورة' : 'Delete Image',
+      message: language === 'ar' ? 'هل أنت متأكد من حذف هذه الصورة؟' : 'Are you sure you want to delete this image?',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     
     setImageUploading(true);
     try {

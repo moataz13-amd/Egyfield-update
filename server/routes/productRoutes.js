@@ -8,6 +8,7 @@ const {
   updateProduct,
   deleteProduct,
   toggleFeatured,
+  toggleActive,
 } = require('../controllers/productController');
 const { protect, requirePermission } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
@@ -32,6 +33,7 @@ router.get('/:id', getProduct);
 router.post('/', protect, requirePermission('products'), handleUpload(upload.array('images', 5)), createProduct);
 router.put('/:id', protect, requirePermission('products'), handleUpload(upload.array('images', 5)), updateProduct);
 router.patch('/:id/featured', protect, requirePermission('products'), toggleFeatured);
+router.patch('/:id/active', protect, requirePermission('products'), toggleActive);
 router.delete('/:id', protect, requirePermission('products'), deleteProduct);
 
 module.exports = router;

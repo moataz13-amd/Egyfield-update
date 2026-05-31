@@ -1,12 +1,14 @@
 import { useState, useContext } from 'react';
 import { useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Plus, Edit2, Trash2, X, Save } from 'lucide-react';
 
 const CategoriesList = () => {
   const { t, language } = useContext(LanguageContext);
+  const confirm = useConfirm();
   const { data: categories, isLoading, refetch } = useCategories();
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -20,7 +22,12 @@ const CategoriesList = () => {
   };
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`${t('admin.delete')} "${name}"?`)) return;
+    const isConfirmed = await confirm({
+      title: language === 'ar' ? 'حذف قسم' : 'Delete Category',
+      message: language === 'ar' ? `هل أنت متأكد من حذف القسم "${name}"؟` : `Are you sure you want to delete category "${name}"?`,
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     try { 
       await api.delete(`/categories/${id}`); 
       toast.success(language === 'ar' ? 'تم الحذف بنجاح' : 'Deleted successfully'); 

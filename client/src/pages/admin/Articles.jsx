@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import { 
   FileText, Plus, Search, Edit2, Trash2, Eye, Calendar, ToggleLeft, ToggleRight, Loader 
 } from 'lucide-react';
@@ -11,6 +12,7 @@ import { ar, enUS } from 'date-fns/locale';
 
 const ArticlesList = () => {
   const { language } = useContext(LanguageContext);
+  const confirm = useConfirm();
   const navigate = useNavigate();
   
   const [articles, setArticles] = useState([]);
@@ -60,9 +62,12 @@ const ArticlesList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من رغبتك في حذف هذا المقال نهائياً؟' : 'Are you sure you want to delete this article permanently?')) {
-      return;
-    }
+    const isConfirmed = await confirm({
+      title: language === 'ar' ? 'حذف المقال' : 'Delete Article',
+      message: language === 'ar' ? 'هل أنت متأكد من رغبتك في حذف هذا المقال نهائياً؟' : 'Are you sure you want to delete this article permanently?',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
 
     try {
       await api.delete(`/articles/${id}`);

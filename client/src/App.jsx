@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 // Contexts
 import { LanguageProvider } from './context/LanguageContext';
 import { AuthProvider } from './context/AuthContext';
+import { ConfirmProvider } from './context/ConfirmContext';
 
 // Components
 import Navbar from './components/Navbar';
@@ -50,49 +51,51 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <LanguageProvider>
-          <AuthProvider>
-            <Router>
-              <div className="app-wrapper">
-                <NavbarWrapper />
-                <Routes>
-                  {/* Public routes */}
-                  <Route path="/" element={<Home />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/:id" element={<ProductDetail />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/articles" element={<Articles />} />
-                  <Route path="/articles/:slug" element={<ArticleDetail />} />
-                  <Route path="/contact" element={<Contact />} />
+          <ConfirmProvider>
+            <AuthProvider>
+              <Router>
+                <div className="app-wrapper">
+                  <NavbarWrapper />
+                  <Routes>
+                    {/* Public routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/products/:id" element={<ProductDetail />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/articles" element={<Articles />} />
+                    <Route path="/articles/:slug" element={<ArticleDetail />} />
+                    <Route path="/contact" element={<Contact />} />
 
-                  {/* Admin login */}
-                  <Route path="/admin/login" element={<AdminLogin />} />
+                    {/* Admin login */}
+                    <Route path="/admin/login" element={<AdminLogin />} />
 
-                  {/* Admin panel routes */}
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path="products" element={<ProductsList />} />
-                    <Route path="products/new" element={<ProductForm />} />
-                    <Route path="products/:id/edit" element={<ProductForm />} />
-                    <Route path="categories" element={<CategoriesList />} />
-                    <Route path="inquiries" element={<InquiriesList />} />
-                    <Route path="articles" element={<ArticlesList />} />
-                    <Route path="articles/new" element={<ArticleForm />} />
-                    <Route path="articles/:id/edit" element={<ArticleForm />} />
-                    <Route path="analytics" element={<Analytics />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="about" element={<AboutManager />} />
-                    <Route path="accounts" element={<AdminAccounts />} />
-                  </Route>
+                    {/* Admin panel routes */}
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route index element={<Dashboard />} />
+                      <Route path="products" element={<ProductsList />} />
+                      <Route path="products/new" element={<ProductForm />} />
+                      <Route path="products/:id/edit" element={<ProductForm />} />
+                      <Route path="categories" element={<CategoriesList />} />
+                      <Route path="inquiries" element={<InquiriesList />} />
+                      <Route path="articles" element={<ArticlesList />} />
+                      <Route path="articles/new" element={<ArticleForm />} />
+                      <Route path="articles/:id/edit" element={<ArticleForm />} />
+                      <Route path="analytics" element={<Analytics />} />
+                      <Route path="settings" element={<Settings />} />
+                      <Route path="about" element={<AboutManager />} />
+                      <Route path="accounts" element={<AdminAccounts />} />
+                    </Route>
 
-                  {/* 404 route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <FooterWrapper />
-                <PublicLangFloat />
-              </div>
-            </Router>
-            <Toaster position="top-right" reverseOrder={false} />
-          </AuthProvider>
+                    {/* 404 route */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                  <FooterWrapper />
+                  <PublicLangFloat />
+                </div>
+              </Router>
+              <Toaster position="top-right" reverseOrder={false} />
+            </AuthProvider>
+          </ConfirmProvider>
         </LanguageProvider>
       </HelmetProvider>
     </QueryClientProvider>

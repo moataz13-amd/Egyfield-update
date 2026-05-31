@@ -2,10 +2,12 @@ import { useState, useEffect, useContext } from 'react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import { Mail, Eye, Trash2, X, Check, Building, Globe, MessageSquare, Info, Calendar } from 'lucide-react';
 
 const InquiriesList = () => {
   const { t, language } = useContext(LanguageContext);
+  const confirm = useConfirm();
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
@@ -55,7 +57,12 @@ const InquiriesList = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm(language === 'ar' ? 'هل أنت متأكد من حذف هذا الاستفسار؟' : 'Are you sure you want to delete this inquiry?')) return;
+    const isConfirmed = await confirm({
+      title: language === 'ar' ? 'حذف الاستفسار' : 'Delete Inquiry',
+      message: language === 'ar' ? 'هل أنت متأكد من حذف هذا الاستفسار؟' : 'Are you sure you want to delete this inquiry?',
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     try {
       await api.delete(`/inquiries/${id}`);
       toast.success(language === 'ar' ? 'تم الحذف بنجاح' : 'Deleted successfully');

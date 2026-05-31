@@ -36,10 +36,10 @@ const Home = () => {
   }, [featuredProducts, categories]);
 
   const stats = [
-    { value: 15, suffix: '+', label: t('stats.years') },
-    { value: 200, suffix: '+', label: t('stats.products') },
-    { value: 35, suffix: '+', label: t('stats.countries') },
-    { value: 500, suffix: '+', label: t('stats.clients') },
+    { value: 11, suffix: '+', label: t('stats.years') },
+    { value: 40, suffix: '+', label: t('stats.products') },
+    { value: 10, suffix: '+', label: t('stats.countries') },
+    { value: 75, suffix: '+', label: t('stats.clients') },
   ];
 
   const whyCards = [
@@ -52,7 +52,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>EgyField — Premium Egyptian Agricultural Exports</title>
+        <title>EgyField — Agricultural Exports</title>
         <meta name="description" content="EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, and grains & legumes. Worldwide delivery." />
       </Helmet>
 

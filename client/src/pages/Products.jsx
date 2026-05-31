@@ -6,7 +6,7 @@ import { useProducts, useCategories } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
 import Loader from '../components/Loader';
-import { Search, Sparkles, Filter, Leaf, RefreshCw } from 'lucide-react';
+import { Search, Sparkles, Filter, Leaf, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Products.css';
 
 const Products = () => {

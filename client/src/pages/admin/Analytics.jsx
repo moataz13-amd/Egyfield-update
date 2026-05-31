@@ -162,11 +162,11 @@ const Analytics = () => {
       {/* Main Charts Breakdown */}
       <div className="charts-row">
         {/* Inquiry Growth */}
-        <div className="chart-card" style={{ gridColumn: 'span 2' }}>
+        <div className="chart-card chart-card-full">
           <div className="chart-card-header">
             <h3>{language === 'ar' ? 'حجم الاستفسارات ونسبة الردود' : 'Inquiry Volume & Reply Rate'}</h3>
           </div>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={300} minWidth={0}>
             <AreaChart data={filteredInquiries}>
               <defs>
                 <linearGradient id="glowInquiries" x1="0" y1="0" x2="0" y2="1">
@@ -196,9 +196,9 @@ const Analytics = () => {
           <div className="chart-card-header">
             <h3>{language === 'ar' ? 'توزيع المحاصيل حسب الأقسام' : 'Crops Distribution by Category'}</h3>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', height: 260 }}>
-            <div style={{ width: '50%', height: '100%', position: 'relative' }}>
-              <ResponsiveContainer width="100%" height="100%">
+          <div style={{ display: 'flex', alignItems: 'center', minHeight: 260 }}>
+            <div style={{ width: '50%', minHeight: 260, position: 'relative' }}>
+              <ResponsiveContainer width="100%" height={260} minWidth={0}>
                 <PieChart>
                   <Pie data={productsChart?.byCategory || []} dataKey="count" nameKey="name" cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} strokeWidth={0}>
                     {(productsChart?.byCategory || []).map((entry, i) => (

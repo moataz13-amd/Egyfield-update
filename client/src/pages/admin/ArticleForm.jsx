@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
+import RichTextEditor from '../../components/RichTextEditor';
 
 const LANGS = [
   { code: 'ar', label: 'العربية', flag: '🇪🇬', dir: 'rtl' },
@@ -246,17 +247,16 @@ const ArticleForm = () => {
 
                 {/* Content */}
                 <div className="admin-form-group" style={{ marginBottom: 0 }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                     <FileText size={14} style={{ color: 'var(--admin-primary)' }} />
-                    {isAr ? 'المحتوى الكامل' : 'Full Content'}
+                    {isAr ? 'المحتوى الكامل للمقال' : 'Full Content'}
                   </label>
-                  <textarea
-                    className="admin-form-control"
-                    rows={14}
+                  <RichTextEditor
+                    key={tab}
                     value={content[tab] || ''}
-                    onChange={e => set(setContent)(tab, e.target.value)}
-                    placeholder={isAr ? 'اكتب محتوى المقال الكامل هنا...\n\nيمكنك استخدام أسطر جديدة للفقرات.' : 'Write the full article content here...\n\nUse new lines for paragraphs.'}
-                    style={{ direction: currentLang.dir, lineHeight: 1.8, fontFamily: 'inherit' }}
+                    onChange={val => set(setContent)(tab, val)}
+                    placeholder={isAr ? 'اكتب محتوى المقال الكامل هنا...' : 'Write the full article content here...'}
+                    dir={currentLang.dir}
                   />
                 </div>
               </div>

@@ -81,6 +81,9 @@ const AdminLayout = () => {
 
         <div className="sidebar-header">
           <img src={egyFieldLogo} alt="EgyField" className="sidebar-header-logo-img" />
+          <button className="mobile-sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Close sidebar">
+            <X size={20} />
+          </button>
         </div>
 
         <nav className="sidebar-nav">
@@ -115,8 +118,8 @@ const AdminLayout = () => {
       <div className="admin-main">
         <header className="admin-topbar">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            <button className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Open menu">
+              <Menu size={20} />
             </button>
             <div className="admin-topbar-title">
               <h1>{pageTitle}</h1>

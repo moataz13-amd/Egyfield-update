@@ -2,20 +2,27 @@ import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useProducts, useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
+import { useConfirm } from '../../context/ConfirmContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Plus, Search, Edit2, Trash2, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ProductsList = () => {
   const { t, language } = useContext(LanguageContext);
+  const confirm = useConfirm();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [page, setPage] = useState(1);
   const { data: categories } = useCategories();
-  const { data, isLoading, refetch } = useProducts({ search, category, page, limit: 10 });
+  const { data, isLoading, refetch } = useProducts({ search, category, page, limit: 10, all: true });
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`${t('admin.delete')} "${name}"?`)) return;
+    const isConfirmed = await confirm({
+      title: language === 'ar' ? 'حذف منتج' : 'Delete Product',
+      message: language === 'ar' ? `هل أنت متأكد من حذف المنتج "${name}"؟` : `Are you sure you want to delete product "${name}"?`,
+      type: 'danger'
+    });
+    if (!isConfirmed) return;
     try {
       await api.delete(`/products/${id}`);
       toast.success(language === 'ar' ? 'تم حذف المنتج بنجاح' : 'Product deleted successfully');
@@ -28,6 +35,15 @@ const ProductsList = () => {
   const handleToggleFeatured = async (id) => {
     try {
       await api.patch(`/products/${id}/featured`);
+      refetch();
+    } catch { 
+      toast.error(language === 'ar' ? 'فشل التحديث' : 'Failed to update'); 
+    }
+  };
+
+  const handleToggleActive = async (id) => {
+    try {
+      await api.patch(`/products/${id}/active`);
       refetch();
     } catch { 
       toast.error(language === 'ar' ? 'فشل التحديث' : 'Failed to update'); 
@@ -70,12 +86,13 @@ const ProductsList = () => {
                 <th>{t('admin.category')}</th>
                 <th>{t('admin.season')}</th>
                 <th>{t('admin.featured')}</th>
+                <th>{t('admin.active')}</th>
                 <th>{t('admin.actions')}</th>
               </tr>
             </thead>
             <tbody>
               {data?.products?.map(p => (
-                <tr key={p._id}>
+                <tr key={p._id} style={{ opacity: p.isActive === false ? 0.75 : 1 }}>
                   <td><img className="table-img" src={p.images?.[0]?.url || 'https://placehold.co/44x44/F4F6F9/64748B?text=...'} alt="" /></td>
                   <td>
                     <div className="table-name-cell">
@@ -90,6 +107,7 @@ const ProductsList = () => {
                   </td>
                   <td style={{ color: '#64748B', fontSize: 13 }}>{p.season || '—'}</td>
                   <td><button className={`featured-toggle ${p.featured ? 'on' : ''}`} onClick={() => handleToggleFeatured(p._id)} /></td>
+                  <td><button className={`featured-toggle ${p.isActive !== false ? 'on' : ''}`} onClick={() => handleToggleActive(p._id)} /></td>
                   <td>
                     <div className="table-actions">
                       <Link to={`/admin/products/${p._id}/edit`} className="table-action-btn" title={t('admin.edit')}><Edit2 size={14} /></Link>
