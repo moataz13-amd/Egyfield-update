@@ -4,7 +4,7 @@ import api from '../../services/api';
 import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
-import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2 } from 'lucide-react';
+import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 
 const SUPPORTED_LANGS = [
   { code: 'en', name: 'English' },
@@ -272,6 +272,31 @@ const Settings = () => {
                 <div className="admin-form-group" style={{ maxWidth: 200 }}>
                   <label>{language === 'ar' ? 'سنة التأسيس' : 'Founded Year'}</label>
                   <input type="number" className="admin-form-control" value={settings.foundedYear || 2015} onChange={e => setSettings(p => ({ ...p, foundedYear: parseInt(e.target.value) }))} />
+                </div>
+
+                <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '24px 0' }} />
+
+                {/* Partners Page Toggle */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: 'rgba(123, 180, 69, 0.04)', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--admin-text)', marginBottom: 4 }}>
+                      {language === 'ar' ? 'صفحة الشركاء' : 'Partners Page'}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>
+                      {language === 'ar' ? 'تفعيل أو إلغاء تفعيل صفحة الشركاء من الموقع والقوائم' : 'Enable or disable the Partners page from the website and navigation'}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSettings(p => ({ ...p, isPartnersActive: !p.isPartnersActive }))}
+                    style={{
+                      border: 'none', background: 'none', cursor: 'pointer',
+                      color: settings.isPartnersActive !== false ? 'var(--primary)' : 'var(--admin-text-muted)',
+                      display: 'flex', alignItems: 'center', padding: 0
+                    }}
+                  >
+                    {settings.isPartnersActive !== false ? <ToggleRight size={34} /> : <ToggleLeft size={34} />}
+                  </button>
                 </div>
               </div>
             )}

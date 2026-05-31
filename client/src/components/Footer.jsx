@@ -74,6 +74,9 @@ const Footer = () => {
                 <li><Link to="/products">{t('nav.products')}</Link></li>
                 <li><Link to="/about">{t('nav.about')}</Link></li>
                 <li><Link to="/articles">{t('nav.articles')}</Link></li>
+                {settings?.isPartnersActive && (
+                  <li><Link to="/partners">{t('nav.partners') || 'Partners'}</Link></li>
+                )}
                 <li><Link to="/contact">{t('nav.contact')}</Link></li>
               </ul>
             </div>

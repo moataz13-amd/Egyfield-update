@@ -52,6 +52,7 @@ app.use('/api/admin/settings', require('./routes/settingsRoutes'));
 app.use('/api/admin/accounts', require('./routes/adminRoutes'));
 app.use('/api/about', require('./routes/aboutRoutes'));
 app.use('/api/articles', require('./routes/articleRoutes'));
+app.use('/api/partners', require('./routes/partnerRoutes'));
 app.get('/api/settings', require('./controllers/settingsController').getSettings);
 
 // Health check

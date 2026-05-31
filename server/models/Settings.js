@@ -55,6 +55,7 @@ const settingsSchema = new mongoose.Schema(
       it: { type: String, default: 'Sottaceti di qualità superiore, prodotti freschi, surgelati e cereali — spediti in tutto il mondo' },
       tr: { type: String, default: 'Birinci sınıf turşu, taze sebze-meyve, dondurulmuş gıdalar ve bakliyat — dünya çapında teslimat' },
     },
+    isPartnersActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

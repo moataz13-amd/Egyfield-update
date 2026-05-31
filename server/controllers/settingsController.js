@@ -77,6 +77,7 @@ const updateSettings = asyncHandler(async (req, res) => {
     'email', 'phone', 'whatsapp', 'address',
     'social', 'seo', 'heroTitle', 'heroSubtitle',
     'heroTitleColor', 'heroSubtitleColor', 'heroImages',
+    'isPartnersActive',
   ];
 
   fields.forEach(field => {

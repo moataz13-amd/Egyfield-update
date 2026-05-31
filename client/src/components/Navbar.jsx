@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
-import { Home, ShoppingBag, Users, FileText, Mail, Globe } from 'lucide-react';
+import { Home, ShoppingBag, Users, FileText, Mail, Globe, Handshake } from 'lucide-react';
 import Logo from './Logo';
+import api from '../services/api';
 import './Navbar.css';
 
 const Navbar = () => {
   const { t, language, setLanguage, languages } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [isPartnersActive, setIsPartnersActive] = useState(false);
   const location = useLocation();
   const langRef = useRef(null);
 
@@ -18,6 +20,21 @@ const Navbar = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Fetch settings to check if Partners page is active
+  useEffect(() => {
+    api.get('/settings')
+      .then(res => {
+        if (res.data && res.data.isPartnersActive !== undefined) {
+          setIsPartnersActive(res.data.isPartnersActive);
+        } else {
+          setIsPartnersActive(true);
+        }
+      })
+      .catch(() => {
+        setIsPartnersActive(true);
+      });
   }, []);
 
   // Close lang dropdown on outside click
@@ -36,8 +53,13 @@ const Navbar = () => {
     { path: '/about', label: t('nav.about'), icon: Users },
     { path: '/', label: t('nav.home'), icon: Home },
     { path: '/articles', label: t('nav.articles'), icon: FileText },
-    { path: '/contact', label: t('nav.contact'), icon: Mail },
   ];
+
+  if (isPartnersActive) {
+    navLinks.push({ path: '/partners', label: t('nav.partners') || 'Partners', icon: Handshake });
+  }
+
+  navLinks.push({ path: '/contact', label: t('nav.contact'), icon: Mail });
 
   return (
     <>
@@ -105,7 +127,9 @@ const Navbar = () => {
               to={link.path}
               className={`bottom-nav-item ${isActive ? 'active' : ''}`}
             >
-              <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
+              <div className="bottom-nav-icon-container">
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
+              </div>
               <span>{link.label}</span>
             </Link>
           );

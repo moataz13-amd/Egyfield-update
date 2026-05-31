@@ -11,6 +11,7 @@ import { ConfirmProvider } from './context/ConfirmContext';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 // Pages
 import Home from './pages/Home';
@@ -20,6 +21,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
+import Partners from './pages/Partners';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -35,6 +37,7 @@ import ArticleForm from './pages/admin/ArticleForm';
 import Analytics from './pages/admin/Analytics';
 import Settings from './pages/admin/Settings';
 import AboutManager from './pages/admin/AboutManager';
+import PartnersManager from './pages/admin/PartnersManager';
 import AdminAccounts from './pages/admin/AdminAccounts';
 
 const queryClient = new QueryClient({
@@ -54,6 +57,7 @@ function App() {
           <ConfirmProvider>
             <AuthProvider>
               <Router>
+                <ScrollToTop />
                 <div className="app-wrapper">
                   <NavbarWrapper />
                   <Routes>
@@ -64,6 +68,7 @@ function App() {
                     <Route path="/about" element={<About />} />
                     <Route path="/articles" element={<Articles />} />
                     <Route path="/articles/:slug" element={<ArticleDetail />} />
+                    <Route path="/partners" element={<Partners />} />
                     <Route path="/contact" element={<Contact />} />
 
                     {/* Admin login */}
@@ -83,6 +88,7 @@ function App() {
                       <Route path="analytics" element={<Analytics />} />
                       <Route path="settings" element={<Settings />} />
                       <Route path="about" element={<AboutManager />} />
+                      <Route path="partners" element={<PartnersManager />} />
                       <Route path="accounts" element={<AdminAccounts />} />
                     </Route>
 

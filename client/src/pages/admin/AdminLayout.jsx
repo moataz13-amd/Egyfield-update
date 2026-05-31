@@ -4,7 +4,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import {
   LayoutDashboard, Package, Tags, MessageSquare, BarChart3, Settings,
-  LogOut, ChevronLeft, ChevronRight, Menu, X, User, Users, Languages, BookOpen, FileText
+  LogOut, ChevronLeft, ChevronRight, Menu, X, User, Users, Languages, BookOpen, FileText, Handshake
 } from 'lucide-react';
 import egyFieldLogo from '../../assets/egyfield.svg';
 import api from '../../services/api';
@@ -58,6 +58,7 @@ const AdminLayout = () => {
     { path: '/admin/articles', icon: FileText, label: language === 'ar' ? 'المقالات والمدونة' : 'Articles & Blog', keyName: 'articles', permission: 'articles' },
     { path: '/admin/analytics', icon: BarChart3, label: t('admin.analytics'), keyName: 'analytics' },
     { path: '/admin/about', icon: BookOpen, label: language === 'ar' ? 'صفحة من نحن' : 'About Page', keyName: 'about', permission: 'settings' },
+    { path: '/admin/partners', icon: Handshake, label: language === 'ar' ? 'الشركاء' : 'Partners', keyName: 'partners', permission: 'settings' },
     { path: '/admin/settings', icon: Settings, label: t('admin.settings'), keyName: 'settings', permission: 'settings' },
     { path: '/admin/accounts', icon: Users, label: language === 'ar' ? 'الحسابات والصلاحيات' : 'Admin Accounts', keyName: 'accounts', permission: 'admins' },
   ].filter(item => {
