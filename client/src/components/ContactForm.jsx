@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useLanguage } from '../hooks/useLanguage';
 import { createInquiry } from '../services/api';
 import { Send, CheckCircle, User, Mail, Building, Globe, Tag, MessageSquare, Loader } from 'lucide-react';
 import toast from 'react-hot-toast';
+import countries from '../utils/countries';
 import './ContactForm.css';
 
 const ContactForm = ({ productInterest = '' }) => {
@@ -137,15 +138,20 @@ const ContactForm = ({ productInterest = '' }) => {
           <label htmlFor="contact-country">{t('contact.country')}</label>
           <div className="input-with-icon">
             <Globe size={18} className="input-icon" />
-            <input
-              type="text"
+            <select
               id="contact-country"
               name="country"
               className="form-control"
-              placeholder={isAr ? 'الدولة' : 'Country'}
               value={formData.country}
               onChange={handleChange}
-            />
+            >
+              <option value="">{isAr ? '— اختر الدولة —' : '— Select Country —'}</option>
+              {countries.map((c) => (
+                <option key={c.en} value={c.en}>
+                  {isAr ? c.ar : c.en}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

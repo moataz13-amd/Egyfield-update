@@ -144,7 +144,8 @@ const getProductsAnalytics = asyncHandler(async (req, res) => {
     { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
     {
       $project: {
-        name: { $ifNull: ['$category.name.en', 'Uncategorized'] },
+        nameEn: { $ifNull: ['$category.name.en', 'Uncategorized'] },
+        nameAr: { $ifNull: ['$category.name.ar', 'غير مصنف'] },
         color: { $ifNull: ['$category.color', '#8B949E'] },
         slug: '$category.slug',
         count: 1,

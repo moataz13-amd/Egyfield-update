@@ -55,6 +55,28 @@ const Analytics = () => {
     return inquiriesChart;
   })();
 
+  const localizedInquiries = filteredInquiries.map(item => {
+    const date = new Date(item.year, item.month - 1, 1);
+    const label = date.toLocaleString(language === 'ar' ? 'ar' : 'en', { month: 'short', year: '2-digit' });
+    return { ...item, label };
+  });
+
+  const pieData = (productsChart?.byCategory || []).map(c => {
+    const nameMap = {
+      'Pickles': 'مخللات',
+      'Fresh Produce': 'منتجات طازجة',
+      'Frozen': 'منتجات مجمدة',
+      'Grains & Legumes': 'حبوب'
+    };
+    const localName = language === 'ar' 
+      ? (c.nameAr || nameMap[c.nameEn] || c.nameEn)
+      : (c.nameEn || c.nameAr);
+    return {
+      ...c,
+      name: localName
+    };
+  });
+
   const ChartTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
@@ -67,22 +89,6 @@ const Analytics = () => {
         ))}
       </div>
     );
-  };
-
-  const getLocalizedCategoryName = (c) => {
-    if (c.nameEn && c.nameAr) {
-      return language === 'ar' ? c.nameAr : c.nameEn;
-    }
-    const nameMap = {
-      'Pickles': 'مخللات',
-      'Fresh Produce': 'منتجات طازجة',
-      'Frozen': 'منتجات مجمدة',
-      'Grains & Legumes': 'حبوب'
-    };
-    if (language === 'ar') {
-      return nameMap[c.name] || c.name;
-    }
-    return c.name;
   };
 
   return (
@@ -166,27 +172,29 @@ const Analytics = () => {
           <div className="chart-card-header">
             <h3>{language === 'ar' ? 'حجم الاستفسارات ونسبة الردود' : 'Inquiry Volume & Reply Rate'}</h3>
           </div>
-          <ResponsiveContainer width="100%" height={300} minWidth={0}>
-            <AreaChart data={filteredInquiries}>
-              <defs>
-                <linearGradient id="glowInquiries" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#7BB445" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#7BB445" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="glowReplied" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#388BFD" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#388BFD" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-              <XAxis dataKey="label" tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Legend verticalAlign="top" height={36} />
-              <Area type="monotone" dataKey="count" name={language === 'ar' ? 'إجمالي الاستفسارات' : 'Total Inquiries'} stroke="#7BB445" fill="url(#glowInquiries)" strokeWidth={2} />
-              <Area type="monotone" dataKey="repliedCount" name={language === 'ar' ? 'تم الرد عليها' : 'Replied/Done'} stroke="#388BFD" fill="url(#glowReplied)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="analytics-chart-container">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={localizedInquiries}>
+                <defs>
+                  <linearGradient id="glowInquiries" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#7BB445" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#7BB445" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="glowReplied" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#388BFD" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#388BFD" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                <XAxis dataKey="label" tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <Tooltip content={<ChartTooltip />} />
+                <Legend verticalAlign="top" height={36} />
+                <Area type="monotone" dataKey="count" name={language === 'ar' ? 'إجمالي الاستفسارات' : 'Total Inquiries'} stroke="#7BB445" fill="url(#glowInquiries)" strokeWidth={2} />
+                <Area type="monotone" dataKey="repliedCount" name={language === 'ar' ? 'تم الرد عليها' : 'Replied/Done'} stroke="#388BFD" fill="url(#glowReplied)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
@@ -196,12 +204,12 @@ const Analytics = () => {
           <div className="chart-card-header">
             <h3>{language === 'ar' ? 'توزيع المحاصيل حسب الأقسام' : 'Crops Distribution by Category'}</h3>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', minHeight: 260 }}>
-            <div style={{ width: '50%', minHeight: 260, position: 'relative' }}>
-              <ResponsiveContainer width="100%" height={260} minWidth={0}>
+          <div className="analytics-pie-wrap">
+            <div className="analytics-pie-chart-box">
+              <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={productsChart?.byCategory || []} dataKey="count" nameKey="name" cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} strokeWidth={0}>
-                    {(productsChart?.byCategory || []).map((entry, i) => (
+                  <Pie data={pieData} dataKey="count" nameKey="name" cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} strokeWidth={0}>
+                    {pieData.map((entry, i) => (
                       <Cell key={i} fill={entry.color || COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
@@ -209,14 +217,16 @@ const Analytics = () => {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div style={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 12, paddingLeft: 12 }}>
-              {(productsChart?.byCategory || []).map((c, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#64748B' }}>
-                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: c.color || COLORS[i] }} />
-                    {getLocalizedCategoryName(c)}
+            <div className="analytics-pie-legend-box">
+              {pieData.map((c, i) => (
+                <div key={i} className="analytics-pie-legend-item">
+                  <span className="legend-item-name">
+                    <span className="legend-item-color" style={{ background: c.color || COLORS[i % COLORS.length] }} />
+                    {c.name}
                   </span>
-                  <span style={{ fontWeight: 600 }}>{c.count} {language === 'ar' ? 'عنصر' : 'items'}</span>
+                  <span className="legend-item-count">
+                    {c.count} {language === 'ar' ? 'عنصر' : 'items'}
+                  </span>
                 </div>
               ))}
             </div>
@@ -228,7 +238,7 @@ const Analytics = () => {
           <div className="chart-card-header">
             <h3>{language === 'ar' ? 'الاهتمام الجغرافي' : 'Geographical Interest'}</h3>
           </div>
-          <div style={{ maxHeight: 260, overflowY: 'auto' }}>
+          <div style={{ maxHeight: 260, overflowY: 'auto', overflowX: 'auto', maxWidth: '100%' }}>
             <table className="admin-table">
               <thead>
                 <tr>

@@ -24,6 +24,7 @@
   background: var(--admin-bg);
   color: var(--admin-text);
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -39,27 +40,7 @@
   top: 0;
   bottom: 0;
   z-index: 100;
-  transition: width var(--admin-transition), transform var(--admin-transition);
-}
-
-.admin-sidebar.collapsed {
-  width: 72px;
-}
-
-.admin-sidebar.collapsed .sidebar-text,
-.admin-sidebar.collapsed .sidebar-header-text,
-.admin-sidebar.collapsed .sidebar-profile-info,
-.admin-sidebar.collapsed .sidebar-badge {
-  display: none;
-}
-
-.admin-sidebar.collapsed .sidebar-nav-item {
-  justify-content: center;
-  padding: 12px;
-}
-
-.admin-sidebar.collapsed .sidebar-nav-icon {
-  margin-right: 0;
+  transition: width var(--admin-transition), transform var(--admin-transition), visibility var(--admin-transition);
 }
 
 .sidebar-header {
@@ -257,29 +238,15 @@
 /* Main Content */
 .admin-main {
   flex: 1;
-  margin-left: 260px;
   transition: margin-left var(--admin-transition), margin-right var(--admin-transition);
 }
 
-.admin-layout .admin-sidebar.collapsed~.admin-main {
-  margin-left: 72px;
-}
-
-/* RTL Desktop: sidebar goes to right */
+/* RTL Desktop/Mobile general alignments */
 [dir="rtl"] .admin-sidebar {
   left: auto;
   right: 0;
   border-right: none;
   border-left: 1px solid var(--admin-border);
-}
-
-[dir="rtl"] .admin-main {
-  margin-left: 0;
-  margin-right: 260px;
-}
-
-[dir="rtl"] .admin-layout .admin-sidebar.collapsed~.admin-main {
-  margin-right: 72px;
 }
 
 [dir="rtl"] .sidebar-collapse-btn {
@@ -297,6 +264,47 @@
   border-radius: 3px 0 0 3px;
 }
 
+/* Desktop styles (> 991px) */
+@media (min-width: 992px) {
+  .admin-main {
+    margin-left: 260px;
+  }
+
+  [dir="rtl"] .admin-main {
+    margin-left: 0;
+    margin-right: 260px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 72px;
+  }
+
+  .admin-sidebar.collapsed .sidebar-text,
+  .admin-sidebar.collapsed .sidebar-header-text,
+  .admin-sidebar.collapsed .sidebar-profile-info,
+  .admin-sidebar.collapsed .sidebar-badge {
+    display: none;
+  }
+
+  .admin-sidebar.collapsed .sidebar-nav-item {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .admin-sidebar.collapsed .sidebar-nav-icon {
+    margin-right: 0;
+  }
+
+  .admin-layout .admin-sidebar.collapsed~.admin-main {
+    margin-left: 72px;
+  }
+
+  [dir="rtl"] .admin-layout .admin-sidebar.collapsed~.admin-main {
+    margin-left: 0;
+    margin-right: 72px;
+  }
+}
+
 .admin-topbar {
   height: 64px;
   background: var(--admin-surface);
@@ -308,7 +316,20 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  direction: ltr !important; /* Keep topbar LTR even in RTL mode */
+}
+
+/* admin-card helper styles */
+.admin-card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.admin-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--admin-border);
 }
 
 .mobile-sidebar-close {
@@ -469,6 +490,113 @@
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius);
   padding: 20px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.analytics-chart-container {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.analytics-pie-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 260px;
+}
+
+.analytics-pie-chart-box {
+  width: 50%;
+  height: 260px;
+  position: relative;
+  overflow: hidden;
+}
+
+.analytics-pie-legend-box {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 12px;
+}
+
+[dir="rtl"] .analytics-pie-legend-box {
+  padding-left: 0;
+  padding-right: 12px;
+}
+
+.analytics-pie-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  width: 100%;
+}
+
+.legend-item-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--admin-text-muted);
+}
+
+.legend-item-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-item-count {
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+@media (max-width: 768px) {
+  .analytics-pie-wrap {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    min-height: auto !important;
+    gap: 16px !important;
+  }
+
+  .analytics-pie-chart-box {
+    width: 100% !important;
+    height: 200px !important;
+  }
+
+  .analytics-pie-legend-box {
+    width: 100% !important;
+    padding: 0 !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+
+  [dir="rtl"] .analytics-pie-legend-box {
+    padding-right: 0 !important;
+  }
+
+  .analytics-pie-legend-item {
+    width: auto !important;
+    background: var(--admin-surface-2);
+    border: 1px solid var(--admin-border);
+    padding: 6px 12px;
+    border-radius: 30px;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .legend-item-count::before {
+    content: '(';
+  }
+  .legend-item-count::after {
+    content: ')';
+  }
 }
 
 .chart-card-full {
@@ -607,6 +735,14 @@ table.admin-table tr:last-child td {
 
 table.admin-table tr:hover td {
   background: rgba(0, 0, 0, 0.015);
+}
+
+[dir="rtl"] table.admin-table th {
+  text-align: right;
+}
+
+[dir="rtl"] table.admin-table td {
+  text-align: right;
 }
 
 .table-img {
@@ -1025,6 +1161,10 @@ textarea.admin-form-control {
   margin-bottom: 24px;
   border-bottom: 1px solid var(--admin-border);
   padding-bottom: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
 }
 
 .settings-tab {
@@ -1038,6 +1178,7 @@ textarea.admin-form-control {
   border-bottom: 2px solid transparent;
   transition: all var(--admin-transition);
   margin-bottom: -1px;
+  flex-shrink: 0;
 }
 
 .settings-tab:hover {
@@ -1110,25 +1251,59 @@ textarea.admin-form-control {
 }
 
 /* ========== Responsive ========== */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .admin-sidebar {
     transform: translateX(-100%);
-    width: 260px !important;
+    width: 280px !important;
     visibility: hidden;
     left: 0;
+    box-shadow: 0 0 24px rgba(0,0,0,0.15);
+  }
+
+  [dir="rtl"] .admin-sidebar {
+    transform: translateX(100%);
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--admin-border);
   }
 
   .admin-sidebar.mobile-open {
-    transform: translateX(0);
-    visibility: visible;
+    transform: translateX(0) !important;
+    visibility: visible !important;
   }
 
   .admin-main {
     margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100%;
   }
 
   .sidebar-collapse-btn {
-    display: none;
+    display: none !important;
+  }
+
+  .mobile-sidebar-close {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-sm);
+    color: var(--admin-text-muted);
+    padding: 6px;
+    cursor: pointer;
+    transition: all var(--admin-transition);
+  }
+
+  .mobile-sidebar-close:hover {
+    color: var(--admin-danger);
+    background: rgba(218, 54, 51, 0.1);
+    border-color: var(--admin-danger);
+  }
+
+  .sidebar-header {
+    justify-content: space-between !important;
   }
 
   .mobile-menu-btn {
@@ -1207,6 +1382,26 @@ textarea.admin-form-control {
   .admin-select,
   .admin-btn {
     width: 100% !important;
+  }
+
+  /* Article form grid */
+  #article-form > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modal */
+  .admin-modal {
+    max-width: 100% !important;
+    margin: 10px !important;
+    max-height: 85vh !important;
+  }
+
+  .admin-modal-header {
+    padding: 14px 18px !important;
+  }
+
+  .admin-modal-body {
+    padding: 18px !important;
   }
 
   .admin-lang-float-container {
@@ -1800,176 +1995,7 @@ textarea.admin-form-control {
   animation: spin 0.8s linear infinite;
 }
 
-/* ========== Admin Mobile Responsive ========== */
-@media (max-width: 900px) {
 
-  /* Sidebar — hide offscreen by default, slide in when open */
-  .admin-sidebar {
-    transform: translateX(-100%);
-    width: 280px;
-  }
-
-  [dir="rtl"] .admin-sidebar {
-    transform: translateX(100%);
-    left: auto;
-    right: 0;
-    border-right: none;
-    border-left: 1px solid var(--admin-border);
-  }
-
-  .admin-sidebar.mobile-open {
-    transform: translateX(0);
-  }
-
-  .sidebar-collapse-btn {
-    display: none;
-  }
-
-  /* Main content — full width, no margin */
-  .admin-main {
-    margin-left: 0 !important;
-    width: 100%;
-  }
-
-  [dir="rtl"] .admin-main {
-    margin-right: 0 !important;
-  }
-
-  /* Show mobile hamburger */
-  .mobile-menu-btn {
-    display: flex;
-  }
-
-  /* Topbar */
-  .admin-topbar {
-    padding: 0 16px;
-    height: 56px;
-  }
-
-  .admin-topbar-title h1 {
-    font-size: 16px;
-  }
-
-  /* Page content */
-  .admin-page {
-    padding: 16px;
-  }
-
-  /* Stat cards */
-  .stats-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .stat-card {
-    padding: 14px;
-  }
-
-  .stat-card-value {
-    font-size: 22px;
-  }
-
-  .stat-card-label {
-    font-size: 11px;
-  }
-
-  /* Charts */
-  .charts-row {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .chart-card {
-    padding: 14px;
-  }
-
-  /* Data tables — horizontal scroll */
-  .admin-data-table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table.admin-table {
-    min-width: 600px;
-  }
-
-  .admin-data-table-header {
-    padding: 12px 14px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .admin-data-table-actions {
-    flex-wrap: wrap;
-  }
-
-  .admin-search-input {
-    min-width: 100%;
-  }
-
-  /* Forms */
-  .admin-form-row {
-    grid-template-columns: 1fr;
-  }
-
-  /* Article form grid */
-  #article-form > div {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Modal */
-  .admin-modal {
-    max-width: 100%;
-    margin: 10px;
-    max-height: 85vh;
-  }
-
-  .admin-modal-header {
-    padding: 14px 18px;
-  }
-
-  .admin-modal-body {
-    padding: 18px;
-  }
-
-  /* Language float */
-  .admin-lang-float-container {
-    bottom: 20px;
-    right: 20px;
-  }
-
-  [dir="rtl"] .admin-lang-float-container {
-    right: auto;
-    left: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .stats-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .stat-card {
-    padding: 12px;
-  }
-
-  .stat-card-value {
-    font-size: 20px;
-  }
-
-  .admin-page {
-    padding: 12px;
-  }
-
-  .admin-btn {
-    padding: 8px 14px;
-    font-size: 12px;
-  }
-}
 
 /* ========== Cairo Font Override for RTL Admin Layout ========== */
 [dir="rtl"] .admin-layout,

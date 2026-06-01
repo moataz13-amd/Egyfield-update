@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useRef } from 'react';
-import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import {
@@ -77,11 +77,17 @@ const AdminLayout = () => {
       {mobileOpen && <div className="mobile-overlay show" onClick={() => setMobileOpen(false)} />}
       <aside className={`admin-sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <button className="sidebar-collapse-btn" onClick={() => setCollapsed(!collapsed)}>
-          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          {language === 'ar' ? (
+            collapsed ? <ChevronLeft size={14} /> : <ChevronRight size={14} />
+          ) : (
+            collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />
+          )}
         </button>
 
         <div className="sidebar-header">
-          <img src={egyFieldLogo} alt="EgyField" className="sidebar-header-logo-img" />
+          <Link to="/" title={language === 'ar' ? 'الذهاب للموقع الرئيسي' : 'Go to main website'}>
+            <img src={egyFieldLogo} alt="EgyField" className="sidebar-header-logo-img" />
+          </Link>
           <button className="mobile-sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Close sidebar">
             <X size={20} />
           </button>

@@ -141,13 +141,13 @@ const AboutManager = () => {
       <div className="admin-data-table-wrapper" style={{ padding: 28 }}>
         
         {/* Language Tabs Selector */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 28, borderBottom: '1px solid var(--admin-border)', paddingBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 28, borderBottom: '1px solid var(--admin-border)', paddingBottom: 16, overflowX: 'auto', whiteSpace: 'nowrap', WebkitOverflowScrolling: 'touch', width: '100%' }}>
           {editTabs.map(tab => (
             <button
               key={tab.code}
               type="button"
               className={`admin-btn ${activeEditTab === tab.code ? 'admin-btn-primary' : ''}`}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8 }}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, flexShrink: 0 }}
               onClick={() => setActiveEditTab(tab.code)}
             >
               <span>{tab.flag}</span>
