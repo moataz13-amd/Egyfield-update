@@ -57,7 +57,7 @@ const Hero = () => {
   return (
     <section className="hero" id="hero">
       {/* Full-width background image slider */}
-      <div className="hero-image-bg" style={{ overflow: 'hidden' }}>
+      <div className="hero-image-bg" style={{ overflow: 'hidden', position: 'relative' }}>
         {heroImages.map((img, index) => (
           <img 
             key={img.publicId || index}
@@ -65,10 +65,10 @@ const Hero = () => {
             alt="" 
             className="hero-bg-img" 
             style={{
-              position: 'absolute',
+              position: index === 0 ? 'relative' : 'absolute',
               inset: 0,
               width: '100%',
-              height: '100%',
+              height: index === 0 ? 'auto' : '100%',
               objectFit: 'cover',
               opacity: index === currentImageIndex ? 1 : 0,
               transition: 'opacity 1s ease-in-out',

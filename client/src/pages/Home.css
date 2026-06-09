@@ -176,6 +176,15 @@
   gap: 28px;
 }
 
+.featured-cta {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.featured-cta-btn {
+  border-radius: var(--radius-full) !important;
+}
+
 /* ===== Why Choose Us Section ===== */
 .why-section {
   background: var(--off-white);
@@ -394,6 +403,20 @@
   .featured-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+  }
+
+  .featured-cta {
+    margin-top: 28px;
+  }
+
+  .featured-cta-btn {
+    padding: 12px 28px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .featured-cta-btn svg {
+    width: 15px;
+    height: 15px;
   }
 
   .why-grid {

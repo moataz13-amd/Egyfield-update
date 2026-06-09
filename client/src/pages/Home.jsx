@@ -126,8 +126,8 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-              <div className="featured-cta reveal" style={{ marginTop: 50 }}>
-                <Link to="/products" className="btn btn-outline btn-lg" style={{ borderRadius: 'var(--radius-full)' }}>
+              <div className="featured-cta reveal">
+                <Link to="/products" className="btn btn-outline btn-lg featured-cta-btn">
                   {t('featured.viewAll')}
                   <Arrow size={18} />
                 </Link>

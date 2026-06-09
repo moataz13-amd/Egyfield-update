@@ -620,17 +620,30 @@ const Settings = () => {
                     <div key={pg.key} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 20, marginBottom: 20, background: 'rgba(255,255,255,0.02)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
                         <h5 style={{ margin: 0, fontWeight: 700, fontSize: 15 }}>{language === 'ar' ? pg.labelAr : pg.labelEn}</h5>
-                        <button type="button" onClick={() => {
-                          setSettings(prev => {
-                            const updated = { ...prev };
-                            if (!updated.pageCovers) updated.pageCovers = {};
-                            if (!updated.pageCovers[pg.key]) updated.pageCovers[pg.key] = {};
-                            updated.pageCovers[pg.key] = { ...updated.pageCovers[pg.key], enabled: !cover.enabled };
-                            return updated;
-                          });
-                        }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: cover.enabled ? 'var(--primary)' : 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: 6, padding: 0, fontSize: 13, fontWeight: 600 }}>
-                          {cover.enabled ? <><ToggleRight size={30} /> {language === 'ar' ? 'صورة مفعّلة' : 'Image Active'}</> : <><ToggleLeft size={30} /> {language === 'ar' ? 'صورة معطلة' : 'Image Disabled'}</>}
-                        </button>
+                        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                          <button type="button" onClick={() => {
+                            setSettings(prev => {
+                              const updated = { ...prev };
+                              if (!updated.pageCovers) updated.pageCovers = {};
+                              if (!updated.pageCovers[pg.key]) updated.pageCovers[pg.key] = {};
+                              updated.pageCovers[pg.key] = { ...updated.pageCovers[pg.key], showText: cover.showText === false ? true : false };
+                              return updated;
+                            });
+                          }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: cover.showText !== false ? 'var(--primary)' : 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: 6, padding: 0, fontSize: 13, fontWeight: 600 }}>
+                            {cover.showText !== false ? <><ToggleRight size={30} /> {language === 'ar' ? 'عرض العنوان' : 'Show Title'}</> : <><ToggleLeft size={30} /> {language === 'ar' ? 'إخفاء العنوان' : 'Hide Title'}</>}
+                          </button>
+                          <button type="button" onClick={() => {
+                            setSettings(prev => {
+                              const updated = { ...prev };
+                              if (!updated.pageCovers) updated.pageCovers = {};
+                              if (!updated.pageCovers[pg.key]) updated.pageCovers[pg.key] = {};
+                              updated.pageCovers[pg.key] = { ...updated.pageCovers[pg.key], enabled: !cover.enabled };
+                              return updated;
+                            });
+                          }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: cover.enabled ? 'var(--primary)' : 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: 6, padding: 0, fontSize: 13, fontWeight: 600 }}>
+                            {cover.enabled ? <><ToggleRight size={30} /> {language === 'ar' ? 'صورة مفعّلة' : 'Image Active'}</> : <><ToggleLeft size={30} /> {language === 'ar' ? 'صورة معطلة' : 'Image Disabled'}</>}
+                          </button>
+                        </div>
                       </div>
                       <div className="admin-form-row">
                         <div className="admin-form-group">
@@ -661,7 +674,23 @@ const Settings = () => {
                               const ok = await confirm({ title: language === 'ar' ? 'حذف صورة الغلاف' : 'Delete Cover Image', message: language === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?', type: 'danger' });
                               if (!ok) return;
                               setCoverUploading(pg.key);
-                              try { const { data } = await api.delete('/admin/settings/page-cover-image', { data: { pageKey: pg.key } }); if (data) setSettings(data); toast.success(language === 'ar' ? 'تم حذف الصورة' : 'Image deleted'); } catch { toast.error(language === 'ar' ? 'فشل الحذف' : 'Delete failed'); } finally { setCoverUploading(null); }
+                              try {
+                                const { data } = await api.delete('/admin/settings/page-cover-image', { data: { pageKey: pg.key } });
+                                if (data) {
+                                  setSettings(prev => {
+                                    const updated = { ...prev };
+                                    if (!updated.pageCovers) updated.pageCovers = {};
+                                    if (!updated.pageCovers[pg.key]) updated.pageCovers[pg.key] = {};
+                                    updated.pageCovers[pg.key] = { ...updated.pageCovers[pg.key], image: { url: '', publicId: '' } };
+                                    return updated;
+                                  });
+                                }
+                                toast.success(language === 'ar' ? 'تم حذف الصورة' : 'Image deleted');
+                              } catch {
+                                toast.error(language === 'ar' ? 'فشل الحذف' : 'Delete failed');
+                              } finally {
+                                setCoverUploading(null);
+                              }
                             }} style={{ position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: '50%', background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
                               <Trash2 size={14} />
                             </button>
@@ -673,7 +702,26 @@ const Settings = () => {
                               const file = e.target.files[0]; if (!file) return;
                               setCoverUploading(pg.key);
                               const fd = new FormData(); fd.append('coverImage', file); fd.append('pageKey', pg.key);
-                              try { const { data } = await api.put('/admin/settings/page-cover-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } }); if (data) setSettings(data); toast.success(language === 'ar' ? 'تم رفع الصورة!' : 'Image uploaded!'); } catch { toast.error(language === 'ar' ? 'فشل الرفع' : 'Upload failed'); } finally { setCoverUploading(null); }
+                              try {
+                                const { data } = await api.put('/admin/settings/page-cover-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+                                if (data) {
+                                  setSettings(prev => {
+                                    const updated = { ...prev };
+                                    if (!updated.pageCovers) updated.pageCovers = {};
+                                    if (!updated.pageCovers[pg.key]) updated.pageCovers[pg.key] = {};
+                                    updated.pageCovers[pg.key] = {
+                                      ...updated.pageCovers[pg.key],
+                                      image: data.pageCovers?.[pg.key]?.image || { url: '', publicId: '' }
+                                    };
+                                    return updated;
+                                  });
+                                }
+                                toast.success(language === 'ar' ? 'تم رفع الصورة!' : 'Image uploaded!');
+                              } catch {
+                                toast.error(language === 'ar' ? 'فشل الرفع' : 'Upload failed');
+                              } finally {
+                                setCoverUploading(null);
+                              }
                             }} />
                           </label>
                         )}

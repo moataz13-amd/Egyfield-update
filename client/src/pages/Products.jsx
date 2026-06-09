@@ -58,65 +58,84 @@ const Products = () => {
           pageKey="products"
           fallbackTitle={t('products.title')}
           fallbackSubtitle={t('products.subtitle')}
-        />
+        >
+          {/* Controls inside PageCover (Desktop only) */}
+          <div className="cover-controls desktop-controls">
+            {/* Search Bar */}
+            <div className="cover-search-wrapper">
+              <Search size={18} className="search-icon" />
+              <input
+                id="search-input-desktop"
+                type="text"
+                placeholder={t('products.search')}
+                value={search}
+                onChange={handleSearch}
+                className="cover-search-input"
+              />
+              {isFetching && <RefreshCw size={14} className="spin search-loading-icon" />}
+            </div>
+
+            {/* Horizontal Category Filter */}
+            <div className="cover-filter-wrapper">
+              <CategoryFilter
+                categories={categories}
+                activeCategory={category}
+                onCategoryChange={handleCategoryChange}
+              />
+            </div>
+
+            {/* Clear Filters Button */}
+            {(search || category) && (
+              <button
+                className="cover-clear-btn"
+                onClick={handleClearFilters}
+              >
+                {isAr ? 'إعادة ضبط الفلاتر' : 'Clear Filters'}
+              </button>
+            )}
+          </div>
+        </PageCover>
 
         {/* ===== Main Content Area ===== */}
         <div className="container products-main-container">
-          <div className="products-layout-grid">
-
-            {/* Left/Top: Sidebar Controls */}
-            <div className="products-sidebar">
-              <div className="products-sticky-card glass-card">
-                <div className="sidebar-title">
-                  <Filter size={18} style={{ color: 'var(--primary)' }} />
-                  <h4>{isAr ? 'فلترة المنتجات' : 'Search & Filters'}</h4>
-                </div>
-
-                {/* Search Bar */}
-                <div className="form-group" style={{ marginBottom: 24 }}>
-                  <label htmlFor="search-input" style={{ fontWeight: 600, fontSize: 13, marginBottom: 8, color: 'var(--text-gray)' }}>
-                    {isAr ? 'ابحث عن منتج' : 'Search Products'}
-                  </label>
-                  <div className="products-search-wrapper">
-                    <Search size={18} className="search-icon" />
-                    <input
-                      id="search-input"
-                      type="text"
-                      placeholder={t('products.search')}
-                      value={search}
-                      onChange={handleSearch}
-                      className="products-search-input"
-                    />
-                    {isFetching && <RefreshCw size={14} className="spin search-loading-icon" />}
-                  </div>
-                </div>
-
-                {/* Category Header */}
-                <div className="sidebar-divider" />
-                <label style={{ fontWeight: 600, fontSize: 13, marginBottom: 12, display: 'block', color: 'var(--text-gray)' }}>
-                  {isAr ? 'حسب القسم' : 'Filter by Category'}
-                </label>
-
-                {/* Categories Filter list */}
-                <CategoryFilter
-                  categories={categories}
-                  activeCategory={category}
-                  onCategoryChange={handleCategoryChange}
-                />
-
-                {(search || category) && (
-                  <button
-                    className="btn btn-outline btn-sm"
-                    onClick={handleClearFilters}
-                    style={{ width: '100%', marginTop: 20, borderRadius: 'var(--radius-md)', fontSize: 13 }}
-                  >
-                    {isAr ? 'إعادة ضبط الفلاتر' : 'Clear Filters'}
-                  </button>
-                )}
-              </div>
+          {/* Controls below PageCover (Mobile only) */}
+          <div className="mobile-controls">
+            {/* Search Bar */}
+            <div className="mobile-search-wrapper">
+              <Search size={18} className="search-icon" />
+              <input
+                id="search-input-mobile"
+                type="text"
+                placeholder={t('products.search')}
+                value={search}
+                onChange={handleSearch}
+                className="mobile-search-input"
+              />
+              {isFetching && <RefreshCw size={14} className="spin search-loading-icon" />}
             </div>
 
-            {/* Right: Products Showcase Grid */}
+            {/* Horizontal Category Filter */}
+            <div className="mobile-filter-wrapper">
+              <CategoryFilter
+                categories={categories}
+                activeCategory={category}
+                onCategoryChange={handleCategoryChange}
+              />
+            </div>
+
+            {/* Clear Filters Button */}
+            {(search || category) && (
+              <button
+                className="btn btn-outline btn-sm mobile-clear-btn"
+                onClick={handleClearFilters}
+              >
+                {isAr ? 'إعادة ضبط الفلاتر' : 'Clear Filters'}
+              </button>
+            )}
+          </div>
+
+          <div className="products-layout-grid">
+            {/* Showcase Grid */}
             <div className="products-showcase">
               {isLoading ? (
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '120px 0' }}>
