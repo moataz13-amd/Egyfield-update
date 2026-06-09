@@ -245,14 +245,14 @@
 }
 
 .pagination-btn-active {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  border-color: var(--primary);
-  color: var(--white);
-  box-shadow: 0 4px 12px rgba(123, 180, 69, 0.25);
+  background: var(--gold-gradient);
+  border-color: #ecd06c;
+  color: var(--dark) !important;
+  box-shadow: 0 4px 12px var(--gold-shadow);
 }
 
 .pagination-btn-active:hover {
-  color: var(--white) !important;
+  color: var(--dark) !important;
 }
 
 /* Empty State Card */

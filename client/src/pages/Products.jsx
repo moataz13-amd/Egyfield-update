@@ -5,6 +5,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { useProducts, useCategories } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
+import PageCover from '../components/PageCover';
 import Loader from '../components/Loader';
 import { Search, Sparkles, Filter, Leaf, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Products.css';
@@ -52,22 +53,12 @@ const Products = () => {
       </Helmet>
 
       <div className="products-page">
-        {/* ===== Premium Hero Section ===== */}
-        <div className="products-hero">
-          <div className="products-hero-bg">
-            <div className="products-hero-orb products-hero-orb-1" />
-            <div className="products-hero-orb products-hero-orb-2" />
-            <div className="products-hero-orb products-hero-orb-3" />
-          </div>
-          <div className="container products-hero-content">
-            {/* <span className="products-hero-badge">
-              <Sparkles size={14} />
-              {isAr ? 'محاصيل تصديرية درجة أولى' : 'First-Grade Export Crops'}
-            </span> */}
-            <h1>{t('products.title')}</h1>
-            <p>{t('products.subtitle')}</p>
-          </div>
-        </div>
+        {/* ===== Page Cover ===== */}
+        <PageCover
+          pageKey="products"
+          fallbackTitle={t('products.title')}
+          fallbackSubtitle={t('products.subtitle')}
+        />
 
         {/* ===== Main Content Area ===== */}
         <div className="container products-main-container">

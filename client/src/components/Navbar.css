@@ -67,43 +67,78 @@
   padding: 0;
 }
 
-/* ===== Link Styles ===== */
+/* ===== Link Styles (Expanding Pill) ===== */
 .navbar-link {
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
-  font-weight: 500;
-  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 40px;
+  width: 40px;
+  padding: 0;
+  border-radius: 50px;
   color: var(--text-primary-light);
   position: relative;
-  transition: var(--transition);
+  transition: all 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
   text-decoration: none;
+  overflow: hidden;
+  justify-content: center;
 }
 
-.navbar-link::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background: var(--primary);
-  border-radius: var(--radius-full);
-  transition: var(--transition);
+.navbar-link svg {
+  flex-shrink: 0;
+  min-width: 20px;
+  transition: all 0.3s ease;
 }
 
-.navbar-link:hover,
+.navbar-link:hover {
+  background: var(--gold-gradient);
+  background-size: 200% auto;
+  color: var(--dark) !important;
+  width: auto;
+  padding: 0 16px 0 12px;
+  gap: 7px;
+  box-shadow: 0 4px 12px var(--gold-shadow);
+}
+
+/* Active page — always expanded with label visible */
 .navbar-link-active {
-  color: var(--primary);
+  background: var(--gold-gradient);
+  background-size: 200% auto;
+  color: var(--dark) !important;
+  box-shadow: 0 4px 14px var(--gold-shadow);
+  width: auto;
+  padding: 0 16px 0 12px;
+  gap: 7px;
 }
 
-.navbar-link:hover::after,
-.navbar-link-active::after {
-  width: 20px;
+.navbar-link-active .navbar-link-tooltip {
+  max-width: 120px;
+  opacity: 1;
 }
 
-.navbar-link-active {
+.navbar-link-active:hover {
+  background: var(--gold-gradient);
+  background-position: right center;
+  color: var(--dark) !important;
+  box-shadow: 0 6px 18px rgba(191, 143, 27, 0.6);
+}
+
+/* Label — hidden by default, revealed on hover */
+.navbar-link-tooltip {
+  white-space: nowrap;
+  font-size: 0.8rem;
   font-weight: 600;
+  letter-spacing: 0.01em;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.34, 1.3, 0.64, 1);
+  pointer-events: none;
+}
+
+.navbar-link:hover .navbar-link-tooltip {
+  max-width: 120px;
+  opacity: 1;
 }
 
 /* ===== Bottom Nav (Mobile Only) ===== */
@@ -187,22 +222,22 @@
 
   /* Active state */
   .bottom-nav-item.active {
-    color: var(--primary);
+    color: #bf8f1b;
     font-weight: 700;
   }
 
   .bottom-nav-item.active .bottom-nav-icon-container {
-    background: var(--primary);
-    color: var(--white);
+    background: var(--gold-gradient);
+    color: var(--dark);
     transform: translateY(-14px);
     width: 48px;
     height: 48px;
-    box-shadow: 0 8px 20px rgba(123, 180, 69, 0.35);
+    box-shadow: 0 8px 20px var(--gold-shadow);
     border: 4px solid var(--white);
   }
 
   .bottom-nav-item.active svg {
-    color: var(--white) !important;
+    color: var(--dark) !important;
   }
 
   .bottom-nav-item.active span {

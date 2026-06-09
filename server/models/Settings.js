@@ -55,6 +55,38 @@ const settingsSchema = new mongoose.Schema(
       it: { type: String, default: 'Sottaceti di qualità superiore, prodotti freschi, surgelati e cereali — spediti in tutto il mondo' },
       tr: { type: String, default: 'Birinci sınıf turşu, taze sebze-meyve, dondurulmuş gıdalar ve bakliyat — dünya çapında teslimat' },
     },
+    pageCovers: {
+      products: {
+        title: { en: { type: String, default: 'Our Products' }, ar: { type: String, default: 'منتجاتنا' } },
+        subtitle: { en: { type: String, default: 'Explore our premium Egyptian agricultural exports' }, ar: { type: String, default: 'استكشف أجود الحاصلات الزراعية المصرية للتصدير' } },
+        image: { url: { type: String, default: '' }, publicId: { type: String, default: '' } },
+        enabled: { type: Boolean, default: false },
+      },
+      about: {
+        title: { en: { type: String, default: 'About Us' }, ar: { type: String, default: 'من نحن' } },
+        subtitle: { en: { type: String, default: 'Learn more about EgyField' }, ar: { type: String, default: 'تعرف على إيجي فيلد' } },
+        image: { url: { type: String, default: '' }, publicId: { type: String, default: '' } },
+        enabled: { type: Boolean, default: false },
+      },
+      contact: {
+        title: { en: { type: String, default: 'Contact Us' }, ar: { type: String, default: 'تواصل معنا' } },
+        subtitle: { en: { type: String, default: "We're here to help" }, ar: { type: String, default: 'نحن هنا لمساعدتك' } },
+        image: { url: { type: String, default: '' }, publicId: { type: String, default: '' } },
+        enabled: { type: Boolean, default: false },
+      },
+      articles: {
+        title: { en: { type: String, default: 'Articles & Insights' }, ar: { type: String, default: 'المقالات والأخبار' } },
+        subtitle: { en: { type: String, default: 'Latest news and agricultural insights' }, ar: { type: String, default: 'أحدث الأخبار والرؤى الزراعية' } },
+        image: { url: { type: String, default: '' }, publicId: { type: String, default: '' } },
+        enabled: { type: Boolean, default: false },
+      },
+      partners: {
+        title: { en: { type: String, default: 'Our Partners' }, ar: { type: String, default: 'شركاؤنا' } },
+        subtitle: { en: { type: String, default: 'Trusted global partners and distributors' }, ar: { type: String, default: 'شركاء وموزعون عالميون موثوقون' } },
+        image: { url: { type: String, default: '' }, publicId: { type: String, default: '' } },
+        enabled: { type: Boolean, default: false },
+      },
+    },
     isPartnersActive: { type: Boolean, default: true },
   },
   { timestamps: true }

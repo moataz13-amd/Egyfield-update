@@ -70,19 +70,23 @@ const Navbar = () => {
             <Logo className="navbar-logo-img" variant={scrolled ? 'dark' : 'light'} />
           </Link>
 
-          {/* Desktop Links */}
+          {/* Desktop Links (Icons with tooltip) */}
           <div className="navbar-menu-desktop">
             <ul className="navbar-links">
-              {navLinks.map((link) => (
-                <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className={`navbar-link ${location.pathname === link.path ? 'navbar-link-active' : ''}`}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {navLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <li key={link.path}>
+                    <Link
+                      to={link.path}
+                      className={`navbar-link ${location.pathname === link.path ? 'navbar-link-active' : ''}`}
+                    >
+                      <Icon size={20} strokeWidth={location.pathname === link.path ? 2.4 : 1.8} />
+                      <span className="navbar-link-tooltip">{link.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

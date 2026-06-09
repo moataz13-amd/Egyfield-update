@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { ExternalLink, Handshake } from 'lucide-react';
+import PageCover from '../components/PageCover';
 import api from '../services/api';
 import './Partners.css';
 
@@ -55,20 +56,14 @@ const Partners = () => {
       </Helmet>
 
       <div className="partners-page">
-        {/* Page Header */}
-        <div className="partners-hero">
-          <div className="container">
-            <div className="partners-hero-icon">
-              <Handshake size={48} />
-            </div>
-            <h1>{language === 'ar' ? 'شركاؤنا في النجاح' : 'Our Partners in Success'}</h1>
-            <p>
-              {language === 'ar' 
-                ? 'نفخر بالعمل مع نخبة من الشركاء والموزعين العالميين لتقديم الحاصلات الزراعية المصرية بأعلى معايير الجودة.' 
-                : 'We are proud to work with leading global partners and distributors to deliver premium Egyptian agricultural exports.'}
-            </p>
-          </div>
-        </div>
+        {/* Page Cover */}
+        <PageCover
+          pageKey="partners"
+          fallbackTitle={language === 'ar' ? 'شركاؤنا في النجاح' : 'Our Partners in Success'}
+          fallbackSubtitle={language === 'ar' 
+            ? 'نفخر بالعمل مع نخبة من الشركاء والموزعين العالميين لتقديم الحاصلات الزراعية المصرية بأعلى معايير الجودة.' 
+            : 'We are proud to work with leading global partners and distributors to deliver premium Egyptian agricultural exports.'}
+        />
 
         {/* Partners Grid */}
         <section className="section partners-section">

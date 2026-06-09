@@ -54,6 +54,16 @@ const getSettings = asyncHandler(async (req, res) => {
       settings.heroSubtitleColor = '#ffffff';
       modified = true;
     }
+    if (!settings.pageCovers) {
+      settings.pageCovers = {
+        products: { title: { en: 'Our Products', ar: 'منتجاتنا' }, subtitle: { en: 'Explore our premium Egyptian agricultural exports', ar: 'استكشف أجود الحاصلات الزراعية المصرية للتصدير' }, image: { url: '', publicId: '' }, enabled: false },
+        about: { title: { en: 'About Us', ar: 'من نحن' }, subtitle: { en: 'Learn more about EgyField', ar: 'تعرف على إيجي فيلد' }, image: { url: '', publicId: '' }, enabled: false },
+        contact: { title: { en: 'Contact Us', ar: 'تواصل معنا' }, subtitle: { en: "We're here to help", ar: 'نحن هنا لمساعدتك' }, image: { url: '', publicId: '' }, enabled: false },
+        articles: { title: { en: 'Articles & Insights', ar: 'المقالات والأخبار' }, subtitle: { en: 'Latest news and agricultural insights', ar: 'أحدث الأخبار والرؤى الزراعية' }, image: { url: '', publicId: '' }, enabled: false },
+        partners: { title: { en: 'Our Partners', ar: 'شركاؤنا' }, subtitle: { en: 'Trusted global partners and distributors', ar: 'شركاء وموزعون عالميون موثوقون' }, image: { url: '', publicId: '' }, enabled: false },
+      };
+      modified = true;
+    }
     if (modified) {
       await settings.save();
     }
@@ -77,7 +87,7 @@ const updateSettings = asyncHandler(async (req, res) => {
     'email', 'phone', 'whatsapp', 'address',
     'social', 'seo', 'heroTitle', 'heroSubtitle',
     'heroTitleColor', 'heroSubtitleColor', 'heroImages',
-    'isPartnersActive',
+    'isPartnersActive', 'pageCovers',
   ];
 
   fields.forEach(field => {
@@ -208,11 +218,85 @@ const deleteSliderImage = asyncHandler(async (req, res) => {
   res.json(updated);
 });
 
+// @desc    Upload page cover image
+// @route   PUT /api/admin/settings/page-cover-image
+// @access  Private (Admin)
+const uploadPageCoverImage = asyncHandler(async (req, res) => {
+  const { pageKey } = req.body;
+  const validKeys = ['products', 'about', 'contact', 'articles', 'partners'];
+
+  if (!validKeys.includes(pageKey)) {
+    res.status(400);
+    throw new Error('Invalid page key');
+  }
+
+  if (!req.file) {
+    res.status(400);
+    throw new Error('Please upload an image');
+  }
+
+  let settings = await Settings.findOne();
+  if (!settings) settings = await Settings.create({});
+
+  // Initialize pageCovers if missing
+  if (!settings.pageCovers) settings.pageCovers = {};
+  if (!settings.pageCovers[pageKey]) settings.pageCovers[pageKey] = {};
+
+  // Delete old image from Cloudinary if exists
+  const oldPublicId = settings.pageCovers[pageKey]?.image?.publicId;
+  if (oldPublicId) {
+    try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error('Error deleting old page cover image:', err); }
+  }
+
+  settings.pageCovers[pageKey].image = {
+    url: req.file.path,
+    publicId: req.file.filename,
+  };
+  settings.markModified('pageCovers');
+
+  const updated = await settings.save();
+  res.json(updated);
+});
+
+// @desc    Delete page cover image
+// @route   DELETE /api/admin/settings/page-cover-image
+// @access  Private (Admin)
+const deletePageCoverImage = asyncHandler(async (req, res) => {
+  const { pageKey } = req.body;
+  const validKeys = ['products', 'about', 'contact', 'articles', 'partners'];
+
+  if (!validKeys.includes(pageKey)) {
+    res.status(400);
+    throw new Error('Invalid page key');
+  }
+
+  let settings = await Settings.findOne();
+  if (!settings) {
+    res.status(404);
+    throw new Error('Settings not found');
+  }
+
+  const publicId = settings.pageCovers?.[pageKey]?.image?.publicId;
+  if (publicId) {
+    try { await cloudinary.uploader.destroy(publicId); } catch (err) { console.error('Error deleting page cover image:', err); }
+  }
+
+  if (settings.pageCovers && settings.pageCovers[pageKey]) {
+    settings.pageCovers[pageKey].image = { url: '', publicId: '' };
+    settings.markModified('pageCovers');
+  }
+
+  const updated = await settings.save();
+  res.json(updated);
+});
+
 module.exports = { 
   getSettings, 
   updateSettings, 
   updateHeroImage, 
   deleteHeroImage,
   addHeroImage,
-  deleteSliderImage
+  deleteSliderImage,
+  uploadPageCoverImage,
+  deletePageCoverImage
 };

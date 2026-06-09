@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { Target, Eye, ShieldCheck, Award } from 'lucide-react';
+import PageCover from '../components/PageCover';
 import api from '../services/api';
 import './About.css';
 
@@ -42,13 +43,12 @@ const About = () => {
       </Helmet>
 
       <div className="about-page">
-        {/* Page Header */}
-        <div className="about-hero">
-          <div className="container">
-            <h1>{t('about.title')}</h1>
-            <p>{t('about.subtitle')}</p>
-          </div>
-        </div>
+        {/* Page Cover */}
+        <PageCover
+          pageKey="about"
+          fallbackTitle={t('about.title')}
+          fallbackSubtitle={t('about.subtitle')}
+        />
 
         {/* Company Story */}
         <section className="section story-section">

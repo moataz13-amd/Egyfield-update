@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import { Search, Calendar, Eye, ArrowRight, Loader, FileText } from 'lucide-react';
+import PageCover from '../components/PageCover';
 import api from '../services/api';
 import { format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
@@ -43,83 +44,54 @@ const Articles = () => {
   const dateLocale = language === 'ar' ? ar : enUS;
 
   return (
-    <div className="articles-page" style={{ minHeight: '100vh', padding: '140px 0 80px', background: '#fafafa' }}>
-      <div className="container">
-        
-        {/* Page Header */}
-        <div style={{ textAlign: 'center', marginBottom: 50 }}>
-          <span style={{ 
-            color: 'var(--primary)', 
-            fontWeight: '700', 
-            textTransform: 'uppercase', 
-            fontSize: 14, 
-            letterSpacing: '1.5px',
-            background: 'rgba(123, 180, 69, 0.1)',
-            padding: '6px 16px',
-            borderRadius: 50,
-            display: 'inline-block',
-            marginBottom: 16
-          }}>
-            {language === 'ar' ? 'المدونة والمعرفة' : 'Blog & Insights'}
-          </span>
-          <h1 style={{ 
-            fontSize: 'clamp(2rem, 4vw, 3rem)', 
-            fontWeight: 800, 
-            color: 'var(--dark)', 
-            marginBottom: 16 
-          }}>
-            {language === 'ar' ? 'أحدث مقالاتنا وأخبار الحاصلات الزراعية' : 'Latest Articles & Export Insights'}
-          </h1>
-          <p style={{ 
-            color: 'var(--text-muted)', 
-            maxWidth: 600, 
-            margin: '0 auto 32px', 
-            fontSize: '1.1rem',
-            lineHeight: 1.6
-          }}>
-            {language === 'ar' 
-              ? 'تابع مقالاتنا الدورية لمعرفة مواعيد المواسم الزراعية المصرية وأحدث معايير التصدير والتعبئة العالمية.' 
-              : 'Read about crop seasons, packaging excellence, quality standards, and global import-export procedures.'}
-          </p>
+    <div className="articles-page" style={{ minHeight: '100vh', background: '#fafafa' }}>
+      {/* Page Cover */}
+      <PageCover
+        pageKey="articles"
+        fallbackTitle={language === 'ar' ? 'أحدث مقالاتنا وأخبار الحاصلات الزراعية' : 'Latest Articles & Export Insights'}
+        fallbackSubtitle={language === 'ar' 
+          ? 'تابع مقالاتنا الدورية لمعرفة مواعيد المواسم الزراعية المصرية وأحدث معايير التصدير والتعبئة العالمية.' 
+          : 'Read about crop seasons, packaging excellence, quality standards, and global import-export procedures.'}
+      />
 
-          {/* Search Bar */}
-          <div style={{ 
-            maxWidth: 500, 
-            margin: '0 auto', 
-            position: 'relative',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-            borderRadius: 50
-          }}>
-            <input 
-              type="text" 
-              placeholder={language === 'ar' ? 'ابحث عن مقال...' : 'Search articles...'} 
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '16px 24px',
-                paddingLeft: language === 'ar' ? 24 : 54,
-                paddingRight: language === 'ar' ? 54 : 24,
-                border: '1px solid #e0e0e0',
-                borderRadius: 50,
-                fontSize: 16,
-                background: '#fff',
-                outline: 'none',
-                transition: 'border-color 0.2s',
-                direction: language === 'ar' ? 'rtl' : 'ltr'
-              }}
-              onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-              onBlur={e => e.target.style.borderColor = '#e0e0e0'}
-            />
-            <Search size={20} style={{
-              position: 'absolute',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              left: language === 'ar' ? 'auto' : 20,
-              right: language === 'ar' ? 20 : 'auto',
-              color: 'var(--text-muted)'
-            }} />
-          </div>
+      <div className="container" style={{ padding: '40px 0 80px' }}>
+        {/* Search Bar */}
+        <div style={{ 
+          maxWidth: 500, 
+          margin: '0 auto 40px', 
+          position: 'relative',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+          borderRadius: 50
+        }}>
+          <input 
+            type="text" 
+            placeholder={language === 'ar' ? 'ابحث عن مقال...' : 'Search articles...'} 
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '16px 24px',
+              paddingLeft: language === 'ar' ? 24 : 54,
+              paddingRight: language === 'ar' ? 54 : 24,
+              border: '1px solid #e0e0e0',
+              borderRadius: 50,
+              fontSize: 16,
+              background: '#fff',
+              outline: 'none',
+              transition: 'border-color 0.2s',
+              direction: language === 'ar' ? 'rtl' : 'ltr'
+            }}
+            onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+            onBlur={e => e.target.style.borderColor = '#e0e0e0'}
+          />
+          <Search size={20} style={{
+            position: 'absolute',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            left: language === 'ar' ? 'auto' : 20,
+            right: language === 'ar' ? 20 : 'auto',
+            color: 'var(--text-muted)'
+          }} />
         </div>
 
         {/* Content Section */}

@@ -9,7 +9,9 @@ const {
   updateHeroImage, 
   deleteHeroImage,
   addHeroImage,
-  deleteSliderImage 
+  deleteSliderImage,
+  uploadPageCoverImage,
+  deletePageCoverImage
 } = require('../controllers/settingsController');
 const { protect, requirePermission } = require('../middleware/authMiddleware');
 
@@ -65,5 +67,18 @@ router.post('/hero-images', (req, res, next) => {
 }, addHeroImage);
 
 router.delete('/hero-images', deleteSliderImage);
+
+// Page cover image upload/delete
+router.put('/page-cover-image', (req, res, next) => {
+  heroUpload.single('coverImage')(req, res, (err) => {
+    if (err) {
+      console.error('Page cover image upload error:', err);
+      return res.status(400).json({ message: err.message || 'Image upload failed' });
+    }
+    next();
+  });
+}, uploadPageCoverImage);
+
+router.delete('/page-cover-image', deletePageCoverImage);
 
 module.exports = router;

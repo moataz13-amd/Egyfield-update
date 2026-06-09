@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import ContactForm from '../components/ContactForm';
+import PageCover from '../components/PageCover';
 import { MapPin, Phone, Mail, Clock, ArrowUpRight, Sparkles } from 'lucide-react';
 import api from '../services/api';
 import './Contact.css';
@@ -78,22 +79,12 @@ const Contact = () => {
       </Helmet>
 
       <div className="contact-page">
-        {/* ===== Hero Section ===== */}
-        <div className="contact-hero">
-          <div className="contact-hero-bg">
-            <div className="contact-hero-orb contact-hero-orb-1" />
-            <div className="contact-hero-orb contact-hero-orb-2" />
-            <div className="contact-hero-orb contact-hero-orb-3" />
-          </div>
-          <div className="container contact-hero-content">
-            <span className="contact-hero-badge">
-              <Sparkles size={14} />
-              {isAr ? 'نحن هنا لمساعدتك' : 'We\'re here to help'}
-            </span>
-            <h1>{t('contact.title')}</h1>
-            <p>{t('contact.subtitle')}</p>
-          </div>
-        </div>
+        {/* ===== Page Cover ===== */}
+        <PageCover
+          pageKey="contact"
+          fallbackTitle={t('contact.title')}
+          fallbackSubtitle={t('contact.subtitle')}
+        />
 
         {/* ===== Contact Info Strip ===== */}
         <div className="contact-info-strip">

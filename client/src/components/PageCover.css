@@ -1,0 +1,140 @@
+/* ===== Page Cover Component ===== */
+.page-cover {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* — Gradient fallback variant — */
+.page-cover--gradient {
+  background: linear-gradient(145deg, #050E07 0%, var(--dark) 40%, var(--primary-dark) 100%);
+  padding: 100px 0 75px;
+}
+
+/* — Image variant — */
+.page-cover--image {
+  padding: 0;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-cover-img-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.page-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.page-cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 30, 15, 0.55) 0%,
+    rgba(10, 30, 15, 0.75) 100%
+  );
+}
+
+/* — Animated orbs (gradient variant) — */
+.page-cover-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.page-cover-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.3;
+}
+
+.page-cover-orb-1 {
+  width: 380px;
+  height: 380px;
+  background: var(--primary-light);
+  top: -120px;
+  right: -80px;
+  animation: pcFloat 8s ease-in-out infinite;
+}
+
+.page-cover-orb-2 {
+  width: 240px;
+  height: 240px;
+  background: var(--accent);
+  bottom: -60px;
+  left: -40px;
+  animation: pcFloat 10s ease-in-out infinite reverse;
+}
+
+.page-cover-orb-3 {
+  width: 170px;
+  height: 170px;
+  background: var(--info);
+  top: 30%;
+  left: 50%;
+  animation: pcFloat 12s ease-in-out infinite;
+}
+
+/* — Content — */
+.page-cover-content {
+  position: relative;
+  z-index: 2;
+  padding: 100px 24px 75px;
+}
+
+.page-cover--image .page-cover-content {
+  padding: 120px 24px 80px;
+}
+
+.page-cover-content h1 {
+  color: var(--white);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  margin-bottom: 14px;
+  animation: fadeInUp 0.6s ease;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+}
+
+.page-cover-content p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+  animation: fadeInUp 0.6s ease 0.1s backwards;
+}
+
+/* — Animations — */
+@keyframes pcFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+/* — Responsive — */
+@media (max-width: 768px) {
+  .page-cover--gradient {
+    padding: 80px 0 60px;
+  }
+
+  .page-cover--image {
+    min-height: 260px;
+  }
+
+  .page-cover-content {
+    padding: 80px 16px 60px;
+  }
+
+  .page-cover--image .page-cover-content {
+    padding: 90px 16px 60px;
+  }
+}

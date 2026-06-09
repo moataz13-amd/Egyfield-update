@@ -21,6 +21,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
+  const [coverUploading, setCoverUploading] = useState(null);
   const [settings, setSettings] = useState({
     companyName: { en: 'EgyField', ar: 'إيجي فيلد' },
     tagline: { en: '', ar: '' },
@@ -37,6 +38,13 @@ const Settings = () => {
     heroImages: [],
     heroTitleColor: '#ffffff',
     heroSubtitleColor: '#ffffff',
+    pageCovers: {
+      products: { title: { en: 'Our Products', ar: 'منتجاتنا' }, subtitle: { en: '', ar: '' }, image: { url: '', publicId: '' }, enabled: false },
+      about: { title: { en: 'About Us', ar: 'من نحن' }, subtitle: { en: '', ar: '' }, image: { url: '', publicId: '' }, enabled: false },
+      contact: { title: { en: 'Contact Us', ar: 'تواصل معنا' }, subtitle: { en: '', ar: '' }, image: { url: '', publicId: '' }, enabled: false },
+      articles: { title: { en: 'Articles & Insights', ar: 'المقالات والأخبار' }, subtitle: { en: '', ar: '' }, image: { url: '', publicId: '' }, enabled: false },
+      partners: { title: { en: 'Our Partners', ar: 'شركاؤنا' }, subtitle: { en: '', ar: '' }, image: { url: '', publicId: '' }, enabled: false },
+    },
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -234,6 +242,9 @@ const Settings = () => {
         </button>
         <button className={`settings-tab ${activeTab === 'hero' ? 'active' : ''}`} onClick={() => setActiveTab('hero')}>
           {language === 'ar' ? 'قسم الهيرو' : 'Hero Section'}
+        </button>
+        <button className={`settings-tab ${activeTab === 'covers' ? 'active' : ''}`} onClick={() => setActiveTab('covers')}>
+          {language === 'ar' ? 'أغلفة الصفحات' : 'Page Covers'}
         </button>
         <button className={`settings-tab ${activeTab === 'password' ? 'active' : ''}`} onClick={() => setActiveTab('password')}>
           {language === 'ar' ? 'تغيير كلمة المرور' : 'Change Password'}
@@ -582,6 +593,94 @@ const Settings = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Page Covers Tab */}
+            {activeTab === 'covers' && (
+              <div>
+                <h4 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 8px' }}>
+                  <ImageIcon size={18} /> {language === 'ar' ? 'إدارة أغلفة الصفحات الداخلية' : 'Subpage Cover Banners'}
+                </h4>
+                <p style={{ fontSize: 13, color: 'var(--admin-text-muted)', marginBottom: 24 }}>
+                  {language === 'ar'
+                    ? 'تحكم في العنوان والوصف وصورة الغلاف لكل صفحة داخلية. الصورة اختيارية — في حال عدم رفع صورة سيتم عرض تدرج لوني تلقائي.'
+                    : 'Manage the title, subtitle, and cover image for each subpage. The image is optional — a gradient fallback is used when no image is uploaded.'}
+                </p>
+
+                {[
+                  { key: 'products', labelEn: 'Products', labelAr: 'المنتجات' },
+                  { key: 'about', labelEn: 'About Us', labelAr: 'من نحن' },
+                  { key: 'contact', labelEn: 'Contact', labelAr: 'تواصل معنا' },
+                  { key: 'articles', labelEn: 'Articles', labelAr: 'المقالات' },
+                  { key: 'partners', labelEn: 'Partners', labelAr: 'الشركاء' },
+                ].map(pg => {
+                  const cover = settings.pageCovers?.[pg.key] || {};
+                  return (
+                    <div key={pg.key} style={{ border: '1px solid var(--admin-border)', borderRadius: 12, padding: 20, marginBottom: 20, background: 'rgba(255,255,255,0.02)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                        <h5 style={{ margin: 0, fontWeight: 700, fontSize: 15 }}>{language === 'ar' ? pg.labelAr : pg.labelEn}</h5>
+                        <button type="button" onClick={() => {
+                          setSettings(prev => {
+                            const updated = { ...prev };
+                            if (!updated.pageCovers) updated.pageCovers = {};
+                            if (!updated.pageCovers[pg.key]) updated.pageCovers[pg.key] = {};
+                            updated.pageCovers[pg.key] = { ...updated.pageCovers[pg.key], enabled: !cover.enabled };
+                            return updated;
+                          });
+                        }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: cover.enabled ? 'var(--primary)' : 'var(--admin-text-muted)', display: 'flex', alignItems: 'center', gap: 6, padding: 0, fontSize: 13, fontWeight: 600 }}>
+                          {cover.enabled ? <><ToggleRight size={30} /> {language === 'ar' ? 'صورة مفعّلة' : 'Image Active'}</> : <><ToggleLeft size={30} /> {language === 'ar' ? 'صورة معطلة' : 'Image Disabled'}</>}
+                        </button>
+                      </div>
+                      <div className="admin-form-row">
+                        <div className="admin-form-group">
+                          <label style={{ fontSize: 12 }}>{language === 'ar' ? 'العنوان (إنجليزي)' : 'Title (English)'}</label>
+                          <input className="admin-form-control" value={cover.title?.en || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].title = { ...(u.pageCovers[pg.key].title || {}), en: e.target.value }; return u; }); }} />
+                        </div>
+                        <div className="admin-form-group">
+                          <label style={{ fontSize: 12 }}>{language === 'ar' ? 'العنوان (عربي)' : 'Title (Arabic)'}</label>
+                          <input className="admin-form-control" style={{ direction: 'rtl' }} value={cover.title?.ar || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].title = { ...(u.pageCovers[pg.key].title || {}), ar: e.target.value }; return u; }); }} />
+                        </div>
+                      </div>
+                      <div className="admin-form-row">
+                        <div className="admin-form-group">
+                          <label style={{ fontSize: 12 }}>{language === 'ar' ? 'الوصف (إنجليزي)' : 'Subtitle (English)'}</label>
+                          <input className="admin-form-control" value={cover.subtitle?.en || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].subtitle = { ...(u.pageCovers[pg.key].subtitle || {}), en: e.target.value }; return u; }); }} />
+                        </div>
+                        <div className="admin-form-group">
+                          <label style={{ fontSize: 12 }}>{language === 'ar' ? 'الوصف (عربي)' : 'Subtitle (Arabic)'}</label>
+                          <input className="admin-form-control" style={{ direction: 'rtl' }} value={cover.subtitle?.ar || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].subtitle = { ...(u.pageCovers[pg.key].subtitle || {}), ar: e.target.value }; return u; }); }} />
+                        </div>
+                      </div>
+                      <div style={{ marginTop: 12 }}>
+                        <label style={{ fontSize: 12, fontWeight: 600, marginBottom: 8, display: 'block' }}>{language === 'ar' ? 'صورة الغلاف (اختياري)' : 'Cover Image (Optional)'}</label>
+                        {cover.image?.url ? (
+                          <div style={{ position: 'relative', display: 'inline-block', borderRadius: 10, overflow: 'hidden', border: '1px solid var(--admin-border)' }}>
+                            <img src={cover.image.url} alt="Cover" style={{ width: 260, height: 120, objectFit: 'cover', display: 'block' }} />
+                            <button type="button" onClick={async () => {
+                              const ok = await confirm({ title: language === 'ar' ? 'حذف صورة الغلاف' : 'Delete Cover Image', message: language === 'ar' ? 'هل أنت متأكد؟' : 'Are you sure?', type: 'danger' });
+                              if (!ok) return;
+                              setCoverUploading(pg.key);
+                              try { const { data } = await api.delete('/admin/settings/page-cover-image', { data: { pageKey: pg.key } }); if (data) setSettings(data); toast.success(language === 'ar' ? 'تم حذف الصورة' : 'Image deleted'); } catch { toast.error(language === 'ar' ? 'فشل الحذف' : 'Delete failed'); } finally { setCoverUploading(null); }
+                            }} style={{ position: 'absolute', top: 6, right: 6, width: 28, height: 28, borderRadius: '50%', background: 'rgba(220,53,69,0.9)', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <label style={{ width: 260, height: 120, borderRadius: 10, border: '2px dashed var(--admin-border)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--admin-text-muted)', fontSize: 13, gap: 6 }}>
+                            {coverUploading === pg.key ? <><Loader size={20} className="spin" /> {language === 'ar' ? 'جاري الرفع...' : 'Uploading...'}</> : <><Upload size={20} /> {language === 'ar' ? 'رفع صورة غلاف' : 'Upload Cover Image'}</>}
+                            <input type="file" accept="image/*" style={{ display: 'none' }} disabled={coverUploading === pg.key} onChange={async (e) => {
+                              const file = e.target.files[0]; if (!file) return;
+                              setCoverUploading(pg.key);
+                              const fd = new FormData(); fd.append('coverImage', file); fd.append('pageKey', pg.key);
+                              try { const { data } = await api.put('/admin/settings/page-cover-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } }); if (data) setSettings(data); toast.success(language === 'ar' ? 'تم رفع الصورة!' : 'Image uploaded!'); } catch { toast.error(language === 'ar' ? 'فشل الرفع' : 'Upload failed'); } finally { setCoverUploading(null); }
+                            }} />
+                          </label>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
