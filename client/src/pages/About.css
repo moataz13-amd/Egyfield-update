@@ -22,10 +22,15 @@
 
 /* Story Section */
 .story-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  display: flex;
+  justify-content: center;
   align-items: center;
+}
+
+.story-content {
+  max-width: 800px;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .story-content h2 {

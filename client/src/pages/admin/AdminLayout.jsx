@@ -133,38 +133,39 @@ const AdminLayout = () => {
             </div>
           </div>
 
+          <div className="admin-topbar-actions">
+            {/* Header Language Dropdown */}
+            <div className="admin-lang-header-container" ref={langRef}>
+              <button
+                className="admin-lang-header-btn"
+                onClick={() => setLangOpen(!langOpen)}
+                title="Select Language / اختر اللغة"
+              >
+                <Languages size={16} />
+                <span>{currentLang.name}</span>
+              </button>
+              {langOpen && (
+                <div className="admin-lang-header-dropdown">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      className={`admin-lang-header-dropdown-item ${language === lang.code ? 'active' : ''}`}
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setLangOpen(false);
+                      }}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </header>
         <div className="admin-page">
           <Outlet />
         </div>
-      </div>
-
-      {/* Floating Language Dropdown */}
-      <div className="admin-lang-float-container" ref={langRef}>
-        {langOpen && (
-          <div className="admin-lang-dropdown-menu">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                className={`admin-lang-dropdown-item ${language === lang.code ? 'active' : ''}`}
-                onClick={() => {
-                  setLanguage(lang.code);
-                  setLangOpen(false);
-                }}
-              >
-                {lang.name}
-              </button>
-            ))}
-          </div>
-        )}
-        <button
-          className="admin-lang-float-btn"
-          onClick={() => setLangOpen(!langOpen)}
-          title="Select Language / اختر اللغة"
-        >
-          <Languages size={16} />
-          <span>{currentLang.name}</span>
-        </button>
       </div>
     </div>
   );

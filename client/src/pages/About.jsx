@@ -58,17 +58,6 @@ const About = () => {
               <p>{about?.storyText1?.[lang] || t('about.storyText1')}</p>
               <p>{about?.storyText2?.[lang] || t('about.storyText2')}</p>
             </div>
-            <div className="story-visual reveal reveal-delay-2">
-              <div className="story-image-wrapper">
-                <img
-                  src={about?.storyImage || 'https://placehold.co/600x400/4F9200/FFFFFF?text=EgyField+Farms'}
-                  alt="EgyField Farms"
-                />
-                <div className="story-badge">
-                  <span>{about?.storyBadge?.[lang] || '100% Organic Quality'}</span>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 

@@ -113,7 +113,7 @@ const InquiriesList = () => {
             </thead>
             <tbody>
               {inquiries.map(inq => (
-                <tr key={inq._id}>
+                <tr key={inq._id} className="clickable-row" onClick={() => handleOpenDetail(inq)} style={{ cursor: 'pointer' }}>
                   <td style={{ fontWeight: 600 }}>{inq.name}</td>
                   <td>{inq.company || '—'}</td>
                   <td>{inq.country || '—'}</td>
@@ -125,7 +125,7 @@ const InquiriesList = () => {
                     {new Date(inq.createdAt).toLocaleDateString()}
                   </td>
                   <td>
-                    <div className="table-actions">
+                    <div className="table-actions" onClick={e => e.stopPropagation()}>
                       <button className="table-action-btn" onClick={() => handleOpenDetail(inq)} title={t('admin.view')}>
                         <Eye size={14} />
                       </button>
