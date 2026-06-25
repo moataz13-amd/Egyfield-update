@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "description": "EgyField Agriculture Export Platform",
+  "workspaces": ["client"],
   "scripts": {
     "dev:server": "cd server && npm run dev",
-    "dev:client": "cd client && npm run dev",
+    "dev:client": "npm run dev -w client",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "build:client": "cd client && npm run build",
+    "build:client": "npm run build -w client",
     "build": "npm run build:client",
     "start": "node server/server.js",
-    "vercel-build": "cd client && npm install && npm run build"
+    "vercel-build": "npm run build --workspace=client"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
