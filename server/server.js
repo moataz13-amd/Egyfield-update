@@ -106,8 +106,8 @@ app.use('/api', (req, res) => {
   res.status(404).json({ message: 'API route not found' });
 });
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
+// Serve static assets in production (non-Vercel; Vercel serves from outputDirectory)
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const path = require('path');
   const distPath = path.join(__dirname, '../client/dist');
   app.use(express.static(distPath));
