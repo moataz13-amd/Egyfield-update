@@ -1,36 +1,6 @@
-const { Pool } = require('pg');
-const dotenv = require('dotenv');
-const bcrypt = require('bcryptjs');
+-- EgyField Database Schema for Supabase
+-- Run this SQL in Supabase SQL Editor before deploying to Vercel
 
-dotenv.config();
-
-const isServerless = !!process.env.VERCEL;
-
-let pool;
-
-if (process.env.DATABASE_URL) {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1')
-      ? false
-      : { rejectUnauthorized: false },
-    max: parseInt(process.env.DB_POOL_MAX || (isServerless ? 1 : 5)),
-    connectionTimeoutMillis: parseInt(process.env.DB_TIMEOUT || 30000),
-    idleTimeoutMillis: 30000,
-  });
-} else {
-  pool = new Pool({
-    user: process.env.PGUSER || 'postgres',
-    host: process.env.PGHOST || 'localhost',
-    database: process.env.PGDATABASE || 'egyfield',
-    password: process.env.PGPASSWORD || 'postgres',
-    port: process.env.PGPORT || 5432,
-    max: parseInt(process.env.DB_POOL_MAX || 5),
-    connectionTimeoutMillis: parseInt(process.env.DB_TIMEOUT || 30000),
-  });
-}
-
-const schemaSQL = `
 CREATE TABLE IF NOT EXISTS admins (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   "username" TEXT UNIQUE NOT NULL,
@@ -121,7 +91,7 @@ CREATE TABLE IF NOT EXISTS partners (
 
 CREATE TABLE IF NOT EXISTS settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "companyName" JSONB DEFAULT '{"en": "EgyField", "ar": "إيجي فيلد"}'::jsonb,
+  "companyName" JSONB DEFAULT '{"en": "EgyField", "ar": "الإيجي فيلد"}'::jsonb,
   "tagline" JSONB DEFAULT '{"en": "Premium Egyptian Agricultural Exports", "ar": "صادرات زراعية مصرية فاخرة"}'::jsonb,
   "foundedYear" INTEGER DEFAULT 2015,
   "email" TEXT DEFAULT 'info@egyfield.com',
@@ -177,46 +147,6 @@ BEGIN
     CREATE TRIGGER update_settings_updatedAt BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
   END IF;
 END $$;
-`;
 
-let connected = false;
-
-const connectDB = async () => {
-  if (connected) return;
-  try {
-    const client = await pool.connect();
-    console.log(`PostgreSQL Connected to database: ${client.database}`);
-
-    if (!process.env.SKIP_DB_SCHEMA) {
-      await client.query(schemaSQL);
-      console.log('PostgreSQL Schema Checked/Created.');
-    }
-
-    const adminsCountResult = await client.query('SELECT COUNT(*) FROM admins');
-    const adminsCount = parseInt(adminsCountResult.rows[0].count);
-    if (adminsCount === 0) {
-      const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
-      await client.query(
-        'INSERT INTO admins (username, email, password, role, permissions) VALUES ($1, $2, $3, $4, $5)',
-        ['admin', 'admin@egyfield.com', hashedPassword, 'superadmin', JSON.stringify(['products', 'articles', 'inquiries', 'settings', 'admins'])]
-      );
-      console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
-    }
-
-    client.release();
-    connected = true;
-  } catch (error) {
-    console.error(`PostgreSQL Error: ${error.message}`);
-    if (!isServerless) {
-      process.exit(1);
-    }
-    throw error;
-  }
-};
-
-module.exports = {
-  pool,
-  connectDB,
-  query: (text, params) => pool.query(text, params),
-};
+-- Note: The default admin (admin@egyfield.com / EgyField@2024) is seeded
+-- automatically by the app on first connection.

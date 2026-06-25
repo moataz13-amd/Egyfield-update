@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { connectDB } = require('./config/db');
 const dotenv = require('dotenv');
 const Admin = require('./models/Admin');
 const Category = require('./models/Category');
@@ -198,8 +198,8 @@ const productsData = [
 
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('Connected to MongoDB');
+    await connectDB();
+    console.log('Connected to PostgreSQL');
 
     // Clear existing data
     await Admin.deleteMany({});

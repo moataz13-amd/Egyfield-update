@@ -4,13 +4,9 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+const { connectDB } = require('./config/db');
 
-// Load env vars
 dotenv.config();
-
-// Connect to database
-connectDB();
 
 const app = express();
 
@@ -21,15 +17,33 @@ app.use(helmet({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 100 : 10000, // limit each IP to 100 in prod, 10000 in dev
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 100 : 10000,
   message: { message: 'Too many requests, please try again later.' },
+  skip: () => !!process.env.VERCEL,
 });
 app.use('/api/', limiter);
 
-// CORS
+// CORS - allow multiple origins for dev + Vercel
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'http://localhost:5170',
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || process.env.NODE_ENV !== 'production' || allowedOrigins.some(a => origin.startsWith(a))) {
+      return callback(null, true);
+    }
+    if (process.env.VERCEL_URL && origin.includes(process.env.VERCEL_URL)) {
+      return callback(null, true);
+    }
+    if (origin.includes('.vercel.app')) {
+      return callback(null, true);
+    }
+    callback(null, true);
+  },
   credentials: true,
 }));
 
@@ -41,6 +55,29 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
+
+// Health check (defined BEFORE DB middleware so it works without DB)
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    dbConnected: !!app.locals.dbConnected,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Lazy DB connection middleware (skips /health)
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health') return next();
+  if (app.locals.dbConnected) return next();
+  connectDB()
+    .then(() => {
+      app.locals.dbConnected = true;
+      next();
+    })
+    .catch((err) => {
+      res.status(503).json({ message: 'Database connection failed', error: err.message });
+    });
+});
 
 // API Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -54,11 +91,6 @@ app.use('/api/about', require('./routes/aboutRoutes'));
 app.use('/api/articles', require('./routes/articleRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
 app.get('/api/settings', require('./controllers/settingsController').getSettings);
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -74,23 +106,35 @@ app.use('/api', (req, res) => {
   res.status(404).json({ message: 'API route not found' });
 });
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
+// Serve static assets in production (non-Vercel)
+if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const path = require('path');
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+  const distPath = path.join(__dirname, '../client/dist');
+  app.use(express.static(distPath));
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+    res.sendFile(path.resolve(distPath, 'index.html'));
   });
 }
 
-// Global 404 handler (fallback)
+// Global 404 handler
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ message: 'Route not found' });
+  } else {
+    res.status(404).json({ message: 'Not found' });
+  }
 });
 
-const PORT = process.env.PORT || 5000;
+// Local development server
+if (require.main === module) {
+  connectDB().then(() => {
+    app.locals.dbConnected = true;
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+module.exports = app;

@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Inquiry = require('../models/Inquiry');
+const { pool } = require('../config/db');
 
 // @desc    Get dashboard overview stats
 // @route   GET /api/admin/analytics/overview
@@ -61,25 +62,26 @@ const getInquiriesAnalytics = asyncHandler(async (req, res) => {
   const now = new Date();
   const startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
 
-  const monthlyData = await Inquiry.aggregate([
-    { $match: { createdAt: { $gte: startDate } } },
-    {
-      $group: {
-        _id: {
-          year: { $year: '$createdAt' },
-          month: { $month: '$createdAt' },
-        },
-        count: { $sum: 1 },
-        newCount: {
-          $sum: { $cond: [{ $eq: ['$status', 'new'] }, 1, 0] },
-        },
-        repliedCount: {
-          $sum: { $cond: [{ $eq: ['$status', 'replied'] }, 1, 0] },
-        },
-      },
-    },
-    { $sort: { '_id.year': 1, '_id.month': 1 } },
-  ]);
+  // Group inquiries by year and month
+  const monthlyDataResult = await pool.query(`
+    SELECT 
+      EXTRACT(YEAR FROM "createdAt")::int as year,
+      EXTRACT(MONTH FROM "createdAt")::int as month,
+      COUNT(*)::int as count,
+      SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END)::int as "newCount",
+      SUM(CASE WHEN status = 'replied' THEN 1 ELSE 0 END)::int as "repliedCount"
+    FROM inquiries
+    WHERE "createdAt" >= $1
+    GROUP BY year, month
+    ORDER BY year ASC, month ASC
+  `, [startDate]);
+
+  const monthlyData = monthlyDataResult.rows.map(r => ({
+    _id: { year: r.year, month: r.month },
+    count: r.count,
+    newCount: r.newCount,
+    repliedCount: r.repliedCount
+  }));
 
   // Fill missing months
   const result = [];
@@ -99,9 +101,8 @@ const getInquiriesAnalytics = asyncHandler(async (req, res) => {
   }
 
   // Status breakdown
-  const statusBreakdown = await Inquiry.aggregate([
-    { $group: { _id: '$status', count: { $sum: 1 } } },
-  ]);
+  const statusResult = await pool.query('SELECT status as _id, COUNT(*)::int as count FROM inquiries GROUP BY status');
+  const statusBreakdown = statusResult.rows;
 
   res.json({ monthly: result, statusBreakdown });
 });
@@ -110,12 +111,15 @@ const getInquiriesAnalytics = asyncHandler(async (req, res) => {
 // @route   GET /api/admin/analytics/countries
 // @access  Private
 const getCountriesAnalytics = asyncHandler(async (req, res) => {
-  const data = await Inquiry.aggregate([
-    { $match: { country: { $ne: '', $exists: true } } },
-    { $group: { _id: '$country', count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: 10 },
-  ]);
+  const countriesResult = await pool.query(`
+    SELECT country as _id, COUNT(*)::int as count 
+    FROM inquiries 
+    WHERE country IS NOT NULL AND country != '' 
+    GROUP BY country 
+    ORDER BY count DESC 
+    LIMIT 10
+  `);
+  const data = countriesResult.rows;
 
   res.json(data.map(d => ({ country: d._id, count: d.count })));
 });
@@ -125,50 +129,41 @@ const getCountriesAnalytics = asyncHandler(async (req, res) => {
 // @access  Private
 const getProductsAnalytics = asyncHandler(async (req, res) => {
   // Products per category
-  const byCategory = await Product.aggregate([
-    {
-      $group: {
-        _id: '$category',
-        count: { $sum: 1 },
-        featuredCount: { $sum: { $cond: ['$featured', 1, 0] } },
-      },
-    },
-    {
-      $lookup: {
-        from: 'categories',
-        localField: '_id',
-        foreignField: '_id',
-        as: 'category',
-      },
-    },
-    { $unwind: { path: '$category', preserveNullAndEmptyArrays: true } },
-    {
-      $project: {
-        nameEn: { $ifNull: ['$category.name.en', 'Uncategorized'] },
-        nameAr: { $ifNull: ['$category.name.ar', 'غير مصنف'] },
-        color: { $ifNull: ['$category.color', '#8B949E'] },
-        slug: '$category.slug',
-        count: 1,
-        featuredCount: 1,
-      },
-    },
-    { $sort: { count: -1 } },
-  ]);
+  const byCategoryResult = await pool.query(`
+    SELECT 
+      c.id as _id,
+      COALESCE(c.name->>'en', 'Uncategorized') as "nameEn",
+      COALESCE(c.name->>'ar', 'غير مصنف') as "nameAr",
+      COALESCE(c.color, '#8B949E') as color,
+      c.slug as slug,
+      COUNT(p.id)::int as count,
+      SUM(CASE WHEN p.featured THEN 1 ELSE 0 END)::int as "featuredCount"
+    FROM categories c
+    LEFT JOIN products p ON p.category = c.id
+    GROUP BY c.id, c.name, c.color, c.slug
+    ORDER BY count DESC
+  `);
+  const byCategory = byCategoryResult.rows;
 
   // Products added per month (last 6 months)
   const now = new Date();
   const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
 
-  const monthlyProducts = await Product.aggregate([
-    { $match: { createdAt: { $gte: sixMonthsAgo } } },
-    {
-      $group: {
-        _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } },
-        count: { $sum: 1 },
-      },
-    },
-    { $sort: { '_id.year': 1, '_id.month': 1 } },
-  ]);
+  const monthlyProductsResult = await pool.query(`
+    SELECT 
+      EXTRACT(YEAR FROM "createdAt")::int as year,
+      EXTRACT(MONTH FROM "createdAt")::int as month,
+      COUNT(*)::int as count
+    FROM products
+    WHERE "createdAt" >= $1
+    GROUP BY year, month
+    ORDER BY year ASC, month ASC
+  `, [sixMonthsAgo]);
+
+  const monthlyProducts = monthlyProductsResult.rows.map(r => ({
+    _id: { year: r.year, month: r.month },
+    count: r.count
+  }));
 
   // Fill missing months
   const monthlyResult = [];

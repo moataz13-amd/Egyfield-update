@@ -1,29 +1,9 @@
-const mongoose = require('mongoose');
+const { BaseModel } = require('./BaseModel');
 
-const categorySchema = new mongoose.Schema(
-  {
-    name: {
-      ar: { type: String, required: [true, 'Arabic name is required'] },
-      en: { type: String, required: [true, 'English name is required'] },
-    },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-    },
-    icon: {
-      type: String,
-      default: '',
-    },
-    color: {
-      type: String,
-      default: '#7BB445',
-    },
-  },
-  {
-    timestamps: true,
+class CategoryModel extends BaseModel {
+  constructor() {
+    super('categories');
   }
-);
+}
 
-module.exports = mongoose.model('Category', categorySchema);
+module.exports = new CategoryModel();
