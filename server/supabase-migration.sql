@@ -120,33 +120,22 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_admins_updatedAt') THEN
-    CREATE TRIGGER update_admins_updatedAt BEFORE UPDATE ON admins FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_categories_updatedAt') THEN
-    CREATE TRIGGER update_categories_updatedAt BEFORE UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_products_updatedAt') THEN
-    CREATE TRIGGER update_products_updatedAt BEFORE UPDATE ON products FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_about_contents_updatedAt') THEN
-    CREATE TRIGGER update_about_contents_updatedAt BEFORE UPDATE ON about_contents FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_articles_updatedAt') THEN
-    CREATE TRIGGER update_articles_updatedAt BEFORE UPDATE ON articles FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_inquiries_updatedAt') THEN
-    CREATE TRIGGER update_inquiries_updatedAt BEFORE UPDATE ON inquiries FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_partners_updatedAt') THEN
-    CREATE TRIGGER update_partners_updatedAt BEFORE UPDATE ON partners FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_settings_updatedAt') THEN
-    CREATE TRIGGER update_settings_updatedAt BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-END $$;
+DROP TRIGGER IF EXISTS update_admins_updatedat ON admins;
+CREATE TRIGGER update_admins_updatedAt BEFORE UPDATE ON admins FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_categories_updatedat ON categories;
+CREATE TRIGGER update_categories_updatedAt BEFORE UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_products_updatedat ON products;
+CREATE TRIGGER update_products_updatedAt BEFORE UPDATE ON products FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_about_contents_updatedat ON about_contents;
+CREATE TRIGGER update_about_contents_updatedAt BEFORE UPDATE ON about_contents FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_articles_updatedat ON articles;
+CREATE TRIGGER update_articles_updatedAt BEFORE UPDATE ON articles FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_inquiries_updatedat ON inquiries;
+CREATE TRIGGER update_inquiries_updatedAt BEFORE UPDATE ON inquiries FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_partners_updatedat ON partners;
+CREATE TRIGGER update_partners_updatedAt BEFORE UPDATE ON partners FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+DROP TRIGGER IF EXISTS update_settings_updatedat ON settings;
+CREATE TRIGGER update_settings_updatedAt BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
 
 -- Note: The default admin (admin@egyfield.com / EgyField@2024) is seeded
 -- automatically by the app on first connection.
