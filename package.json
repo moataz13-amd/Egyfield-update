@@ -10,7 +10,7 @@
     "build:client": "cd client && npm run build",
     "build": "npm run build:client",
     "start": "node server/server.js",
-    "vercel-build": "npm run build:client"
+    "vercel-build": "cd client && npm install && npm run build"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
