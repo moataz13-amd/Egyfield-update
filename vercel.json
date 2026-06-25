@@ -1,15 +1,22 @@
 {
   "version": 2,
   "buildCommand": "npm run vercel-build",
-  "builds": [
+  "outputDirectory": "client/dist",
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+      "source": "/api/cron",
+      "destination": "/api/cron.js"
     },
     {
-      "src": "client/dist/**",
-      "use": "@vercel/static"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
+  ]
+}
   ],
   "routes": [
     {
