@@ -1,7 +1,9 @@
 {
   "version": 2,
+  "framework": null,
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist",
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/api/(.*)",
