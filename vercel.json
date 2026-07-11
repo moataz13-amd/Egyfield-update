@@ -1,21 +1,17 @@
 {
   "version": 2,
+  "framework": null,
   "buildCommand": "npm run vercel-build",
-  "builds": [
+  "outputDirectory": "dist",
+  "trailingSlash": false,
+  "rewrites": [
     {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "client/dist/**"
-        ]
-      }
-    }
-  ],
-  "routes": [
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
     {
-      "src": "/(.*)",
-      "dest": "api/index.js"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
