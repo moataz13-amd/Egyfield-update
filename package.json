@@ -11,7 +11,7 @@
     "build:client": "npm run build -w client",
     "build": "npm run build:client",
     "start": "node server/server.js",
-    "vercel-build": "npm run build --workspace=client && cp -r client/dist dist && cp dist/index.html dist/404.html"
+    "vercel-build": "npm run build --workspace=client && cp -r client/dist/* ."
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
