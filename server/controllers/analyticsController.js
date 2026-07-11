@@ -1,12 +1,9 @@
 const asyncHandler = require('express-async-handler');
+const { supabase } = require('../config/db');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Inquiry = require('../models/Inquiry');
-const { pool } = require('../config/db');
 
-// @desc    Get dashboard overview stats
-// @route   GET /api/admin/analytics/overview
-// @access  Private
 const getOverview = asyncHandler(async (req, res) => {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -17,15 +14,8 @@ const getOverview = asyncHandler(async (req, res) => {
   startOfWeek.setHours(0, 0, 0, 0);
 
   const [
-    totalProducts,
-    totalCategories,
-    totalInquiries,
-    newInquiries,
-    featuredProducts,
-    thisMonthInquiries,
-    lastMonthInquiries,
-    thisWeekProducts,
-    countries,
+    totalProducts, totalCategories, totalInquiries, newInquiries,
+    featuredProducts, thisMonthInquiries, lastMonthInquiries, thisWeekProducts, countries,
   ] = await Promise.all([
     Product.countDocuments(),
     Category.countDocuments(),
@@ -43,56 +33,44 @@ const getOverview = asyncHandler(async (req, res) => {
     : thisMonthInquiries > 0 ? 100 : 0;
 
   res.json({
-    totalProducts,
-    totalCategories,
-    totalInquiries,
-    newInquiries,
-    featuredProducts,
-    thisMonthInquiries,
-    monthChange,
-    thisWeekProducts,
+    totalProducts, totalCategories, totalInquiries, newInquiries,
+    featuredProducts, thisMonthInquiries, monthChange, thisWeekProducts,
     totalCountries: countries.filter(c => c && c.trim()).length,
   });
 });
 
-// @desc    Get inquiries analytics (by month, last 12 months)
-// @route   GET /api/admin/analytics/inquiries
-// @access  Private
 const getInquiriesAnalytics = asyncHandler(async (req, res) => {
   const now = new Date();
   const startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
 
-  // Group inquiries by year and month
-  const monthlyDataResult = await pool.query(`
-    SELECT 
-      EXTRACT(YEAR FROM "createdAt")::int as year,
-      EXTRACT(MONTH FROM "createdAt")::int as month,
-      COUNT(*)::int as count,
-      SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END)::int as "newCount",
-      SUM(CASE WHEN status = 'replied' THEN 1 ELSE 0 END)::int as "repliedCount"
-    FROM inquiries
-    WHERE "createdAt" >= $1
-    GROUP BY year, month
-    ORDER BY year ASC, month ASC
-  `, [startDate]);
+  const { data: inquiries } = await supabase
+    .from('inquiries')
+    .select('createdAt, status')
+    .gte('createdAt', startDate.toISOString());
 
-  const monthlyData = monthlyDataResult.rows.map(r => ({
-    _id: { year: r.year, month: r.month },
-    count: r.count,
-    newCount: r.newCount,
-    repliedCount: r.repliedCount
-  }));
+  const inquiriesList = inquiries || [];
 
-  // Fill missing months
-  const result = [];
+  const monthlyMap = {};
+  const statusCounts = {};
+
+  for (const inq of inquiriesList) {
+    const d = new Date(inq.createdAt);
+    const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+    if (!monthlyMap[key]) monthlyMap[key] = { year: d.getFullYear(), month: d.getMonth() + 1, count: 0, newCount: 0, repliedCount: 0 };
+    monthlyMap[key].count++;
+    if (inq.status === 'new') monthlyMap[key].newCount++;
+    if (inq.status === 'replied') monthlyMap[key].repliedCount++;
+
+    statusCounts[inq.status || 'unknown'] = (statusCounts[inq.status || 'unknown'] || 0) + 1;
+  }
+
+  const monthly = [];
   for (let i = 11; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    const found = monthlyData.find(m => m._id.year === year && m._id.month === month);
-    result.push({
-      year,
-      month,
+    const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+    const found = monthlyMap[key];
+    monthly.push({
+      year: d.getFullYear(), month: d.getMonth() + 1,
       label: d.toLocaleString('en', { month: 'short', year: '2-digit' }),
       count: found ? found.count : 0,
       newCount: found ? found.newCount : 0,
@@ -100,97 +78,78 @@ const getInquiriesAnalytics = asyncHandler(async (req, res) => {
     });
   }
 
-  // Status breakdown
-  const statusResult = await pool.query('SELECT status as _id, COUNT(*)::int as count FROM inquiries GROUP BY status');
-  const statusBreakdown = statusResult.rows;
+  const statusBreakdown = Object.entries(statusCounts).map(([status, count]) => ({ _id: status, count }));
 
-  res.json({ monthly: result, statusBreakdown });
+  res.json({ monthly, statusBreakdown });
 });
 
-// @desc    Get country analytics
-// @route   GET /api/admin/analytics/countries
-// @access  Private
 const getCountriesAnalytics = asyncHandler(async (req, res) => {
-  const countriesResult = await pool.query(`
-    SELECT country as _id, COUNT(*)::int as count 
-    FROM inquiries 
-    WHERE country IS NOT NULL AND country != '' 
-    GROUP BY country 
-    ORDER BY count DESC 
-    LIMIT 10
-  `);
-  const data = countriesResult.rows;
+  const { data: inquiries } = await supabase
+    .from('inquiries')
+    .select('country')
+    .not('country', 'is', null)
+    .neq('country', '');
 
-  res.json(data.map(d => ({ country: d._id, count: d.count })));
-});
-
-// @desc    Get products analytics
-// @route   GET /api/admin/analytics/products
-// @access  Private
-const getProductsAnalytics = asyncHandler(async (req, res) => {
-  // Products per category
-  const byCategoryResult = await pool.query(`
-    SELECT 
-      c.id as _id,
-      COALESCE(c.name->>'en', 'Uncategorized') as "nameEn",
-      COALESCE(c.name->>'ar', 'غير مصنف') as "nameAr",
-      COALESCE(c.color, '#8B949E') as color,
-      c.slug as slug,
-      COUNT(p.id)::int as count,
-      SUM(CASE WHEN p.featured THEN 1 ELSE 0 END)::int as "featuredCount"
-    FROM categories c
-    LEFT JOIN products p ON p.category = c.id
-    GROUP BY c.id, c.name, c.color, c.slug
-    ORDER BY count DESC
-  `);
-  const byCategory = byCategoryResult.rows;
-
-  // Products added per month (last 6 months)
-  const now = new Date();
-  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
-
-  const monthlyProductsResult = await pool.query(`
-    SELECT 
-      EXTRACT(YEAR FROM "createdAt")::int as year,
-      EXTRACT(MONTH FROM "createdAt")::int as month,
-      COUNT(*)::int as count
-    FROM products
-    WHERE "createdAt" >= $1
-    GROUP BY year, month
-    ORDER BY year ASC, month ASC
-  `, [sixMonthsAgo]);
-
-  const monthlyProducts = monthlyProductsResult.rows.map(r => ({
-    _id: { year: r.year, month: r.month },
-    count: r.count
-  }));
-
-  // Fill missing months
-  const monthlyResult = [];
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    const found = monthlyProducts.find(m => m._id.year === year && m._id.month === month);
-    monthlyResult.push({
-      label: d.toLocaleString('en', { month: 'short' }),
-      products: found ? found.count : 0,
-    });
+  const countryMap = {};
+  for (const inq of inquiries || []) {
+    countryMap[inq.country] = (countryMap[inq.country] || 0) + 1;
   }
 
-  res.json({ byCategory, monthlyProducts: monthlyResult });
+  const data = Object.entries(countryMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .map(([country, count]) => ({ country, count }));
+
+  res.json(data);
 });
 
-// @desc    Get recent activity for dashboard
-// @route   GET /api/admin/analytics/activity
-// @access  Private
+const getProductsAnalytics = asyncHandler(async (req, res) => {
+  const [categories, products] = await Promise.all([
+    supabase.from('categories').select('*'),
+    supabase.from('products').select('id, category, featured, createdAt'),
+  ]);
+
+  const productsList = products.data || [];
+  const categoriesList = categories.data || [];
+
+  const byCategory = categoriesList.map(c => {
+    const catProducts = productsList.filter(p => p.category === c.id);
+    return {
+      _id: c.id,
+      nameEn: c.name?.en || 'Uncategorized',
+      nameAr: c.name?.ar || 'غير مصنف',
+      color: c.color || '#8B949E',
+      slug: c.slug,
+      count: catProducts.length,
+      featuredCount: catProducts.filter(p => p.featured).length,
+    };
+  }).sort((a, b) => b.count - a.count);
+
+  const now = new Date();
+  const monthlyMap = {};
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    monthlyMap[`${d.getFullYear()}-${d.getMonth() + 1}`] = { label: d.toLocaleString('en', { month: 'short' }), products: 0 };
+  }
+
+  for (const p of productsList) {
+    const d = new Date(p.createdAt);
+    const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    if (d >= sixMonthsAgo) {
+      const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+      if (monthlyMap[key]) monthlyMap[key].products++;
+    }
+  }
+
+  res.json({ byCategory, monthlyProducts: Object.values(monthlyMap) });
+});
+
 const getRecentActivity = asyncHandler(async (req, res) => {
   const [recentInquiries, recentProducts] = await Promise.all([
     Inquiry.find().sort({ createdAt: -1 }).limit(5).select('name company country status createdAt productInterest'),
     Product.find().sort({ updatedAt: -1 }).limit(5).select('name updatedAt createdAt').populate('category', 'name'),
   ]);
 
-  // Merge and sort by time
   const activities = [];
 
   recentInquiries.forEach(inq => {
@@ -204,12 +163,10 @@ const getRecentActivity = asyncHandler(async (req, res) => {
   });
 
   recentProducts.forEach(prod => {
-    const isNew = prod.createdAt.getTime() === prod.updatedAt.getTime();
+    const isNew = new Date(prod.createdAt).getTime() === new Date(prod.updatedAt).getTime();
     activities.push({
       type: 'product',
-      title: isNew
-        ? `Product "${prod.name?.en}" was added`
-        : `Product "${prod.name?.en}" was updated`,
+      title: isNew ? `Product "${prod.name?.en}" was added` : `Product "${prod.name?.en}" was updated`,
       subtitle: prod.category?.name?.en || '',
       time: prod.updatedAt,
     });
@@ -220,10 +177,4 @@ const getRecentActivity = asyncHandler(async (req, res) => {
   res.json(activities.slice(0, 10));
 });
 
-module.exports = {
-  getOverview,
-  getInquiriesAnalytics,
-  getCountriesAnalytics,
-  getProductsAnalytics,
-  getRecentActivity,
-};
+module.exports = { getOverview, getInquiriesAnalytics, getCountriesAnalytics, getProductsAnalytics, getRecentActivity };

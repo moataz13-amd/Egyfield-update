@@ -1,222 +1,47 @@
-const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 
 dotenv.config();
 
-const isServerless = !!process.env.VERCEL;
-
-let pool;
-
-if (process.env.DATABASE_URL) {
-  pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1')
-      ? false
-      : { rejectUnauthorized: false },
-    max: parseInt(process.env.DB_POOL_MAX || (isServerless ? 1 : 5)),
-    connectionTimeoutMillis: parseInt(process.env.DB_TIMEOUT || 30000),
-    idleTimeoutMillis: 30000,
-  });
-} else {
-  pool = new Pool({
-    user: process.env.PGUSER || 'postgres',
-    host: process.env.PGHOST || 'localhost',
-    database: process.env.PGDATABASE || 'egyfield',
-    password: process.env.PGPASSWORD || 'postgres',
-    port: process.env.PGPORT || 5432,
-    max: parseInt(process.env.DB_POOL_MAX || 5),
-    connectionTimeoutMillis: parseInt(process.env.DB_TIMEOUT || 30000),
+let supabase;
+if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+    auth: { persistSession: false },
+    db: { schema: 'public' },
   });
 }
-
-const schemaSQL = `
-CREATE TABLE IF NOT EXISTS admins (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "username" TEXT UNIQUE NOT NULL,
-  "email" TEXT UNIQUE NOT NULL,
-  "password" TEXT NOT NULL,
-  "role" TEXT DEFAULT 'admin',
-  "permissions" JSONB DEFAULT '["products", "articles", "inquiries", "settings"]'::jsonb,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS categories (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "name" JSONB NOT NULL,
-  "slug" TEXT UNIQUE NOT NULL,
-  "icon" TEXT DEFAULT '',
-  "color" TEXT DEFAULT '#7BB445',
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS products (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "name" JSONB NOT NULL,
-  "description" JSONB NOT NULL,
-  "category" UUID REFERENCES categories(id) ON DELETE RESTRICT,
-  "images" JSONB DEFAULT '[]'::jsonb,
-  "origin" TEXT DEFAULT 'Egypt',
-  "packaging" TEXT DEFAULT '',
-  "season" TEXT DEFAULT 'Year-round',
-  "certifications" JSONB DEFAULT '[]'::jsonb,
-  "featured" BOOLEAN DEFAULT false,
-  "isActive" BOOLEAN DEFAULT true,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS about_contents (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "storyText1" JSONB DEFAULT '{}'::jsonb,
-  "storyText2" JSONB DEFAULT '{}'::jsonb,
-  "storyImage" TEXT DEFAULT '',
-  "storyBadge" JSONB DEFAULT '{}'::jsonb,
-  "missionText" JSONB DEFAULT '{}'::jsonb,
-  "visionText" JSONB DEFAULT '{}'::jsonb,
-  "timeline" JSONB DEFAULT '[]'::jsonb,
-  "certifications" JSONB DEFAULT '[]'::jsonb,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS articles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "title" JSONB DEFAULT '{}'::jsonb,
-  "content" JSONB DEFAULT '{}'::jsonb,
-  "summary" JSONB DEFAULT '{}'::jsonb,
-  "image" JSONB DEFAULT '{}'::jsonb,
-  "slug" TEXT UNIQUE NOT NULL,
-  "views" INTEGER DEFAULT 0,
-  "isActive" BOOLEAN DEFAULT true,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS inquiries (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "name" TEXT NOT NULL,
-  "email" TEXT NOT NULL,
-  "company" TEXT DEFAULT '',
-  "country" TEXT DEFAULT '',
-  "productInterest" TEXT DEFAULT '',
-  "message" TEXT NOT NULL,
-  "status" TEXT DEFAULT 'new',
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS partners (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "name" JSONB NOT NULL,
-  "logo" JSONB NOT NULL,
-  "website" TEXT DEFAULT '',
-  "isActive" BOOLEAN DEFAULT true,
-  "order" INTEGER DEFAULT 0,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE TABLE IF NOT EXISTS settings (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "companyName" JSONB DEFAULT '{"en": "EgyField", "ar": "إيجي فيلد"}'::jsonb,
-  "tagline" JSONB DEFAULT '{"en": "Premium Egyptian Agricultural Exports", "ar": "صادرات زراعية مصرية فاخرة"}'::jsonb,
-  "foundedYear" INTEGER DEFAULT 2015,
-  "email" TEXT DEFAULT 'info@egyfield.com',
-  "phone" TEXT DEFAULT '+20 123 456 7890',
-  "whatsapp" TEXT DEFAULT '+20 123 456 7890',
-  "address" JSONB DEFAULT '{"en": "Cairo, Egypt", "ar": "القاهرة، مصر"}'::jsonb,
-  "social" JSONB DEFAULT '{"facebook": "", "instagram": "", "linkedin": "", "youtube": ""}'::jsonb,
-  "seo" JSONB DEFAULT '{"metaTitle": "EgyField — Premium Egyptian Agricultural Exports", "metaDescription": "EgyField specializes in premium Egyptian agricultural exports worldwide.", "keywords": []}'::jsonb,
-  "heroImage" JSONB DEFAULT '{"url": "", "publicId": ""}'::jsonb,
-  "heroImages" JSONB DEFAULT '[]'::jsonb,
-  "heroTitleColor" TEXT DEFAULT '#ffffff',
-  "heroSubtitleColor" TEXT DEFAULT '#ffffff',
-  "heroTitle" JSONB DEFAULT '{"en": "Egypt''s Finest Agricultural Exports", "ar": "أجود الحاصلات الزراعية المصرية"}'::jsonb,
-  "heroSubtitle" JSONB DEFAULT '{"en": "Premium quality pickles, fresh produce, frozen goods & grains — delivered worldwide", "ar": "مخللات ومنتجات طازجة ومجمدة وحبوب بأعلى معايير الجودة — شحن عالمي"}'::jsonb,
-  "pageCovers" JSONB DEFAULT '{}'::jsonb,
-  "isPartnersActive" BOOLEAN DEFAULT true,
-  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-CREATE OR REPLACE FUNCTION update_updatedAt_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW."updatedAt" = now();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-DO $$
-BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_admins_updatedAt') THEN
-    CREATE TRIGGER update_admins_updatedAt BEFORE UPDATE ON admins FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_categories_updatedAt') THEN
-    CREATE TRIGGER update_categories_updatedAt BEFORE UPDATE ON categories FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_products_updatedAt') THEN
-    CREATE TRIGGER update_products_updatedAt BEFORE UPDATE ON products FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_about_contents_updatedAt') THEN
-    CREATE TRIGGER update_about_contents_updatedAt BEFORE UPDATE ON about_contents FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_articles_updatedAt') THEN
-    CREATE TRIGGER update_articles_updatedAt BEFORE UPDATE ON articles FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_inquiries_updatedAt') THEN
-    CREATE TRIGGER update_inquiries_updatedAt BEFORE UPDATE ON inquiries FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_partners_updatedAt') THEN
-    CREATE TRIGGER update_partners_updatedAt BEFORE UPDATE ON partners FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_settings_updatedAt') THEN
-    CREATE TRIGGER update_settings_updatedAt BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
-  END IF;
-END $$;
-`;
 
 let connected = false;
 
 const connectDB = async () => {
-  if (connected) return;
+  if (connected || !supabase) return;
   try {
-    const client = await pool.connect();
-    console.log(`PostgreSQL Connected to database: ${client.database}`);
-
+    const { error } = await supabase.from('admins').select('id', { count: 'exact', head: true });
+    if (error && !error.message?.includes('relation') && !error.message?.includes('does not exist')) {
+      throw error;
+    }
     if (!process.env.SKIP_DB_SCHEMA) {
-      await client.query(schemaSQL);
-      console.log('PostgreSQL Schema Checked/Created.');
+      const { count } = await supabase.from('admins').select('*', { count: 'exact', head: true });
+      if (count === 0) {
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
+        const { error: insErr } = await supabase.from('admins').insert([{
+          username: 'admin',
+          email: 'admin@egyfield.com',
+          password: hashedPassword,
+          role: 'superadmin',
+          permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
+        }]);
+        if (!insErr) console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
+      }
     }
-
-    const adminsCountResult = await client.query('SELECT COUNT(*) FROM admins');
-    const adminsCount = parseInt(adminsCountResult.rows[0].count);
-    if (adminsCount === 0) {
-      const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
-      await client.query(
-        'INSERT INTO admins (username, email, password, role, permissions) VALUES ($1, $2, $3, $4, $5)',
-        ['admin', 'admin@egyfield.com', hashedPassword, 'superadmin', JSON.stringify(['products', 'articles', 'inquiries', 'settings', 'admins'])]
-      );
-      console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
-    }
-
-    client.release();
     connected = true;
   } catch (error) {
-    console.error(`PostgreSQL Error: ${error.message}`);
-    if (!isServerless) {
-      process.exit(1);
-    }
+    console.error('Database error:', error.message);
+    if (!process.env.VERCEL) process.exit(1);
     throw error;
   }
 };
 
-module.exports = {
-  pool,
-  connectDB,
-  query: (text, params) => pool.query(text, params),
-};
+module.exports = { supabase, connectDB };

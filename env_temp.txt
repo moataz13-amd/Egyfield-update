@@ -1,0 +1,1 @@
+﻿DATABASE_URL=postgresql://postgres:egyfield578-hub%27s%20Org@db.vpxmweezcmnsuwjtmnll.supabase.co:6543/postgres
