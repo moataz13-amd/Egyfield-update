@@ -111,7 +111,7 @@ if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const path = require('path');
   const distPath = path.join(__dirname, '../client/dist');
   app.use(express.static(distPath));
-  app.get('*', (req, res) => {
+  app.get('/*splat', (req, res) => {
     res.sendFile(path.resolve(distPath, 'index.html'));
   });
 }
