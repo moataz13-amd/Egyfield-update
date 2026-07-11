@@ -106,10 +106,10 @@ app.use('/api', (req, res) => {
   res.status(404).json({ message: 'API route not found' });
 });
 
-// Serve static assets in production (non-Vercel; Vercel serves from outputDirectory)
-if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
   const path = require('path');
-  const distPath = path.join(__dirname, '../client/dist');
+  const distPath = path.join(process.cwd(), 'client/dist');
   app.use(express.static(distPath));
   app.get('/*splat', (req, res) => {
     res.sendFile(path.resolve(distPath, 'index.html'));
