@@ -21,20 +21,18 @@ const connectDB = async () => {
     if (error && !error.message?.includes('relation') && !error.message?.includes('does not exist')) {
       throw error;
     }
-    if (!process.env.SKIP_DB_SCHEMA) {
-      const { count } = await supabase.from('admins').select('*', { count: 'exact', head: true });
-      if (count === 0) {
-        const salt = await bcrypt.genSalt(12);
-        const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
-        const { error: insErr } = await supabase.from('admins').insert([{
-          username: 'admin',
-          email: 'admin@egyfield.com',
-          password: hashedPassword,
-          role: 'superadmin',
-          permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
-        }]);
-        if (!insErr) console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
-      }
+    const { count } = await supabase.from('admins').select('*', { count: 'exact', head: true });
+    if (count === 0) {
+      const salt = await bcrypt.genSalt(12);
+      const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
+      const { error: insErr } = await supabase.from('admins').insert([{
+        username: 'admin',
+        email: 'admin@egyfield.com',
+        password: hashedPassword,
+        role: 'superadmin',
+        permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
+      }]);
+      if (!insErr) console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
     }
     connected = true;
   } catch (error) {
