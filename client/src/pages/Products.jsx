@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import { useSEO } from '../hooks/useSEO';
 import { useProducts, useCategories } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
@@ -12,6 +13,7 @@ import './Products.css';
 
 const Products = () => {
   const { t, language } = useLanguage();
+  const seo = useSEO();
   const isAr = language === 'ar';
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -48,8 +50,9 @@ const Products = () => {
   return (
     <>
       <Helmet>
-        <title>{isAr ? 'منتجاتنا الزراعية الممتازة — إيجي فيلد' : 'Premium Agricultural Products — EgyField'}</title>
-        <meta name="description" content="Browse EgyField's complete range of premium Egyptian agricultural exports: fresh onions, citrus fruit, frozen vegetables, and fine grains." />
+        <title>{seo.metaTitle || (isAr ? 'منتجاتنا الزراعية الممتازة — إيجي فيلد' : 'Premium Agricultural Products — EgyField')}</title>
+        <meta name="description" content={seo.metaDescription || "Browse EgyField's complete range of premium Egyptian agricultural exports: fresh onions, citrus fruit, frozen vegetables, and fine grains."} />
+        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
       </Helmet>
 
       <div className="products-page">

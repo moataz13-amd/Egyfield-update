@@ -10,14 +10,17 @@ import './Partners.css';
 const Partners = () => {
   const { language } = useLanguage();
   const lang = language || 'en';
+  const [settings, setSettings] = useState(null);
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pageActive, setPageActive] = useState(null); // null = still checking
+  const [pageActive, setPageActive] = useState(null);
+  const seo = settings?.seo || {};
 
   // Check if the page is enabled by admin
   useEffect(() => {
     api.get('/settings')
       .then(res => {
+        setSettings(res.data);
         if (res.data && res.data.isPartnersActive === false) {
           setPageActive(false);
         } else {
@@ -25,7 +28,7 @@ const Partners = () => {
         }
       })
       .catch(() => {
-        setPageActive(true); // default to active on error
+        setPageActive(true);
       });
   }, []);
 
@@ -51,8 +54,9 @@ const Partners = () => {
   return (
     <>
       <Helmet>
-        <title>{language === 'ar' ? 'شركاؤنا' : 'Our Partners'} — EgyField</title>
-        <meta name="description" content="EgyField's trusted global partners and distributors delivering premium agricultural products worldwide." />
+        <title>{seo.metaTitle || (language === 'ar' ? 'شركاؤنا — إيجي فيلد' : 'Our Partners — EgyField')}</title>
+        <meta name="description" content={seo.metaDescription || "EgyField's trusted global partners and distributors delivering premium agricultural products worldwide."} />
+        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
       </Helmet>
 
       <div className="partners-page">

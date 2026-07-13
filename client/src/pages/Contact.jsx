@@ -11,6 +11,7 @@ const Contact = () => {
   const { t, language } = useLanguage();
   const [settings, setSettings] = useState(null);
   const isAr = language === 'ar';
+  const seo = settings?.seo || {};
 
   useEffect(() => {
     api.get('/settings')
@@ -74,8 +75,9 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>{t('contact.title')} — {settings?.companyName?.[currentLang] || 'EgyField'}</title>
-        <meta name="description" content="Get in touch with EgyField export team for premium agricultural crop orders, custom packaging, and export quotes." />
+        <title>{seo.metaTitle || `${t('contact.title')} — ${settings?.companyName?.[currentLang] || 'EgyField'}`}</title>
+        <meta name="description" content={seo.metaDescription || 'Get in touch with EgyField export team for premium agricultural crop orders, custom packaging, and export quotes.'} />
+        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
       </Helmet>
 
       <div className="contact-page">

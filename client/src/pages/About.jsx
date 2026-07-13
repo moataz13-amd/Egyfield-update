@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import { useSEO } from '../hooks/useSEO';
 import { Target, Eye, ShieldCheck, Award, FileText, ExternalLink } from 'lucide-react';
 import PageCover from '../components/PageCover';
 import api from '../services/api';
@@ -8,6 +9,7 @@ import './About.css';
 
 const About = () => {
   const { t, language } = useLanguage();
+  const seo = useSEO();
   const lang = language || 'en';
   const [about, setAbout] = useState(null);
 
@@ -38,8 +40,9 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>{t('about.title')} — EgyField</title>
-        <meta name="description" content="Learn more about EgyField, your trusted partner for exporting premium Egyptian agricultural products worldwide." />
+        <title>{seo.metaTitle || `${t('about.title')} — EgyField`}</title>
+        <meta name="description" content={seo.metaDescription || 'Learn more about EgyField, your trusted partner for exporting premium Egyptian agricultural products worldwide.'} />
+        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
       </Helmet>
 
       <div className="about-page">

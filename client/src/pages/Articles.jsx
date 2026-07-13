@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import { useSEO } from '../hooks/useSEO';
 import { Search, Calendar, Eye, ArrowRight, Loader, FileText } from 'lucide-react';
 import PageCover from '../components/PageCover';
 import api from '../services/api';
@@ -9,6 +11,7 @@ import { ar, enUS } from 'date-fns/locale';
 
 const Articles = () => {
   const { t, language } = useLanguage();
+  const seo = useSEO();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -44,7 +47,13 @@ const Articles = () => {
   const dateLocale = language === 'ar' ? ar : enUS;
 
   return (
-    <div className="articles-page" style={{ minHeight: '100vh', background: '#fafafa' }}>
+    <>
+      <Helmet>
+        <title>{seo.metaTitle || (language === 'ar' ? 'أحدث المقالات — إيجي فيلد' : 'Latest Articles — EgyField')}</title>
+        <meta name="description" content={seo.metaDescription || 'Read EgyField articles about crop seasons, packaging excellence, quality standards, and global export procedures.'} />
+        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
+      </Helmet>
+      <div className="articles-page" style={{ minHeight: '100vh', background: '#fafafa' }}>
       {/* Page Cover */}
       <PageCover
         pageKey="articles"
@@ -284,6 +293,7 @@ const Articles = () => {
 
       </div>
     </div>
+    </>
   );
 };
 

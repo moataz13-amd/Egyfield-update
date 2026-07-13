@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import { useSEO } from '../hooks/useSEO';
 import { useFeaturedProducts, useCategories } from '../hooks/useProducts';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
@@ -13,6 +14,7 @@ import './Home.css';
 
 const Home = () => {
   const { t, language, isRTL } = useLanguage();
+  const seo = useSEO();
   const { data: featuredProducts, isLoading: productsLoading } = useFeaturedProducts();
   const { data: categories } = useCategories();
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
@@ -52,8 +54,9 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>EgyField — Agricultural Exports</title>
-        <meta name="description" content="EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, and grains & legumes. Worldwide delivery." />
+        <title>{seo.metaTitle || 'EgyField — Agricultural Exports'}</title>
+        <meta name="description" content={seo.metaDescription || 'EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, and grains & legumes. Worldwide delivery.'} />
+        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
       </Helmet>
 
       <Hero />
