@@ -1,6 +1,15 @@
 -- EgyField Database Schema for Supabase
 -- Run this SQL in Supabase SQL Editor before deploying to Vercel
 
+-- Add missing columns to existing tables (safe — skips if already present)
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS "image" JSONB DEFAULT '{"url": "", "publicId": ""}'::jsonb;
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS "isActive" BOOLEAN DEFAULT true;
+ALTER TABLE products  ADD COLUMN IF NOT EXISTS "specifications" JSONB DEFAULT '[]'::jsonb;
+
+-- ============================================================
+-- Full schema (safe for fresh databases via IF NOT EXISTS)
+-- ============================================================
+
 CREATE TABLE IF NOT EXISTS admins (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   "username" TEXT UNIQUE NOT NULL,
@@ -139,6 +148,9 @@ DROP TRIGGER IF EXISTS update_partners_updatedat ON partners;
 CREATE TRIGGER update_partners_updatedAt BEFORE UPDATE ON partners FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
 DROP TRIGGER IF EXISTS update_settings_updatedat ON settings;
 CREATE TRIGGER update_settings_updatedAt BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
+
+-- Refresh PostgREST schema cache so new columns are visible immediately
+SELECT pg_notify('pgrst', 'reload schema');
 
 -- Note: The default admin (admin@egyfield.com / EgyField@2024) is seeded
 -- automatically by the app on first connection.
