@@ -1,6 +1,6 @@
 import api from '../services/api';
 
-export default async function uploadToCloudinary(file) {
+export default async function uploadToCloudinary(file, resourceType = 'image') {
   const { data: params } = await api.get('/admin/cloudinary/upload-params');
 
   const formData = new FormData();
@@ -9,9 +9,12 @@ export default async function uploadToCloudinary(file) {
   formData.append('timestamp', params.timestamp);
   formData.append('signature', params.signature);
   formData.append('folder', params.folder);
+  if (resourceType === 'raw') formData.append('resource_type', 'raw');
+
+  const uploadEndpoint = resourceType === 'raw' ? 'raw' : 'image';
 
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${params.cloudName}/image/upload`,
+    `https://api.cloudinary.com/v1_1/${params.cloudName}/${uploadEndpoint}/upload`,
     { method: 'POST', body: formData }
   );
 

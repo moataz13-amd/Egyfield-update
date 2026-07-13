@@ -4,7 +4,7 @@ import { useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { Save, ArrowLeft, Upload, X, Loader, Plus, Trash2 } from 'lucide-react';
+import { Save, ArrowLeft, Upload, X, Loader, Plus, Trash2, FileText, Image } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
 
@@ -22,8 +22,13 @@ const ProductForm = () => {
   const [form, setForm] = useState({
     nameEn: '', nameAr: '', descriptionEn: '', descriptionAr: '',
     category: '', origin: 'Egypt', packaging: '', season: 'Year-round',
-    certifications: '["ISO 22000","HACCP"]', featured: false, isActive: true,
+    featured: false, isActive: true,
   });
+  const [certifications, setCertifications] = useState([
+    { name: 'ISO 22000', type: 'text' },
+    { name: 'HACCP', type: 'text' },
+  ]);
+  const [certUploading, setCertUploading] = useState(false);
   const [specifications, setSpecifications] = useState([
     { enLabel: 'Properties', arLabel: 'الخاصية', value: '' },
     { enLabel: 'Details', arLabel: 'تفاصيل', value: '' },
@@ -44,9 +49,11 @@ const ProductForm = () => {
         descriptionEn: p.description?.en || '', descriptionAr: p.description?.ar || '',
         category: p.category?._id || '', origin: p.origin || 'Egypt',
         packaging: p.packaging || '', season: p.season || 'Year-round',
-        certifications: JSON.stringify(p.certifications || []),
         featured: p.featured || false, isActive: p.isActive !== false,
       });
+      // Normalize certifications: support both old (string[]) and new ({name,type,url,publicId}[])
+      const rawCerts = p.certifications || [];
+      setCertifications(rawCerts.map(c => typeof c === 'string' ? { name: c, type: 'text' } : c));
       setExistingImages(p.images || []);
       if (p.specifications?.length) setSpecifications(p.specifications);
       setFetching(false);
@@ -72,6 +79,30 @@ const ProductForm = () => {
     setExistingImages(prev => prev.filter(img => img.publicId !== publicId));
   };
 
+  const addTextCert = () => {
+    setCertifications(prev => [...prev, { name: '', type: 'text' }]);
+  };
+  const removeCert = (i) => {
+    setCertifications(prev => prev.filter((_, idx) => idx !== i));
+  };
+  const updateCertName = (i, val) => {
+    setCertifications(prev => prev.map((c, idx) => idx === i ? { ...c, name: val } : c));
+  };
+  const handleCertFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCertUploading(true);
+    try {
+      const isPdf = file.type === 'application/pdf';
+      const result = await uploadToCloudinary(file, isPdf ? 'raw' : 'image');
+      setCertifications(prev => [...prev, { name: file.name.replace(/\.[^.]+$/, ''), url: result.url, publicId: result.publicId, type: isPdf ? 'pdf' : 'image' }]);
+    } catch (err) {
+      toast.error(language === 'ar' ? 'فشل رفع الملف' : 'File upload failed');
+    }
+    setCertUploading(false);
+    e.target.value = '';
+  };
+
   const addSpecRow = () => {
     setSpecifications(prev => [...prev, { enLabel: '', arLabel: '', value: '' }]);
   };
@@ -94,6 +125,7 @@ const ProductForm = () => {
       ...form,
       imagesData: JSON.stringify(imagesData),
       removeImages: JSON.stringify(removeImages),
+      certifications: JSON.stringify(certifications.filter(c => c.name)),
       specifications: JSON.stringify(specifications.filter(s => s.enLabel || s.arLabel)),
     };
 
@@ -174,9 +206,43 @@ const ProductForm = () => {
               <input className="admin-form-control" name="season" value={form.season} onChange={handleChange} />
             </div>
           </div>
+          {/* Certifications */}
           <div className="admin-form-group">
-            <label>{language === 'ar' ? 'الشهادات (تنسيق JSON)' : 'Certifications (JSON array)'}</label>
-            <input className="admin-form-control" name="certifications" value={form.certifications} onChange={handleChange} />
+            <label>{language === 'ar' ? 'الشهادات' : 'Certifications'}</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {certifications.map((cert, i) => (
+                <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'var(--admin-bg)', padding: '6px 10px', borderRadius: 'var(--admin-radius)', border: '1px solid var(--admin-border)' }}>
+                  {cert.type === 'text' ? (
+                    <input className="admin-form-control" value={cert.name} onChange={e => updateCertName(i, e.target.value)} placeholder={language === 'ar' ? 'اسم الشهادة' : 'Certification name'} style={{ flex: 1, border: 'none', background: 'transparent', padding: '4px 0', fontSize: 13 }} />
+                  ) : cert.type === 'pdf' ? (
+                    <>
+                      <FileText size={16} color="var(--admin-danger)" />
+                      <span style={{ flex: 1, fontSize: 13, color: 'var(--admin-text)' }}>{cert.name}</span>
+                      {cert.url && <a href={cert.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--admin-primary)' }}>{language === 'ar' ? 'عرض' : 'View'}</a>}
+                    </>
+                  ) : (
+                    <>
+                      <Image size={16} color="var(--admin-primary)" />
+                      <span style={{ flex: 1, fontSize: 13, color: 'var(--admin-text)' }}>{cert.name}</span>
+                      {cert.url && <img src={cert.url} alt="" style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'cover' }} />}
+                    </>
+                  )}
+                  <button type="button" onClick={() => removeCert(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--admin-danger)', padding: 2 }}>
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <button type="button" className="admin-btn admin-btn-secondary admin-btn-sm" onClick={addTextCert}>
+                <Plus size={14} /> {language === 'ar' ? 'إضافة نص' : 'Add Text'}
+              </button>
+              <label className="admin-btn admin-btn-secondary admin-btn-sm" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                {certUploading ? <Loader size={14} className="spin" /> : <Upload size={14} />}
+                {language === 'ar' ? 'رفع ملف' : 'Upload File'}
+                <input type="file" accept="image/*,application/pdf" onChange={handleCertFileUpload} style={{ display: 'none' }} />
+              </label>
+            </div>
           </div>
 
           {/* Specifications Table */}

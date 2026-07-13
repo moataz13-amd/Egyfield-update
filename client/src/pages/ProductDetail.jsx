@@ -6,7 +6,7 @@ import { useProduct, useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import ContactForm from '../components/ContactForm';
 import Loader from '../components/Loader';
-import { MapPin, Package, Calendar, Award, ChevronLeft, ChevronRight, Table } from 'lucide-react';
+import { MapPin, Package, Calendar, Award, ChevronLeft, ChevronRight, Table, FileText, ExternalLink } from 'lucide-react';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './ProductDetail.css';
 
@@ -136,9 +136,24 @@ const ProductDetail = () => {
                 <div className="product-certifications">
                   <h4><Award size={18} /> {t('products.certifications')}</h4>
                   <div className="product-cert-list">
-                    {product.certifications.map((cert, i) => (
-                      <span key={i} className="badge badge-accent">{cert}</span>
-                    ))}
+                    {product.certifications.map((cert, i) => {
+                      const isText = typeof cert === 'string' || cert.type === 'text';
+                      const name = typeof cert === 'string' ? cert : cert.name;
+                      if (isText) return <span key={i} className="badge badge-accent">{name}</span>;
+                      if (cert.type === 'pdf') return (
+                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={name}>
+                          <FileText size={16} />
+                          <span>{name}</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      );
+                      return (
+                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={name}>
+                          <img src={cert.url} alt={name} className="product-cert-thumb" />
+                          <span>{name}</span>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
               )}
