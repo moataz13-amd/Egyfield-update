@@ -4,6 +4,7 @@ import api from '../../services/api';
 import { LanguageContext } from '../../context/LanguageContext';
 import toast from 'react-hot-toast';
 import { Save, Loader, Plus, Trash2, BookOpen, Target, Eye, Clock, Award, Globe, Upload, FileText, Image, X } from 'lucide-react';
+import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
 
 const AboutManager = () => {
@@ -126,7 +127,8 @@ const AboutManager = () => {
     setCertUploading(true);
     try {
       const isPdf = file.type === 'application/pdf';
-      const result = await uploadToCloudinary(file, isPdf ? 'raw' : 'image');
+      const uploadFile = isPdf ? file : await compressImage(file);
+      const result = await uploadToCloudinary(uploadFile, isPdf ? 'raw' : 'image');
       setData(prev => {
         const certs = [...prev.certifications];
         certs[index] = { ...certs[index], type: isPdf ? 'pdf' : 'image', url: result.url, publicId: result.publicId, name: certs[index].name || file.name.replace(/\.[^.]+$/, '') };
@@ -164,7 +166,8 @@ const AboutManager = () => {
     (async () => {
       try {
         const isPdf = file.type === 'application/pdf';
-        const result = await uploadToCloudinary(file, isPdf ? 'raw' : 'image');
+        const uploadFile = isPdf ? file : await compressImage(file);
+        const result = await uploadToCloudinary(uploadFile, isPdf ? 'raw' : 'image');
         setData(prev => ({
           ...prev,
           certifications: [...(prev.certifications || []), { name: file.name.replace(/\.[^.]+$/, ''), description: { en: '', ar: '', fr: '', it: '', tr: '' }, type: isPdf ? 'pdf' : 'image', url: result.url, publicId: result.publicId }],

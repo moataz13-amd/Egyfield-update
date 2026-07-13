@@ -94,7 +94,8 @@ const ProductForm = () => {
     setCertUploading(true);
     try {
       const isPdf = file.type === 'application/pdf';
-      const result = await uploadToCloudinary(file, isPdf ? 'raw' : 'image');
+      const uploadFile = isPdf ? file : await compressImage(file);
+      const result = await uploadToCloudinary(uploadFile, isPdf ? 'raw' : 'image');
       setCertifications(prev => [...prev, { name: file.name.replace(/\.[^.]+$/, ''), url: result.url, publicId: result.publicId, type: isPdf ? 'pdf' : 'image' }]);
     } catch (err) {
       toast.error(language === 'ar' ? 'فشل رفع الملف' : 'File upload failed');

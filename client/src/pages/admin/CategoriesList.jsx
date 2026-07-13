@@ -5,6 +5,7 @@ import { useConfirm } from '../../context/ConfirmContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Plus, Edit2, Trash2, X, Save, ToggleLeft, ToggleRight, Loader, Upload } from 'lucide-react';
+import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
 
 const CategoriesList = () => {
@@ -29,7 +30,8 @@ const CategoriesList = () => {
     if (!file) return;
     setUploading(true);
     try {
-      const result = await uploadToCloudinary(file);
+      const compressed = await compressImage(file);
+      const result = await uploadToCloudinary(compressed);
       setForm(p => ({ ...p, imageUrl: result.url, imagePublicId: result.publicId }));
     } catch {
       toast.error(language === 'ar' ? 'فشل رفع الصورة' : 'Image upload failed');
