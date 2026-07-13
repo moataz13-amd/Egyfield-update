@@ -64,7 +64,7 @@ const getCategoryProducts = asyncHandler(async (req, res) => {
 // @route   POST /api/categories
 // @access  Private (Admin)
 const createCategory = asyncHandler(async (req, res) => {
-  const { name, slug, icon, color } = req.body;
+  const { name, slug, icon, color, image } = req.body;
 
   const exists = await Category.findOne({ slug });
   if (exists) {
@@ -77,6 +77,7 @@ const createCategory = asyncHandler(async (req, res) => {
     slug,
     icon: icon || '',
     color: color || '#7BB445',
+    image: image || { url: '', publicId: '' },
     isActive: true,
   });
 
@@ -94,7 +95,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     throw new Error('Category not found');
   }
 
-  const { name, slug, icon, color, isActive } = req.body;
+  const { name, slug, icon, color, isActive, image } = req.body;
 
   if (name) {
     if (name.en !== undefined) category.name.en = name.en;
@@ -103,6 +104,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   if (slug) category.slug = slug;
   if (icon) category.icon = icon;
   if (color) category.color = color;
+  if (image) category.image = image;
   if (isActive !== undefined) category.isActive = isActive;
 
   const updatedCategory = await category.save();

@@ -4,7 +4,8 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { Plus, Edit2, Trash2, X, Save, ToggleLeft, ToggleRight, Loader } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Save, ToggleLeft, ToggleRight, Loader, Upload } from 'lucide-react';
+import uploadToCloudinary from '../../utils/directUpload';
 
 const CategoriesList = () => {
   const { t, language } = useContext(LanguageContext);
@@ -13,13 +14,28 @@ const CategoriesList = () => {
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [toggling, setToggling] = useState(null);
-  const [form, setForm] = useState({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445' });
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445', imageUrl: '', imagePublicId: '' });
 
-  const openAdd = () => { setEditing(null); setForm({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445' }); setModal(true); };
+  const openAdd = () => { setEditing(null); setForm({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445', imageUrl: '', imagePublicId: '' }); setModal(true); };
   const openEdit = (c) => {
     setEditing(c);
-    setForm({ nameEn: c.name?.en || '', nameAr: c.name?.ar || '', slug: c.slug || '', icon: c.icon || '', color: c.color || '#7BB445' });
+    setForm({ nameEn: c.name?.en || '', nameAr: c.name?.ar || '', slug: c.slug || '', icon: c.icon || '', color: c.color || '#7BB445', imageUrl: c.image?.url || '', imagePublicId: c.image?.publicId || '' });
     setModal(true);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const result = await uploadToCloudinary(file);
+      setForm(p => ({ ...p, imageUrl: result.url, imagePublicId: result.publicId }));
+    } catch {
+      toast.error(language === 'ar' ? 'فشل رفع الصورة' : 'Image upload failed');
+    }
+    setUploading(false);
+    e.target.value = '';
   };
 
   const handleDelete = async (id, name) => {
@@ -53,7 +69,7 @@ const CategoriesList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const body = { name: { en: form.nameEn, ar: form.nameAr }, slug: form.slug || form.nameEn.toLowerCase().replace(/\s+/g, '-'), icon: form.icon, color: form.color };
+    const body = { name: { en: form.nameEn, ar: form.nameAr }, slug: form.slug || form.nameEn.toLowerCase().replace(/\s+/g, '-'), icon: form.icon, color: form.color, image: { url: form.imageUrl, publicId: form.imagePublicId } };
     try {
       if (editing) { 
         await api.put(`/categories/${editing._id}`, body); 
@@ -84,6 +100,7 @@ const CategoriesList = () => {
           <table className="admin-table">
             <thead>
               <tr>
+                <th>{language === 'ar' ? 'الصورة' : 'Image'}</th>
                 <th>{language === 'ar' ? 'اللون' : 'Color'}</th>
                 <th>{language === 'ar' ? 'الاسم بالإنجليزية' : 'Name (EN)'}</th>
                 <th>{language === 'ar' ? 'الاسم بالعربية' : 'Name (AR)'}</th>
@@ -95,6 +112,7 @@ const CategoriesList = () => {
             <tbody>
               {categories?.map(c => (
                 <tr key={c._id}>
+                  <td>{c.image?.url ? <img src={c.image.url} alt="" style={{ width: 48, height: 36, borderRadius: 6, objectFit: 'cover' }} /> : <div style={{ width: 48, height: 36, borderRadius: 6, background: 'var(--admin-bg)' }} />}</td>
                   <td><div style={{ width: 28, height: 28, borderRadius: 8, background: c.color || '#7BB445' }} /></td>
                   <td style={{ fontWeight: 600 }}>{c.name?.en}</td>
                   <td style={{ direction: 'rtl', color: '#64748B' }}>{c.name?.ar}</td>
@@ -152,6 +170,22 @@ const CategoriesList = () => {
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'اللون' : 'Color'}</label>
                     <input type="color" value={form.color} onChange={e => setForm(p => ({ ...p, color: e.target.value }))} style={{ width: '100%', height: 42, border: 'none', borderRadius: 8, cursor: 'pointer' }} />
+                  </div>
+                </div>
+                <div className="admin-form-group">
+                  <label>{language === 'ar' ? 'صورة القسم' : 'Category Image'}</label>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    {form.imageUrl && <img src={form.imageUrl} alt="" style={{ width: 72, height: 54, borderRadius: 8, objectFit: 'cover', border: '1px solid var(--admin-border)' }} />}
+                    <label className="admin-btn admin-btn-secondary admin-btn-sm" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      {uploading ? <Loader size={14} className="spin" /> : <Upload size={14} />}
+                      {language === 'ar' ? 'اختيار صورة' : 'Choose Image'}
+                      <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                    </label>
+                    {form.imageUrl && (
+                      <button type="button" className="admin-btn admin-btn-sm" style={{ color: 'var(--admin-danger)' }} onClick={() => setForm(p => ({ ...p, imageUrl: '', imagePublicId: '' }))}>
+                        <X size={14} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

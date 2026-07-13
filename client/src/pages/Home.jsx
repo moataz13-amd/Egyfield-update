@@ -90,9 +90,15 @@ const Home = () => {
                 className={`category-card glass-card reveal reveal-delay-${i + 1}`}
                 style={{ '--cat-color': cat.color || 'var(--primary)' }}
               >
-                <div className="category-card-icon" style={{ background: cat.color ? `${cat.color}15` : 'rgba(123, 180, 69, 0.15)', color: cat.color || 'var(--primary-dark)' }}>
-                  {getCategoryIcon(cat.slug, 34)}
-                </div>
+                {cat.image?.url ? (
+                  <div className="category-card-img" style={{ background: cat.color ? `${cat.color}15` : 'rgba(123, 180, 69, 0.15)' }}>
+                    <img src={cat.image.url} alt={cat.name?.[language] || cat.name?.en} />
+                  </div>
+                ) : (
+                  <div className="category-card-icon" style={{ background: cat.color ? `${cat.color}15` : 'rgba(123, 180, 69, 0.15)', color: cat.color || 'var(--primary-dark)' }}>
+                    {getCategoryIcon(cat.slug, 34)}
+                  </div>
+                )}
                 <h3>{cat.name?.[language] || cat.name?.en}</h3>
                 <p className="category-card-count">
                   {cat.productCount || 0} {t('nav.products').toLowerCase()}
