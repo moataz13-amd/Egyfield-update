@@ -72,14 +72,15 @@ const createCategory = asyncHandler(async (req, res) => {
     throw new Error('Category with this slug already exists');
   }
 
-  const category = await Category.create({
+  const categoryData = {
     name: name || { en: '', ar: '' },
     slug,
     icon: icon || '',
     color: color || '#7BB445',
-    image: image || { url: '', publicId: '' },
     isActive: true,
-  });
+  };
+  if (image?.url) categoryData.image = image;
+  const category = await Category.create(categoryData);
 
   res.status(201).json(category);
 });
@@ -104,7 +105,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   if (slug) category.slug = slug;
   if (icon) category.icon = icon;
   if (color) category.color = color;
-  if (image) category.image = image;
+  if (image?.url) category.image = image;
   if (isActive !== undefined) category.isActive = isActive;
 
   const updatedCategory = await category.save();
