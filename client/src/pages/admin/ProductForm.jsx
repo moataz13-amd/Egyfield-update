@@ -24,7 +24,16 @@ const ProductForm = () => {
     category: '', origin: 'Egypt', packaging: '', season: 'Year-round',
     certifications: '["ISO 22000","HACCP"]', featured: false, isActive: true,
   });
-  const [specifications, setSpecifications] = useState([]);
+  const [specifications, setSpecifications] = useState([
+    { enLabel: 'Properties', arLabel: 'الخاصية', value: '' },
+    { enLabel: 'Details', arLabel: 'تفاصيل', value: '' },
+    { enLabel: 'Ingredients', arLabel: 'المكونات', value: '' },
+    { enLabel: 'Available Sizes', arLabel: 'المقاسات المتاحة', value: '' },
+    { enLabel: 'Processing Steps', arLabel: 'خطوات المعالجة', value: '' },
+    { enLabel: 'Characteristics', arLabel: 'الخصائص', value: '' },
+    { enLabel: 'Packaging', arLabel: 'التعبئة', value: '' },
+    { enLabel: 'Shelf Life', arLabel: 'مدة الصلاحية', value: '' },
+  ]);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -39,7 +48,7 @@ const ProductForm = () => {
         featured: p.featured || false, isActive: p.isActive !== false,
       });
       setExistingImages(p.images || []);
-      setSpecifications(p.specifications || []);
+      if (p.specifications?.length) setSpecifications(p.specifications);
       setFetching(false);
     }).catch(() => { 
       toast.error(language === 'ar' ? 'المنتج غير موجود' : 'Product not found'); 
