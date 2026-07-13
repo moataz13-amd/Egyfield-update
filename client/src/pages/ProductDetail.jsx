@@ -6,7 +6,7 @@ import { useProduct, useProducts } from '../hooks/useProducts';
 import ProductCard from '../components/ProductCard';
 import ContactForm from '../components/ContactForm';
 import Loader from '../components/Loader';
-import { MapPin, Package, Calendar, Award, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Package, Calendar, Award, ChevronLeft, ChevronRight, Table } from 'lucide-react';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './ProductDetail.css';
 
@@ -140,6 +140,25 @@ const ProductDetail = () => {
                       <span key={i} className="badge badge-accent">{cert}</span>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {product.specifications?.length > 0 && (
+                <div className="product-specs-table-wrapper">
+                  <h4><Table size={18} /> {t('products.specifications')}</h4>
+                  <table className="product-specs-table">
+                    <tbody>
+                      {product.specifications.map((spec, i) => {
+                        const label = language === 'ar' && spec.arLabel ? spec.arLabel : spec.enLabel || spec.arLabel;
+                        return (
+                          <tr key={i}>
+                            <td className="spec-label">{label}</td>
+                            <td className="spec-value">{spec.value}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
               )}
 

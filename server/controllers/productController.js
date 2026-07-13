@@ -81,7 +81,7 @@ const getProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private (Admin)
 const createProduct = asyncHandler(async (req, res) => {
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, imagesData } = req.body;
+  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, imagesData, specifications } = req.body;
 
   const images = imagesData
     ? (typeof imagesData === 'string' ? JSON.parse(imagesData) : imagesData)
@@ -101,6 +101,7 @@ const createProduct = asyncHandler(async (req, res) => {
     packaging: packaging || '',
     season: season || 'Year-round',
     certifications: certifications ? JSON.parse(certifications) : [],
+    specifications: specifications ? (typeof specifications === 'string' ? JSON.parse(specifications) : specifications) : [],
     featured: featured === 'true',
     isActive: isActive === undefined ? true : (isActive === 'true' || isActive === true),
   });
@@ -121,7 +122,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('Product not found');
   }
 
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData } = req.body;
+  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData, specifications } = req.body;
 
   // Remove specified images from Cloudinary
   if (removeImages) {
@@ -154,6 +155,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   if (packaging !== undefined) product.packaging = packaging;
   if (season) product.season = season;
   if (certifications) product.certifications = JSON.parse(certifications);
+  if (specifications) product.specifications = typeof specifications === 'string' ? JSON.parse(specifications) : specifications;
   if (featured !== undefined) product.featured = featured === 'true' || featured === true;
   if (isActive !== undefined) product.isActive = isActive === 'true' || isActive === true;
 

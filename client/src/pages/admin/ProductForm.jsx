@@ -4,7 +4,7 @@ import { useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { Save, ArrowLeft, Upload, X, Loader } from 'lucide-react';
+import { Save, ArrowLeft, Upload, X, Loader, Plus, Trash2 } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
 
@@ -24,6 +24,7 @@ const ProductForm = () => {
     category: '', origin: 'Egypt', packaging: '', season: 'Year-round',
     certifications: '["ISO 22000","HACCP"]', featured: false, isActive: true,
   });
+  const [specifications, setSpecifications] = useState([]);
 
   useEffect(() => {
     if (!isEdit) return;
@@ -38,6 +39,7 @@ const ProductForm = () => {
         featured: p.featured || false, isActive: p.isActive !== false,
       });
       setExistingImages(p.images || []);
+      setSpecifications(p.specifications || []);
       setFetching(false);
     }).catch(() => { 
       toast.error(language === 'ar' ? 'المنتج غير موجود' : 'Product not found'); 
@@ -61,6 +63,16 @@ const ProductForm = () => {
     setExistingImages(prev => prev.filter(img => img.publicId !== publicId));
   };
 
+  const addSpecRow = () => {
+    setSpecifications(prev => [...prev, { enLabel: '', arLabel: '', value: '' }]);
+  };
+  const removeSpecRow = (i) => {
+    setSpecifications(prev => prev.filter((_, idx) => idx !== i));
+  };
+  const updateSpec = (i, field, val) => {
+    setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, [field]: val } : s));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -73,6 +85,7 @@ const ProductForm = () => {
       ...form,
       imagesData: JSON.stringify(imagesData),
       removeImages: JSON.stringify(removeImages),
+      specifications: JSON.stringify(specifications.filter(s => s.enLabel || s.arLabel)),
     };
 
     try {
@@ -155,6 +168,26 @@ const ProductForm = () => {
           <div className="admin-form-group">
             <label>{language === 'ar' ? 'الشهادات (تنسيق JSON)' : 'Certifications (JSON array)'}</label>
             <input className="admin-form-control" name="certifications" value={form.certifications} onChange={handleChange} />
+          </div>
+
+          {/* Specifications Table */}
+          <div className="admin-form-group">
+            <label style={{ marginBottom: 8, display: 'block' }}>
+              {language === 'ar' ? 'جدول المواصفات (خاصية / قيمة)' : 'Specifications Table'}
+            </label>
+            {specifications.map((s, i) => (
+              <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+                <input className="admin-form-control" placeholder={language === 'ar' ? 'التسمية (إنج)' : 'Label (EN)'} value={s.enLabel} onChange={e => updateSpec(i, 'enLabel', e.target.value)} style={{ width: 140 }} />
+                <input className="admin-form-control" placeholder={language === 'ar' ? 'التسمية (عربي)' : 'Label (AR)'} value={s.arLabel} onChange={e => updateSpec(i, 'arLabel', e.target.value)} style={{ width: 140 }} />
+                <input className="admin-form-control" placeholder={language === 'ar' ? 'القيمة' : 'Value'} value={s.value} onChange={e => updateSpec(i, 'value', e.target.value)} style={{ flex: 1 }} />
+                <button type="button" onClick={() => removeSpecRow(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--admin-danger)', padding: 4 }}>
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+            <button type="button" className="admin-btn admin-btn-secondary admin-btn-sm" onClick={addSpecRow}>
+              <Plus size={14} /> {language === 'ar' ? 'إضافة خاصية' : 'Add Row'}
+            </button>
           </div>
 
           {/* Images */}
