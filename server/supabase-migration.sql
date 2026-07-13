@@ -150,7 +150,7 @@ DROP TRIGGER IF EXISTS update_settings_updatedat ON settings;
 CREATE TRIGGER update_settings_updatedAt BEFORE UPDATE ON settings FOR EACH ROW EXECUTE FUNCTION update_updatedAt_column();
 
 -- Refresh PostgREST schema cache so new columns are visible immediately
-SELECT pg_notify('pgrst', 'reload schema');
+NOTIFY pgrst, 'reload schema';
 
 -- Note: The default admin (admin@egyfield.com / EgyField@2024) is seeded
 -- automatically by the app on first connection.
