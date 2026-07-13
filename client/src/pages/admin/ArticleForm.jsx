@@ -6,6 +6,7 @@ import {
   AlignLeft, FileText, Image as ImageIcon, Settings2
 } from 'lucide-react';
 import api from '../../services/api';
+import compressImage from '../../utils/imageCompression';
 import toast from 'react-hot-toast';
 import RichTextEditor from '../../components/RichTextEditor';
 
@@ -59,11 +60,12 @@ const ArticleForm = () => {
       });
   }, [id, isEdit]);
 
-  const handleImage = (e) => {
+  const handleImage = async (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    setImageFile(f);
-    setImagePreview(URL.createObjectURL(f));
+    const compressed = await compressImage(f);
+    setImageFile(compressed);
+    setImagePreview(URL.createObjectURL(compressed));
   };
 
   const clearImage = () => {

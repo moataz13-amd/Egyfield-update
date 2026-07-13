@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
+import compressImage from '../../utils/imageCompression';
 
 const PartnersManager = () => {
   const { language } = useContext(LanguageContext);
@@ -70,11 +71,12 @@ const PartnersManager = () => {
     setShowModal(true);
   };
 
-  const handleLogoChange = (e) => {
+  const handleLogoChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
+    const compressed = await compressImage(file);
+    setLogoFile(compressed);
+    setLogoPreview(URL.createObjectURL(compressed));
   };
 
   const handleSubmit = async (e) => {

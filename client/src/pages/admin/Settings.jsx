@@ -5,6 +5,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import compressImage from '../../utils/imageCompression';
 
 const SUPPORTED_LANGS = [
   { code: 'en', name: 'English' },
@@ -100,8 +101,9 @@ const Settings = () => {
     if (!file) return;
     
     setImageUploading(true);
+    const compressed = await compressImage(file);
     const formData = new FormData();
-    formData.append('heroImage', file);
+    formData.append('heroImage', compressed);
     
     try {
       const { data } = await api.put('/admin/settings/hero-image', formData, {
@@ -145,8 +147,9 @@ const Settings = () => {
     if (!file) return;
     
     setImageUploading(true);
+    const compressed = await compressImage(file);
     const formData = new FormData();
-    formData.append('heroImage', file);
+    formData.append('heroImage', compressed);
     
     try {
       const { data } = await api.post('/admin/settings/hero-images', formData, {
@@ -701,7 +704,8 @@ const Settings = () => {
                             <input type="file" accept="image/*" style={{ display: 'none' }} disabled={coverUploading === pg.key} onChange={async (e) => {
                               const file = e.target.files[0]; if (!file) return;
                               setCoverUploading(pg.key);
-                              const fd = new FormData(); fd.append('coverImage', file); fd.append('pageKey', pg.key);
+                              const compressed = await compressImage(file);
+                              const fd = new FormData(); fd.append('coverImage', compressed); fd.append('pageKey', pg.key);
                               try {
                                 const { data } = await api.put('/admin/settings/page-cover-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
                                 if (data) {

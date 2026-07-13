@@ -5,6 +5,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Save, ArrowLeft, Upload, X, Loader } from 'lucide-react';
+import compressImage from '../../utils/imageCompression';
 
 const ProductForm = () => {
   const { t, language } = useContext(LanguageContext);
@@ -48,7 +49,11 @@ const ProductForm = () => {
     setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
-  const handleFiles = (e) => setFiles(prev => [...prev, ...Array.from(e.target.files)]);
+  const handleFiles = async (e) => {
+  const originals = Array.from(e.target.files);
+  const compressed = await Promise.all(originals.map(f => compressImage(f)));
+  setFiles(prev => [...prev, ...compressed]);
+};
 
   const handleRemoveExisting = (publicId) => {
     setRemoveImages(prev => [...prev, publicId]);
