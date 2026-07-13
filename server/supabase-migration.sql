@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS categories (
   "slug" TEXT UNIQUE NOT NULL,
   "icon" TEXT DEFAULT '',
   "color" TEXT DEFAULT '#7BB445',
+  "isActive" BOOLEAN DEFAULT true,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
@@ -32,6 +33,7 @@ CREATE TABLE IF NOT EXISTS products (
   "packaging" TEXT DEFAULT '',
   "season" TEXT DEFAULT 'Year-round',
   "certifications" JSONB DEFAULT '[]'::jsonb,
+  "specifications" JSONB DEFAULT '[]'::jsonb,
   "featured" BOOLEAN DEFAULT false,
   "isActive" BOOLEAN DEFAULT true,
   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
