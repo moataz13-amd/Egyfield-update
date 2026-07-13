@@ -6,6 +6,7 @@ import api from '../../services/api';
 import toast from 'react-hot-toast';
 import { Save, ArrowLeft, Upload, X, Loader } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
+import uploadToCloudinary from '../../utils/directUpload';
 
 const ProductForm = () => {
   const { t, language } = useContext(LanguageContext);
@@ -63,17 +64,23 @@ const ProductForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const data = new FormData();
-    Object.entries(form).forEach(([k, v]) => data.append(k, v));
-    files.forEach(f => data.append('images', f));
-    if (removeImages.length) data.append('removeImages', JSON.stringify(removeImages));
+    let imagesData = [];
+    if (files.length > 0) {
+      const results = await Promise.all(files.map(f => uploadToCloudinary(f)));
+      imagesData = results;
+    }
+    const payload = {
+      ...form,
+      imagesData: JSON.stringify(imagesData),
+      removeImages: JSON.stringify(removeImages),
+    };
 
     try {
       if (isEdit) {
-        await api.put(`/products/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.put(`/products/${id}`, payload);
         toast.success(language === 'ar' ? 'تم تحديث المنتج بنجاح!' : 'Product updated!');
       } else {
-        await api.post('/products', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.post('/products', payload);
         toast.success(language === 'ar' ? 'تم إنشاء المنتج بنجاح!' : 'Product created!');
       }
       navigate('/admin/products');

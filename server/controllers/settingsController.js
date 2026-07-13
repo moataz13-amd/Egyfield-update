@@ -113,7 +113,10 @@ const updateHeroImage = asyncHandler(async (req, res) => {
     settings = await Settings.create({});
   }
 
-  if (!req.file) {
+  const url = req.body.url || req.file?.path;
+  const publicId = req.body.publicId || req.file?.filename;
+
+  if (!url || !publicId) {
     res.status(400);
     throw new Error('Please upload an image');
   }
@@ -127,10 +130,7 @@ const updateHeroImage = asyncHandler(async (req, res) => {
     }
   }
 
-  settings.heroImage = {
-    url: req.file.path,
-    publicId: req.file.filename,
-  };
+  settings.heroImage = { url, publicId };
 
   const updated = await settings.save();
   res.json(updated);
@@ -171,7 +171,10 @@ const addHeroImage = asyncHandler(async (req, res) => {
     settings = await Settings.create({});
   }
 
-  if (!req.file) {
+  const url = req.body.url || req.file?.path;
+  const publicId = req.body.publicId || req.file?.filename;
+
+  if (!url || !publicId) {
     res.status(400);
     throw new Error('Please upload an image');
   }
@@ -180,10 +183,7 @@ const addHeroImage = asyncHandler(async (req, res) => {
     settings.heroImages = [];
   }
 
-  settings.heroImages.push({
-    url: req.file.path,
-    publicId: req.file.filename,
-  });
+  settings.heroImages.push({ url, publicId });
 
   const updated = await settings.save();
   res.json(updated);
@@ -230,7 +230,10 @@ const uploadPageCoverImage = asyncHandler(async (req, res) => {
     throw new Error('Invalid page key');
   }
 
-  if (!req.file) {
+  const url = req.body.url || req.file?.path;
+  const publicId = req.body.publicId || req.file?.filename;
+
+  if (!url || !publicId) {
     res.status(400);
     throw new Error('Please upload an image');
   }
@@ -248,10 +251,7 @@ const uploadPageCoverImage = asyncHandler(async (req, res) => {
     try { await cloudinary.uploader.destroy(oldPublicId); } catch (err) { console.error('Error deleting old page cover image:', err); }
   }
 
-  settings.pageCovers[pageKey].image = {
-    url: req.file.path,
-    publicId: req.file.filename,
-  };
+  settings.pageCovers[pageKey].image = { url, publicId };
   settings.markModified('pageCovers');
 
   const updated = await settings.save();

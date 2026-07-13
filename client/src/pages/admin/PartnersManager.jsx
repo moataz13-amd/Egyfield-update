@@ -7,6 +7,7 @@ import {
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 import compressImage from '../../utils/imageCompression';
+import uploadToCloudinary from '../../utils/directUpload';
 
 const PartnersManager = () => {
   const { language } = useContext(LanguageContext);
@@ -94,26 +95,26 @@ const PartnersManager = () => {
 
     setSaving(true);
 
-    const formData = new FormData();
-    formData.append('name', JSON.stringify({ en: form.nameEn, ar: form.nameAr }));
-    formData.append('website', form.website);
-    formData.append('order', form.order);
-    formData.append('isActive', form.isActive);
+    let logoData = null;
     if (logoFile) {
-      formData.append('logo', logoFile);
+      logoData = await uploadToCloudinary(logoFile);
     }
+
+    const payload = {
+      name: JSON.stringify({ en: form.nameEn, ar: form.nameAr }),
+      website: form.website,
+      order: form.order,
+      isActive: form.isActive,
+    };
+    if (logoData) payload.logoData = JSON.stringify(logoData);
 
     try {
       if (editing) {
-        const { data } = await api.put(`/partners/${editing._id}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const { data } = await api.put(`/partners/${editing._id}`, payload);
         setPartners(prev => prev.map(p => p._id === editing._id ? data : p));
         toast.success(language === 'ar' ? 'تم تحديث الشريك بنجاح!' : 'Partner updated successfully!');
       } else {
-        const { data } = await api.post('/partners', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const { data } = await api.post('/partners', payload);
         setPartners(prev => [...prev, data]);
         toast.success(language === 'ar' ? 'تم إضافة الشريك بنجاح!' : 'Partner added successfully!');
       }
@@ -129,11 +130,10 @@ const PartnersManager = () => {
     setToggling(id);
     try {
       const partner = partners.find(p => p._id === id);
-      const formData = new FormData();
-      formData.append('name', JSON.stringify(partner.name));
-      formData.append('isActive', !currentStatus);
-
-      await api.put(`/partners/${id}`, formData);
+      await api.put(`/partners/${id}`, {
+        name: JSON.stringify(partner.name),
+        isActive: !currentStatus,
+      });
       setPartners(prev => prev.map(p => p._id === id ? { ...p, isActive: !currentStatus } : p));
       toast.success(language === 'ar' ? 'تم تحديث الحالة' : 'Status updated');
     } catch {

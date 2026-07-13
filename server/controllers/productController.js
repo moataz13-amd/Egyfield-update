@@ -81,14 +81,16 @@ const getProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private (Admin)
 const createProduct = asyncHandler(async (req, res) => {
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive } = req.body;
+  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, imagesData } = req.body;
 
-  const images = req.files
-    ? req.files.map((file) => ({
-        url: file.path,
-        publicId: file.filename,
-      }))
-    : [];
+  const images = imagesData
+    ? (typeof imagesData === 'string' ? JSON.parse(imagesData) : imagesData)
+    : req.files
+      ? req.files.map((file) => ({
+          url: file.path,
+          publicId: file.filename,
+        }))
+      : [];
 
   const product = await Product.create({
     name: { ar: nameAr, en: nameEn },
@@ -119,7 +121,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('Product not found');
   }
 
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, removeImages } = req.body;
+  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData } = req.body;
 
   // Remove specified images from Cloudinary
   if (removeImages) {
@@ -130,12 +132,16 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.images = product.images.filter((img) => !toRemove.includes(img.publicId));
   }
 
-  // Add new images
-  if (req.files && req.files.length > 0) {
-    const newImages = req.files.map((file) => ({
-      url: file.path,
-      publicId: file.filename,
-    }));
+  // Add new images (direct upload JSON or multer files)
+  const newImages = imagesData
+    ? (typeof imagesData === 'string' ? JSON.parse(imagesData) : imagesData)
+    : req.files && req.files.length > 0
+      ? req.files.map((file) => ({
+          url: file.path,
+          publicId: file.filename,
+        }))
+      : [];
+  if (newImages.length > 0) {
     product.images.push(...newImages);
   }
 

@@ -45,15 +45,16 @@ const createPartner = asyncHandler(async (req, res) => {
     throw new Error('Invalid JSON format for name field');
   }
 
-  if (!req.file) {
+  const logo = req.body.logoData
+    ? (typeof req.body.logoData === 'string' ? JSON.parse(req.body.logoData) : req.body.logoData)
+    : req.file
+      ? { url: req.file.path, publicId: req.file.filename }
+      : null;
+
+  if (!logo) {
     res.status(400);
     throw new Error('Logo image is required');
   }
-
-  const logo = {
-    url: req.file.path,
-    publicId: req.file.filename,
-  };
 
   const partner = await Partner.create({
     name: parsedName,
@@ -92,7 +93,13 @@ const updatePartner = asyncHandler(async (req, res) => {
   if (isActive !== undefined) partner.isActive = isActive === 'true' || isActive === true;
   if (order !== undefined) partner.order = Number(order) || 0;
 
-  if (req.file) {
+  const newLogo = req.body.logoData
+    ? (typeof req.body.logoData === 'string' ? JSON.parse(req.body.logoData) : req.body.logoData)
+    : req.file
+      ? { url: req.file.path, publicId: req.file.filename }
+      : null;
+
+  if (newLogo) {
     // Delete old logo from Cloudinary
     if (partner.logo && partner.logo.publicId) {
       await cloudinary.uploader.destroy(partner.logo.publicId).catch((err) => {
@@ -100,10 +107,7 @@ const updatePartner = asyncHandler(async (req, res) => {
       });
     }
 
-    partner.logo = {
-      url: req.file.path,
-      publicId: req.file.filename,
-    };
+    partner.logo = newLogo;
   }
 
   const updatedPartner = await partner.save();

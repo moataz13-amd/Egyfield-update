@@ -114,7 +114,10 @@ const createArticle = asyncHandler(async (req, res) => {
   }
 
   let image = { url: '', publicId: '' };
-  if (req.file) {
+  if (req.body.imageData) {
+    const parsed = typeof req.body.imageData === 'string' ? JSON.parse(req.body.imageData) : req.body.imageData;
+    image = parsed;
+  } else if (req.file) {
     image = {
       url: req.file.path,
       publicId: req.file.filename,
@@ -173,7 +176,16 @@ const updateArticle = asyncHandler(async (req, res) => {
   article.summary = parsedSummary || article.summary;
   article.isActive = isActive !== undefined ? (isActive === 'true' || isActive === true) : article.isActive;
 
-  if (req.file) {
+  if (req.body.imageData) {
+    const parsed = typeof req.body.imageData === 'string' ? JSON.parse(req.body.imageData) : req.body.imageData;
+    // Delete old image if exists
+    if (article.image?.publicId) {
+      await cloudinary.uploader.destroy(article.image.publicId).catch((err) => {
+        console.error('Failed to delete old image from Cloudinary:', err);
+      });
+    }
+    article.image = parsed;
+  } else if (req.file) {
     // Delete old image if exists
     if (article.image?.publicId) {
       await cloudinary.uploader.destroy(article.image.publicId).catch((err) => {

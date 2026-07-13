@@ -90,6 +90,7 @@ app.use('/api/admin/accounts', require('./routes/adminRoutes'));
 app.use('/api/about', require('./routes/aboutRoutes'));
 app.use('/api/articles', require('./routes/articleRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
+app.use('/api/admin/cloudinary', require('./routes/cloudinaryRoutes'));
 app.get('/api/settings', require('./controllers/settingsController').getSettings);
 
 // Error handler

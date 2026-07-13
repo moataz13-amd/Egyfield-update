@@ -6,6 +6,7 @@ import { useConfirm } from '../../context/ConfirmContext';
 import toast from 'react-hot-toast';
 import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
+import uploadToCloudinary from '../../utils/directUpload';
 
 const SUPPORTED_LANGS = [
   { code: 'en', name: 'English' },
@@ -102,13 +103,10 @@ const Settings = () => {
     
     setImageUploading(true);
     const compressed = await compressImage(file);
-    const formData = new FormData();
-    formData.append('heroImage', compressed);
+    const { url, publicId } = await uploadToCloudinary(compressed);
     
     try {
-      const { data } = await api.put('/admin/settings/hero-image', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const { data } = await api.put('/admin/settings/hero-image', { url, publicId });
       if (data) {
         setSettings(data);
         toast.success(language === 'ar' ? 'تم رفع صورة الهيرو بنجاح!' : 'Hero image uploaded successfully!');
@@ -148,13 +146,10 @@ const Settings = () => {
     
     setImageUploading(true);
     const compressed = await compressImage(file);
-    const formData = new FormData();
-    formData.append('heroImage', compressed);
+    const { url, publicId } = await uploadToCloudinary(compressed);
     
     try {
-      const { data } = await api.post('/admin/settings/hero-images', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const { data } = await api.post('/admin/settings/hero-images', { url, publicId });
       if (data) {
         setSettings(data);
         toast.success(language === 'ar' ? 'تم رفع صورة المعرض بنجاح!' : 'Slider image uploaded successfully!');
@@ -705,9 +700,9 @@ const Settings = () => {
                               const file = e.target.files[0]; if (!file) return;
                               setCoverUploading(pg.key);
                               const compressed = await compressImage(file);
-                              const fd = new FormData(); fd.append('coverImage', compressed); fd.append('pageKey', pg.key);
+                              const { url, publicId } = await uploadToCloudinary(compressed);
                               try {
-                                const { data } = await api.put('/admin/settings/page-cover-image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+                                const { data } = await api.put('/admin/settings/page-cover-image', { url, publicId, pageKey: pg.key });
                                 if (data) {
                                   setSettings(prev => {
                                     const updated = { ...prev };

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import compressImage from '../../utils/imageCompression';
+import uploadToCloudinary from '../../utils/directUpload';
 import toast from 'react-hot-toast';
 import RichTextEditor from '../../components/RichTextEditor';
 
@@ -83,19 +84,24 @@ const ArticleForm = () => {
       return;
     }
     setSaving(true);
-    const fd = new FormData();
-    fd.append('title', JSON.stringify(title));
-    fd.append('summary', JSON.stringify(summary));
-    fd.append('content', JSON.stringify(content));
-    fd.append('isActive', isActive);
-    if (imageFile) fd.append('image', imageFile);
+    let imageData = null;
+    if (imageFile) {
+      imageData = await uploadToCloudinary(imageFile);
+    }
+    const payload = {
+      title: JSON.stringify(title),
+      summary: JSON.stringify(summary),
+      content: JSON.stringify(content),
+      isActive,
+    };
+    if (imageData) payload.imageData = JSON.stringify(imageData);
 
     try {
       if (isEdit) {
-        await api.put(`/articles/${id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.put(`/articles/${id}`, payload);
         toast.success(isAr ? 'تم تحديث المقال بنجاح ✓' : 'Article updated ✓');
       } else {
-        await api.post('/articles', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        await api.post('/articles', payload);
         toast.success(isAr ? 'تم نشر المقال بنجاح ✓' : 'Article published ✓');
       }
       navigate('/admin/articles');
