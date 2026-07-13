@@ -24,9 +24,9 @@ export const useProduct = (id) => {
   });
 };
 
-export const useCategories = () => {
+export const useCategories = (params) => {
   return useQuery({
-    queryKey: ['categories'],
-    queryFn: () => getCategories().then((res) => res.data),
+    queryKey: ['categories', params],
+    queryFn: () => getCategories(params).then((res) => res.data),
   });
 };

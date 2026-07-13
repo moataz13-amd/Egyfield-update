@@ -6,7 +6,14 @@ const Product = require('../models/Product');
 // @route   GET /api/categories
 // @access  Public
 const getCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find().sort({ createdAt: 1 });
+  const { admin } = req.query;
+
+  const query = {};
+  if (admin !== 'true') {
+    query.isActive = true;
+  }
+
+  const categories = await Category.find(query).sort({ createdAt: 1 });
 
   // Get product count for each category
   const categoriesWithCount = await Promise.all(
@@ -70,6 +77,7 @@ const createCategory = asyncHandler(async (req, res) => {
     slug,
     icon: icon || '',
     color: color || '#7BB445',
+    isActive: true,
   });
 
   res.status(201).json(category);
@@ -86,7 +94,7 @@ const updateCategory = asyncHandler(async (req, res) => {
     throw new Error('Category not found');
   }
 
-  const { name, slug, icon, color } = req.body;
+  const { name, slug, icon, color, isActive } = req.body;
 
   if (name) {
     if (name.en !== undefined) category.name.en = name.en;
@@ -95,6 +103,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   if (slug) category.slug = slug;
   if (icon) category.icon = icon;
   if (color) category.color = color;
+  if (isActive !== undefined) category.isActive = isActive;
 
   const updatedCategory = await category.save();
   res.json(updatedCategory);
@@ -122,10 +131,28 @@ const deleteCategory = asyncHandler(async (req, res) => {
   res.json({ message: 'Category deleted successfully' });
 });
 
+// @desc    Toggle category active status
+// @route   PATCH /api/categories/:id/toggle
+// @access  Private (Admin)
+const toggleActiveCategory = asyncHandler(async (req, res) => {
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    res.status(404);
+    throw new Error('Category not found');
+  }
+
+  category.isActive = !category.isActive;
+  const updated = await category.save();
+
+  res.json(updated);
+});
+
 module.exports = {
   getCategories,
   getCategoryProducts,
   createCategory,
   updateCategory,
   deleteCategory,
+  toggleActiveCategory,
 };

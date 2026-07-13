@@ -51,7 +51,7 @@ export const updateProduct = (id, formData) =>
 export const deleteProduct = (id) => api.delete(`/products/${id}`);
 
 // Categories
-export const getCategories = () => api.get('/categories');
+export const getCategories = (params) => api.get('/categories', { params });
 export const getCategoryProducts = (slug, params) => api.get(`/categories/${slug}/products`, { params });
 export const createCategory = (data) => api.post('/categories', data);
 export const updateCategory = (id, data) => api.put(`/categories/${id}`, data);

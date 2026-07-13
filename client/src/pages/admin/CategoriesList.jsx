@@ -4,14 +4,15 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { Plus, Edit2, Trash2, X, Save } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Save, ToggleLeft, ToggleRight, Loader } from 'lucide-react';
 
 const CategoriesList = () => {
   const { t, language } = useContext(LanguageContext);
   const confirm = useConfirm();
-  const { data: categories, isLoading, refetch } = useCategories();
+  const { data: categories, isLoading, refetch } = useCategories({ admin: true });
   const [modal, setModal] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [toggling, setToggling] = useState(null);
   const [form, setForm] = useState({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445' });
 
   const openAdd = () => { setEditing(null); setForm({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445' }); setModal(true); };
@@ -34,6 +35,19 @@ const CategoriesList = () => {
       refetch(); 
     } catch { 
       toast.error(language === 'ar' ? 'فشل الحذف' : 'Failed to delete'); 
+    }
+  };
+
+  const handleToggle = async (id) => {
+    setToggling(id);
+    try {
+      await api.patch(`/categories/${id}/toggle`);
+      toast.success(language === 'ar' ? 'تم تحديث الحالة' : 'Status updated');
+      refetch();
+    } catch {
+      toast.error(language === 'ar' ? 'فشل التحديث' : 'Failed to update');
+    } finally {
+      setToggling(null);
     }
   };
 
@@ -74,6 +88,7 @@ const CategoriesList = () => {
                 <th>{language === 'ar' ? 'الاسم بالإنجليزية' : 'Name (EN)'}</th>
                 <th>{language === 'ar' ? 'الاسم بالعربية' : 'Name (AR)'}</th>
                 <th>{language === 'ar' ? 'الرابط الفرعي' : 'Slug'}</th>
+                <th style={{ width: 80 }}>{language === 'ar' ? 'الحالة' : 'Status'}</th>
                 <th>{t('admin.actions')}</th>
               </tr>
             </thead>
@@ -84,6 +99,19 @@ const CategoriesList = () => {
                   <td style={{ fontWeight: 600 }}>{c.name?.en}</td>
                   <td style={{ direction: 'rtl', color: '#64748B' }}>{c.name?.ar}</td>
                   <td><code style={{ fontSize: 12, color: '#64748B', background: 'var(--admin-surface-2)', padding: '2px 8px', borderRadius: 4 }}>{c.slug}</code></td>
+                  <td>
+                    {toggling === c._id ? (
+                      <Loader className="spin" size={16} />
+                    ) : (
+                      <button onClick={() => handleToggle(c._id)} style={{
+                        border: 'none', background: 'none', cursor: 'pointer',
+                        color: c.isActive !== false ? 'var(--primary)' : 'var(--admin-text-muted)',
+                        display: 'flex', alignItems: 'center', padding: 0
+                      }}>
+                        {c.isActive !== false ? <ToggleRight size={26} /> : <ToggleLeft size={26} />}
+                      </button>
+                    )}
+                  </td>
                   <td>
                     <div className="table-actions">
                       <button className="table-action-btn" title={t('admin.edit')} onClick={() => openEdit(c)}><Edit2 size={14} /></button>
