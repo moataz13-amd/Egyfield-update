@@ -87,25 +87,20 @@ const Home = () => {
               <Link
                 to={`/products?category=${cat._id}`}
                 key={cat._id}
-                className={`category-card glass-card reveal reveal-delay-${i + 1}`}
+                className={`category-card reveal reveal-delay-${i + 1}`}
                 style={{ '--cat-color': cat.color || 'var(--primary)' }}
               >
-                {cat.image?.url ? (
-                  <div className="category-card-img" style={{ background: cat.color ? `${cat.color}15` : 'rgba(123, 180, 69, 0.15)' }}>
+                <div className="category-card-img">
+                  {cat.image?.url ? (
                     <img src={cat.image.url} alt={cat.name?.[language] || cat.name?.en} />
-                  </div>
-                ) : (
-                  <div className="category-card-icon" style={{ background: cat.color ? `${cat.color}15` : 'rgba(123, 180, 69, 0.15)', color: cat.color || 'var(--primary-dark)' }}>
-                    {getCategoryIcon(cat.slug, 34)}
-                  </div>
-                )}
-                <h3>{cat.name?.[language] || cat.name?.en}</h3>
-                <p className="category-card-count">
-                  {cat.productCount || 0} {t('nav.products').toLowerCase()}
-                </p>
-                <div className="category-card-arrow">
-                  <Arrow size={16} />
+                  ) : (
+                    <div className="category-card-icon" style={{ color: cat.color || 'var(--primary-dark)' }}>
+                      {getCategoryIcon(cat.slug, 40)}
+                    </div>
+                  )}
+                  <div className="category-card-gradient" style={{ background: `linear-gradient(to top, ${cat.color || 'var(--primary)'}dd, transparent 60%)` }} />
                 </div>
+                <h3>{cat.name?.[language] || cat.name?.en}</h3>
               </Link>
             ))}
           </div>
