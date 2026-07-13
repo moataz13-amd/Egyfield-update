@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
-import { Target, Eye, ShieldCheck, Award } from 'lucide-react';
+import { Target, Eye, ShieldCheck, Award, FileText, ExternalLink } from 'lucide-react';
 import PageCover from '../components/PageCover';
 import api from '../services/api';
 import './About.css';
@@ -110,15 +110,27 @@ const About = () => {
                 <p>{t('about.certSubtitle')}</p>
               </div>
               <div className="cert-grid">
-                {certifications.map((cert, i) => (
-                  <div key={i} className={`cert-card glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
-                    <div className="cert-icon">
-                      {i % 2 === 0 ? <ShieldCheck size={40} /> : <Award size={40} />}
+                {certifications.map((cert, i) => {
+                  const isFile = cert.type === 'image' || cert.type === 'pdf';
+                  if (isFile) return (
+                    <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className={`cert-card cert-card-file glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
+                      <div className="cert-icon">
+                        {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={cert.name} className="cert-file-thumb" />}
+                      </div>
+                      <h3>{cert.name}</h3>
+                      <span className="cert-view-link"><ExternalLink size={14} /> {language === 'ar' ? 'عرض' : 'View'}</span>
+                    </a>
+                  );
+                  return (
+                    <div key={i} className={`cert-card glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
+                      <div className="cert-icon">
+                        {i % 2 === 0 ? <ShieldCheck size={40} /> : <Award size={40} />}
+                      </div>
+                      <h3>{cert.name}</h3>
+                      <p>{cert.description?.[lang] || cert.description?.en || ''}</p>
                     </div>
-                    <h3>{cert.name}</h3>
-                    <p>{cert.description?.[lang] || cert.description?.en || ''}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </section>

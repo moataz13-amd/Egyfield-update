@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { LanguageContext } from '../../context/LanguageContext';
 import toast from 'react-hot-toast';
-import { Save, Loader, Plus, Trash2, BookOpen, Target, Eye, Clock, Award, Globe } from 'lucide-react';
+import { Save, Loader, Plus, Trash2, BookOpen, Target, Eye, Clock, Award, Globe, Upload, FileText, Image, X } from 'lucide-react';
+import uploadToCloudinary from '../../utils/directUpload';
 
 const AboutManager = () => {
   const { language } = useContext(LanguageContext);
@@ -115,6 +116,30 @@ const AboutManager = () => {
     });
   };
 
+  const [certUploading, setCertUploading] = useState(false);
+  const certFileRef = useRef(null);
+  let certFileIndex = null;
+
+  const handleCertFileUpload = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCertUploading(true);
+    try {
+      const isPdf = file.type === 'application/pdf';
+      const result = await uploadToCloudinary(file, isPdf ? 'raw' : 'image');
+      setData(prev => {
+        const certs = [...prev.certifications];
+        certs[index] = { ...certs[index], type: isPdf ? 'pdf' : 'image', url: result.url, publicId: result.publicId, name: certs[index].name || file.name.replace(/\.[^.]+$/, '') };
+        return { ...prev, certifications: certs };
+      });
+      toast.success(isAr ? 'تم رفع الملف!' : 'File uploaded!');
+    } catch {
+      toast.error(isAr ? 'فشل رفع الملف' : 'File upload failed');
+    }
+    setCertUploading(false);
+    e.target.value = '';
+  };
+
   const addCertItem = () => {
     setData(prev => ({
       ...prev,
@@ -130,6 +155,27 @@ const AboutManager = () => {
 
   const removeCertItem = (index) => {
     setData(prev => ({ ...prev, certifications: prev.certifications.filter((_, i) => i !== index) }));
+  };
+
+  const addCertFileItem = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCertUploading(true);
+    (async () => {
+      try {
+        const isPdf = file.type === 'application/pdf';
+        const result = await uploadToCloudinary(file, isPdf ? 'raw' : 'image');
+        setData(prev => ({
+          ...prev,
+          certifications: [...(prev.certifications || []), { name: file.name.replace(/\.[^.]+$/, ''), description: { en: '', ar: '', fr: '', it: '', tr: '' }, type: isPdf ? 'pdf' : 'image', url: result.url, publicId: result.publicId }],
+        }));
+        toast.success(isAr ? 'تم رفع الشهادة!' : 'Certification uploaded!');
+      } catch {
+        toast.error(isAr ? 'فشل رفع الملف' : 'File upload failed');
+      }
+      setCertUploading(false);
+    })();
+    e.target.value = '';
   };
 
   if (loading || !data) return <div style={{ padding: 40 }}><div className="skeleton" style={{ height: 400 }} /></div>;
@@ -299,21 +345,44 @@ const AboutManager = () => {
 
         {/* ─── Certifications ─── */}
         <div className="about-mgr-section">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
             <h3 className="about-mgr-heading" style={{ margin: 0 }}><Award size={18} /> {isAr ? 'الشهادات' : 'Certifications'}</h3>
-            <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={addCertItem}>
-              <Plus size={14} /> {isAr ? 'إضافة شهادة' : 'Add Certification'}
-            </button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={addCertItem}>
+                <Plus size={14} /> {isAr ? 'إضافة نص' : 'Add Text'}
+              </button>
+              <label className="admin-btn admin-btn-secondary admin-btn-sm" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                {certUploading ? <Loader size={14} className="spin" /> : <Upload size={14} />}
+                {isAr ? 'رفع ملف' : 'Upload File'}
+                <input type="file" accept="image/*,application/pdf" onChange={addCertFileItem} style={{ display: 'none' }} />
+              </label>
+            </div>
           </div>
 
           {(data.certifications || []).map((item, i) => (
             <div key={i} className="about-mgr-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <span className="about-mgr-card-label">{isAr ? `شهادة ${i + 1}` : `Certification ${i + 1}`}</span>
+                <span className="about-mgr-card-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  {item.type === 'pdf' ? <FileText size={14} color="var(--admin-danger)" /> : item.type === 'image' ? <Image size={14} color="var(--admin-primary)" /> : <Award size={14} />}
+                  {isAr ? `شهادة ${i + 1}` : `Certification ${i + 1}`}
+                  {item.type && <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 4, background: 'var(--admin-bg)', color: 'var(--admin-text-muted)', textTransform: 'uppercase' }}>{item.type}</span>}
+                </span>
                 <button className="admin-btn admin-btn-sm" style={{ color: 'var(--admin-danger)' }} onClick={() => removeCertItem(i)}>
                   <Trash2 size={14} />
                 </button>
               </div>
+
+              {/* File preview */}
+              {item.url && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, padding: 8, background: 'var(--admin-bg)', borderRadius: 'var(--admin-radius)' }}>
+                  {item.type === 'pdf' ? (
+                    <><FileText size={20} color="var(--admin-danger)" /><a href={item.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: 'var(--admin-primary)' }}>{isAr ? 'عرض الملف' : 'View File'}</a></>
+                  ) : (
+                    <><img src={item.url} alt="" style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }} /><span style={{ fontSize: 12, color: 'var(--admin-text-muted)' }}>{item.url.split('/').pop().slice(0, 30)}...</span></>
+                  )}
+                </div>
+              )}
+
               <div className="admin-form-group">
                 <label>{isAr ? 'اسم الشهادة' : 'Certificate Name'}</label>
                 <input
@@ -322,18 +391,20 @@ const AboutManager = () => {
                   onChange={e => updateCertItem(i, 'name', null, e.target.value)}
                 />
               </div>
-              <div className="admin-form-group">
-                <label>
-                  {isAr ? 'الوصف' : 'Description'} ({editTabs.find(t => t.code === activeEditTab)?.name})
-                </label>
-                <textarea
-                  className="admin-form-control"
-                  rows={2}
-                  style={{ direction: activeEditTab === 'ar' ? 'rtl' : 'ltr' }}
-                  value={item.description?.[activeEditTab] || ''}
-                  onChange={e => updateCertItem(i, 'description', activeEditTab, e.target.value)}
-                />
-              </div>
+              {(!item.type || item.type === 'text') && (
+                <div className="admin-form-group">
+                  <label>
+                    {isAr ? 'الوصف' : 'Description'} ({editTabs.find(t => t.code === activeEditTab)?.name})
+                  </label>
+                  <textarea
+                    className="admin-form-control"
+                    rows={2}
+                    style={{ direction: activeEditTab === 'ar' ? 'rtl' : 'ltr' }}
+                    value={item.description?.[activeEditTab] || ''}
+                    onChange={e => updateCertItem(i, 'description', activeEditTab, e.target.value)}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
