@@ -36,7 +36,7 @@ const parseJsonFields = (obj) => {
 // Response interceptor — handle 401 + auto-parse JSON-in-text-column fields
 api.interceptors.response.use(
   (response) => {
-    if (response.data) parseJsonFields(response.data);
+    if (response.data) response.data = parseJsonFields(response.data);
     return response;
   },
   (error) => {
