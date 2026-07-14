@@ -61,6 +61,7 @@ class ErrorBoundary extends React.Component {
   }
   componentDidCatch(error, info) {
     console.error('[ErrorBoundary] caught:', error, info);
+    this.setState({ componentStack: info?.componentStack });
   }
   render() {
     if (this.state.hasError) {
@@ -68,6 +69,9 @@ class ErrorBoundary extends React.Component {
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fafafa', padding: 24 }}>
           <h1 style={{ color: '#7BB445', fontSize: 48, margin: 0 }}>EgyField</h1>
           <p style={{ color: '#555', marginTop: 16, fontSize: 18 }}>Something went wrong. Please refresh the page.</p>
+          <pre style={{ background: '#1e1e1e', color: '#f8f8f2', padding: 16, borderRadius: 8, fontSize: 12, maxWidth: '90vw', overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all', marginTop: 16 }}>
+            {this.state.componentStack}
+          </pre>
           <button
             onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
             style={{ marginTop: 24, padding: '12px 32px', background: '#7BB445', color: '#fff', border: 'none', borderRadius: 8, fontSize: 16, cursor: 'pointer' }}
