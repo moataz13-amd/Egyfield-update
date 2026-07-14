@@ -5,7 +5,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
 import { Search, Calendar, Eye, ArrowRight, Loader, FileText } from 'lucide-react';
 import PageCover from '../components/PageCover';
-import api from '../services/api';
+import api, { resolveField } from '../services/api';
 import { format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
 
@@ -128,8 +128,8 @@ const Articles = () => {
               marginBottom: 50 
             }}>
               {articles.map(article => {
-                const titleText = article.title?.[language] || article.title?.en || article.title?.ar || '';
-                const summaryText = article.summary?.[language] || article.summary?.en || article.summary?.ar || '';
+                const titleText = resolveField(article.title, language) || '';
+                const summaryText = resolveField(article.summary, language) || '';
                 const dateText = article.createdAt 
                   ? format(new Date(article.createdAt), 'dd MMMM yyyy', { locale: dateLocale }) 
                   : '';

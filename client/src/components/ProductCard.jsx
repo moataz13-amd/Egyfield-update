@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import { Eye, MapPin, Calendar, ArrowUpRight } from 'lucide-react';
+import { resolveField } from '../services/api';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './ProductCard.css';
 
@@ -8,12 +9,11 @@ const ProductCard = ({ product }) => {
   const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
-  const readVal = (field) => typeof field === 'object' ? (field[language] || field.en || '') : field || '';
-  const name = product.name?.[language] || product.name?.en || 'Product';
-  const categoryName = product.category?.name?.[language] || product.category?.name?.en || '';
+  const name = resolveField(product.name, language) || 'Product';
+  const categoryName = resolveField(product.category?.name, language) || '';
   const image = product.images?.[0]?.url || `https://placehold.co/400x300/7BB445/FFFFFF?text=${encodeURIComponent(name)}`;
-  const originVal = readVal(product.origin);
-  const seasonVal = readVal(product.season);
+  const originVal = resolveField(product.origin, language);
+  const seasonVal = resolveField(product.season, language);
 
   return (
     <div className="product-card glass-card">

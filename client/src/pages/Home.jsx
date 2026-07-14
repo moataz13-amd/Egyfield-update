@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
 import { useFeaturedProducts, useCategories } from '../hooks/useProducts';
+import { resolveField } from '../services/api';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
 import AnimatedCounter from '../components/AnimatedCounter';
@@ -95,7 +96,7 @@ const Home = () => {
               >
                 <div className="category-card-img">
                   {cat.image?.url ? (
-                    <img src={cat.image.url} alt={cat.name?.[language] || cat.name?.en} />
+                    <img src={cat.image.url} alt={resolveField(cat.name, language)} />
                   ) : (
                     <div className="category-card-icon" style={{ color: cat.color || 'var(--primary-dark)' }}>
                       {getCategoryIcon(cat.slug, 40)}
@@ -103,7 +104,7 @@ const Home = () => {
                   )}
                   <div className="category-card-gradient" style={{ background: `linear-gradient(to top, ${cat.color || 'var(--primary)'}dd, transparent 60%)` }} />
                 </div>
-                <h3>{cat.name?.[language] || cat.name?.en}</h3>
+                <h3>{resolveField(cat.name, language)}</h3>
               </Link>
             ))}
           </div>

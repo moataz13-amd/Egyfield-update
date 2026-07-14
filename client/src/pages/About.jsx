@@ -4,7 +4,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
 import { Target, Eye, ShieldCheck, Award, FileText, ExternalLink } from 'lucide-react';
 import PageCover from '../components/PageCover';
-import api from '../services/api';
+import api, { resolveField } from '../services/api';
 import './About.css';
 
 const About = () => {
@@ -94,8 +94,8 @@ const About = () => {
                     <div className="timeline-dot"></div>
                     <div className="timeline-content glass-card">
                       <span className="timeline-year">{evt.year}</span>
-                      <h3>{evt.title?.[lang] || evt.title?.en || ''}</h3>
-                      <p>{evt.description?.[lang] || evt.description?.en || ''}</p>
+                      <h3>{resolveField(evt.title, lang)}</h3>
+                      <p>{resolveField(evt.description, lang)}</p>
                     </div>
                   </div>
                 ))}
@@ -131,7 +131,7 @@ const About = () => {
                         {i % 2 === 0 ? <ShieldCheck size={40} /> : <Award size={40} />}
                       </div>
                       <h3>{certName}</h3>
-                      <p>{cert.description?.[lang] || cert.description?.en || ''}</p>
+                      <p>{resolveField(cert.description, lang)}</p>
                     </div>
                   );
                 })}

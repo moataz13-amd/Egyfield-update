@@ -4,7 +4,7 @@ import { useLanguage } from '../hooks/useLanguage';
 import ContactForm from '../components/ContactForm';
 import PageCover from '../components/PageCover';
 import { MapPin, Phone, Mail, Clock, ArrowUpRight, Sparkles } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveField } from '../services/api';
 import './Contact.css';
 
 const Contact = () => {
@@ -33,16 +33,16 @@ const Contact = () => {
   }, [settings]);
 
   const currentLang = language || 'en';
-  const addressVal = settings?.address?.[currentLang] || settings?.address?.en || t('contact.addressText');
-  const phoneVal = settings?.phone || t('contact.phoneText');
-  const emailVal = settings?.email || t('contact.emailText');
+  const addressVal = resolveField(settings?.address, currentLang) || t('contact.addressText');
+  const phoneVal = resolveField(settings?.phone) || t('contact.phoneText');
+  const emailVal = resolveField(settings?.email) || t('contact.emailText');
 
   const contactCards = [
     {
       icon: <MapPin size={22} />,
       title: t('contact.address'),
       value: addressVal,
-      link: `https://maps.google.com/?q=${encodeURIComponent(settings?.address?.en || 'Cairo, Egypt')}`,
+      link: `https://maps.google.com/?q=${encodeURIComponent(resolveField(settings?.address) || 'Cairo, Egypt')}`,
       color: '#7BB445',
       bg: 'rgba(123, 180, 69, 0.08)',
     },
@@ -75,7 +75,7 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>{seo.metaTitle || `${t('contact.title')} — ${settings?.companyName?.[currentLang] || 'EgyField'}`}</title>
+        <title>{seo.metaTitle || `${t('contact.title')} — ${resolveField(settings?.companyName, currentLang) || 'EgyField'}`}</title>
         <meta name="description" content={seo.metaDescription || 'Get in touch with EgyField export team for premium agricultural crop orders, custom packaging, and export quotes.'} />
         {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
       </Helmet>

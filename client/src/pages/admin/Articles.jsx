@@ -5,7 +5,7 @@ import { useConfirm } from '../../context/ConfirmContext';
 import { 
   FileText, Plus, Search, Edit2, Trash2, Eye, Calendar, ToggleLeft, ToggleRight, Loader 
 } from 'lucide-react';
-import api from '../../services/api';
+import api, { resolveField } from '../../services/api';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
@@ -145,7 +145,7 @@ const ArticlesList = () => {
             </thead>
             <tbody>
               {articles.map(article => {
-                const titleText = article.title?.[language] || article.title?.en || article.title?.ar || 'Untitled';
+                const titleText = resolveField(article.title, language) || 'Untitled';
                 const dateText = article.createdAt 
                   ? format(new Date(article.createdAt), 'yyyy-MM-dd', { locale: dateLocale }) 
                   : '-';

@@ -4,7 +4,7 @@ import { useConfirm } from '../../context/ConfirmContext';
 import {
   Handshake, Plus, Trash2, Edit2, ToggleLeft, ToggleRight, Loader, X, Save, Upload, ExternalLink
 } from 'lucide-react';
-import api from '../../services/api';
+import api, { resolveField } from '../../services/api';
 import toast from 'react-hot-toast';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
@@ -216,7 +216,7 @@ const PartnersManager = () => {
                   </td>
                   <td>
                     <div style={{ fontWeight: '600', color: 'var(--admin-text)' }}>
-                      {partner.name?.[language] || partner.name?.en || '—'}
+                      {resolveField(partner.name, language) || '—'}
                     </div>
                     {partner.name?.en && partner.name?.ar && (
                       <span style={{ fontSize: 11, color: 'var(--admin-text-muted)', display: 'block', marginTop: 2 }}>

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
-import api from '../../services/api';
+import api, { resolveField } from '../../services/api';
 import toast from 'react-hot-toast';
 import { Save, ArrowLeft, Upload, X, Loader, Plus, Trash2, FileText, Image, Globe, Languages } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
@@ -357,7 +357,7 @@ const ProductForm = () => {
                 <option value="">{language === 'ar' ? 'اختر قسم' : 'Select Category'}</option>
                 {categories?.map(c => (
                   <option key={c._id} value={c._id}>
-                    {c.name?.[language] || c.name?.en}
+                    {resolveField(c.name, language)}
                   </option>
                 ))}
               </select>

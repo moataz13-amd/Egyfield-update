@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { useProduct, useProducts } from '../hooks/useProducts';
+import { resolveField } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import ContactForm from '../components/ContactForm';
 import Loader from '../components/Loader';
@@ -28,9 +29,9 @@ const ProductDetail = () => {
   if (isLoading) return <Loader fullPage />;
   if (!product) return <div className="products-empty"><h3>{t('products.noResults')}</h3></div>;
 
-  const name = product.name?.[language] || product.name?.en;
-  const description = product.description?.[language] || product.description?.en;
-  const categoryName = product.category?.name?.[language] || product.category?.name?.en;
+  const name = resolveField(product.name, language);
+  const description = resolveField(product.description, language);
+  const categoryName = resolveField(product.category?.name, language);
   const images = product.images?.length > 0
     ? product.images
     : [{ url: `https://placehold.co/800x600/7BB445/FFFFFF?text=${encodeURIComponent(name)}` }];
@@ -103,7 +104,7 @@ const ProductDetail = () => {
               <p className="product-description">{description}</p>
 
               <div className="product-specs">
-                {(() => { const v = typeof product.origin === 'object' ? product.origin?.[language] || product.origin?.en : product.origin; return v ? (
+                {(() => { const v = resolveField(product.origin, language); return v ? (
                   <div className="product-spec">
                     <MapPin size={18} />
                     <div>
@@ -112,7 +113,7 @@ const ProductDetail = () => {
                     </div>
                   </div>
                 ) : null; })()}
-                {(() => { const v = typeof product.packaging === 'object' ? product.packaging?.[language] || product.packaging?.en : product.packaging; return v ? (
+                {(() => { const v = resolveField(product.packaging, language); return v ? (
                   <div className="product-spec">
                     <Package size={18} />
                     <div>
@@ -121,7 +122,7 @@ const ProductDetail = () => {
                     </div>
                   </div>
                 ) : null; })()}
-                {(() => { const v = typeof product.season === 'object' ? product.season?.[language] || product.season?.en : product.season; return v ? (
+                {(() => { const v = resolveField(product.season, language); return v ? (
                   <div className="product-spec">
                     <Calendar size={18} />
                     <div>
@@ -138,7 +139,7 @@ const ProductDetail = () => {
                   <div className="product-cert-list">
                     {product.certifications.map((cert, i) => {
                       const isText = typeof cert === 'string' || cert.type === 'text';
-                      const certName = typeof cert === 'string' ? cert : (typeof cert.name === 'object' ? (cert.name[language] || cert.name.en || '') : cert.name);
+                      const certName = typeof cert === 'string' ? cert : resolveField(cert.name, language);
                       if (isText) return <span key={i} className="badge badge-accent">{certName}</span>;
                       if (cert.type === 'pdf') return (
                         <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={certName}>
@@ -164,8 +165,8 @@ const ProductDetail = () => {
                   <table className="product-specs-table">
                     <tbody>
                       {product.specifications.map((spec, i) => {
-                        const label = spec.label?.[language] || spec.label?.en || spec.enLabel || spec.arLabel;
-                        const value = spec.value?.[language] || spec.value?.en || (typeof spec.value === 'string' ? spec.value : '');
+                        const label = resolveField(spec.label, language) || spec.enLabel || spec.arLabel;
+                        const value = resolveField(spec.value, language) || (typeof spec.value === 'string' ? spec.value : '');
                         return (
                           <tr key={i}>
                             <td className="spec-label">{label}</td>

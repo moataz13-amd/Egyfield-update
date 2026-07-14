@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveField } from '../services/api';
 import Logo from './Logo';
 import './Footer.css';
 
@@ -34,7 +34,7 @@ const Footer = () => {
                 <Logo className="footer-logo-img" variant="light" />
               </div>
               <p className="footer-description">
-                {settings?.tagline?.[currentLang] || settings?.tagline?.en || t('footer.description')}
+                {resolveField(settings?.tagline, currentLang) || t('footer.description')}
               </p>
               <div className="footer-socials">
                 <a href={settings?.social?.facebook || "#"} target="_blank" rel="noopener noreferrer" className="footer-social" aria-label="Facebook">
@@ -87,7 +87,7 @@ const Footer = () => {
                 <li>
                   <MapPin size={16} />
                   <span>
-                    {settings?.address?.[currentLang] || settings?.address?.en || t('contact.addressText')}
+                    {resolveField(settings?.address, currentLang) || t('contact.addressText')}
                   </span>
                 </li>
                 <li>

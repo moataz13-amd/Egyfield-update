@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
 import { Calendar, Eye, ArrowLeft, Loader, FileText, Share2, Check, X } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveField } from '../services/api';
 import { format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
 import './ArticleDetail.css';
@@ -81,8 +81,8 @@ const ArticleDetail = () => {
 
   const handleShare = async () => {
     const shareData = {
-      title: article.title?.[language] || article.title?.en || article.title?.ar || 'EgyField Article',
-      text: article.summary?.[language] || article.summary?.en || article.summary?.ar || '',
+      title: resolveField(article.title, language) || 'EgyField Article',
+      text: resolveField(article.summary, language) || '',
       url: window.location.href,
     };
 
@@ -125,9 +125,9 @@ const ArticleDetail = () => {
     );
   }
 
-  const titleText = article.title?.[language] || article.title?.en || article.title?.ar || '';
-  const contentText = article.content?.[language] || article.content?.en || article.content?.ar || '';
-  const summaryText = article.summary?.[language] || article.summary?.en || article.summary?.ar || '';
+  const titleText = resolveField(article.title, language) || '';
+  const contentText = resolveField(article.content, language) || '';
+  const summaryText = resolveField(article.summary, language) || '';
   const dateLocale = language === 'ar' ? ar : enUS;
   const dateText = article.createdAt 
     ? format(new Date(article.createdAt), 'dd MMMM yyyy', { locale: dateLocale }) 

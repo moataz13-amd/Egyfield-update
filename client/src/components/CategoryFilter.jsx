@@ -1,4 +1,5 @@
 import { useLanguage } from '../hooks/useLanguage';
+import { resolveField } from '../services/api';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './CategoryFilter.css';
 
@@ -25,7 +26,7 @@ const CategoryFilter = ({ categories, activeCategory, onCategoryChange }) => {
             <span className="category-filter-item-icon">
               {getCategoryIcon(cat.slug, 16)}
             </span>
-            <span className="category-filter-item-text">{cat.name?.[language] || cat.name?.en}</span>
+            <span className="category-filter-item-text">{resolveField(cat.name, language)}</span>
           </button>
         );
       })}

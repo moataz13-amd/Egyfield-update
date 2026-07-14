@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
-import api from '../../services/api';
+import api, { resolveField } from '../../services/api';
 import toast from 'react-hot-toast';
 import { Plus, Edit2, Trash2, X, Save, ToggleLeft, ToggleRight, Loader, Upload } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
@@ -136,7 +136,7 @@ const CategoriesList = () => {
                   <td>
                     <div className="table-actions">
                       <button className="table-action-btn" title={t('admin.edit')} onClick={() => openEdit(c)}><Edit2 size={14} /></button>
-                      <button className="table-action-btn danger" title={t('admin.delete')} onClick={() => handleDelete(c._id, c.name?.[language] || c.name?.en)}><Trash2 size={14} /></button>
+                      <button className="table-action-btn danger" title={t('admin.delete')} onClick={() => handleDelete(c._id, resolveField(c.name, language))}><Trash2 size={14} /></button>
                     </div>
                   </td>
                 </tr>
