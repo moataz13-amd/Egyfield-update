@@ -94,26 +94,22 @@ const ProductForm = () => {
   const handleNameChange = (e) => {
     const val = e.target.value;
     setName(p => ({ ...p, [activeLang]: val }));
-    if (activeLang === 'ar' || activeLang === 'en') {
-      if (nameTimerRef.current) clearTimeout(nameTimerRef.current);
-      nameTimerRef.current = setTimeout(async () => {
-        if (!val.trim()) return;
-        const target = activeLang === 'ar' ? 'en' : 'ar';
-        try { const t = await translateText(val, target); setName(p => ({ ...p, [target]: t })); } catch {}
-      }, 800);
-    }
+    if (nameTimerRef.current) clearTimeout(nameTimerRef.current);
+    nameTimerRef.current = setTimeout(async () => {
+      if (!val.trim()) return;
+      const target = activeLang === 'en' ? 'ar' : 'en';
+      try { const t = await translateText(val, target); setName(p => ({ ...p, [target]: t })); } catch {}
+    }, 800);
   };
   const handleDescChange = (e) => {
     const val = e.target.value;
     setDescription(p => ({ ...p, [activeLang]: val }));
-    if (activeLang === 'ar' || activeLang === 'en') {
-      if (descTimerRef.current) clearTimeout(descTimerRef.current);
-      descTimerRef.current = setTimeout(async () => {
-        if (!val.trim()) return;
-        const target = activeLang === 'ar' ? 'en' : 'ar';
-        try { const t = await translateText(val, target); setDescription(p => ({ ...p, [target]: t })); } catch {}
-      }, 800);
-    }
+    if (descTimerRef.current) clearTimeout(descTimerRef.current);
+    descTimerRef.current = setTimeout(async () => {
+      if (!val.trim()) return;
+      const target = activeLang === 'en' ? 'ar' : 'en';
+      try { const t = await translateText(val, target); setDescription(p => ({ ...p, [target]: t })); } catch {}
+    }, 800);
   };
 
   const handleChange = (e) => {
