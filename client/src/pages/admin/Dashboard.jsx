@@ -84,21 +84,19 @@ const Dashboard = () => {
 
   // Helper to get localized category name from product chart data
   const getLocalizedCategoryName = (c) => {
-    // If the category object is present in backend database seeds
     if (c.nameEn && c.nameAr) {
       return language === 'ar' ? c.nameAr : c.nameEn;
     }
-    // If the backend returned a flat string, we check if it matches default templates
+    const raw = c.name;
+    if (raw && typeof raw === 'object') return raw[language] || raw.en || '';
     const nameMap = {
       'Pickles': 'مخللات',
       'Fresh Produce': 'منتجات طازجة',
       'Frozen': 'منتجات مجمدة',
       'Grains & Legumes': 'حبوب'
     };
-    if (language === 'ar') {
-      return nameMap[c.name] || c.name;
-    }
-    return c.name;
+    if (language === 'ar') return nameMap[raw] || raw || '';
+    return raw || '';
   };
 
   return (
@@ -189,7 +187,7 @@ const Dashboard = () => {
               <div className="activity-item" key={i}>
                 <div className={`activity-dot ${a.type}`} />
                 <div className="activity-info">
-                  <p>{a.title}</p>
+                  <p>{typeof a.title === 'object' ? (a.title[language] || a.title.en || '') : a.title}</p>
                   <span>{getLocalizedTime(a.time)}</span>
                 </div>
               </div>

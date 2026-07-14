@@ -1,10 +1,28 @@
 import axios from 'axios';
 
+function deepParse(obj) {
+  if (typeof obj !== 'object' || obj === null) return obj;
+  if (Array.isArray(obj)) return obj.map(deepParse);
+  for (const key of Object.keys(obj)) {
+    if (typeof obj[key] === 'string' && (obj[key].startsWith('{') || obj[key].startsWith('['))) {
+      try { obj[key] = JSON.parse(obj[key]); } catch {}
+    } else {
+      obj[key] = deepParse(obj[key]);
+    }
+  }
+  return obj;
+}
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  transformResponse: [
+    (data) => {
+      try { return deepParse(JSON.parse(data)); } catch { return data; }
+    },
+  ],
 });
 
 // Request interceptor — attach token
@@ -19,26 +37,9 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-const parseJsonFields = (obj) => {
-  if (Array.isArray(obj)) return obj.map(parseJsonFields);
-  if (obj && typeof obj === 'object') {
-    for (const key of Object.keys(obj)) {
-      if (typeof obj[key] === 'string' && (obj[key].startsWith('{') || obj[key].startsWith('['))) {
-        try { obj[key] = JSON.parse(obj[key]); } catch {}
-      } else if (typeof obj[key] === 'object') {
-        parseJsonFields(obj[key]);
-      }
-    }
-  }
-  return obj;
-};
-
-// Response interceptor — handle 401 + auto-parse JSON-in-text-column fields
+// Response interceptor — handle 401
 api.interceptors.response.use(
-  (response) => {
-    if (response.data) response.data = parseJsonFields(response.data);
-    return response;
-  },
+  (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('egyfield-token');
