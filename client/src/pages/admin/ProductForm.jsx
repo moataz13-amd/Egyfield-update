@@ -99,7 +99,7 @@ const ProductForm = () => {
       nameTimerRef.current = setTimeout(async () => {
         if (!val.trim()) return;
         const target = activeLang === 'ar' ? 'en' : 'ar';
-        try { setName(p => ({ ...p, [target]: await translateText(val, target) })); } catch {}
+        try { const t = await translateText(val, target); setName(p => ({ ...p, [target]: t })); } catch {}
       }, 800);
     }
   };
@@ -111,7 +111,7 @@ const ProductForm = () => {
       descTimerRef.current = setTimeout(async () => {
         if (!val.trim()) return;
         const target = activeLang === 'ar' ? 'en' : 'ar';
-        try { setDescription(p => ({ ...p, [target]: await translateText(val, target) })); } catch {}
+        try { const t = await translateText(val, target); setDescription(p => ({ ...p, [target]: t })); } catch {}
       }, 800);
     }
   };
@@ -240,8 +240,8 @@ const ProductForm = () => {
             onClick={async () => {
               const langs = LANGS.filter(l => l.code !== 'en');
               for (const lang of langs) {
-                if (name.en) { try { setName(p => ({ ...p, [lang.code]: await translateText(name.en, lang.code) })); } catch {} }
-                if (description.en) { try { setDescription(p => ({ ...p, [lang.code]: await translateText(description.en, lang.code) })); } catch {} }
+                if (name.en) { try { const t = await translateText(name.en, lang.code); setName(p => ({ ...p, [lang.code]: t })); } catch {} }
+                if (description.en) { try { const t = await translateText(description.en, lang.code); setDescription(p => ({ ...p, [lang.code]: t })); } catch {} }
               }
               toast.success(isAr ? 'تمت الترجمة!' : 'Translation complete!');
             }}>
