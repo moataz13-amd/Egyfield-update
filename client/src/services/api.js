@@ -1,16 +1,41 @@
 import axios from 'axios';
 
+/**
+ * Recursively parses JSON strings inside an object.
+ * Safe: never leaves an object value that would crash React rendering.
+ */
 export function deepParse(obj) {
   if (typeof obj !== 'object' || obj === null) return obj;
   if (Array.isArray(obj)) return obj.map(deepParse);
+  const result = {};
   for (const key of Object.keys(obj)) {
-    if (typeof obj[key] === 'string' && (obj[key].startsWith('{') || obj[key].startsWith('['))) {
-      try { obj[key] = JSON.parse(obj[key]); } catch {}
+    const val = obj[key];
+    if (typeof val === 'string' && (val.startsWith('{') || val.startsWith('['))) {
+      try {
+        result[key] = deepParse(JSON.parse(val));
+      } catch {
+        result[key] = val;
+      }
+    } else if (typeof val === 'object' && val !== null) {
+      result[key] = deepParse(val);
     } else {
-      obj[key] = deepParse(obj[key]);
+      result[key] = val;
     }
   }
-  return obj;
+  return result;
+}
+
+/**
+ * Safely resolves a potentially multilingual field to a string.
+ * Call this before rendering any field that could be {en, ar, fr, it, tr}.
+ */
+export function resolveField(field, language = 'en') {
+  if (field === null || field === undefined) return '';
+  if (typeof field === 'string') return field;
+  if (typeof field === 'object') {
+    return field[language] || field.en || field.ar || Object.values(field).find(v => typeof v === 'string') || '';
+  }
+  return String(field);
 }
 
 const api = axios.create({
@@ -18,9 +43,10 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  // Only parse JSON — deepParse is called by hooks that need it
   transformResponse: [
     (data) => {
-      try { return deepParse(JSON.parse(data)); } catch { return data; }
+      try { return JSON.parse(data); } catch { return data; }
     },
   ],
 });

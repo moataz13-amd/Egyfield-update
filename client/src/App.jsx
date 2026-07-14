@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
@@ -49,8 +50,40 @@ const queryClient = new QueryClient({
   },
 });
 
+// ===== Global Error Boundary =====
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    console.error('[ErrorBoundary] caught:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fafafa', padding: 24 }}>
+          <h1 style={{ color: '#7BB445', fontSize: 48, margin: 0 }}>EgyField</h1>
+          <p style={{ color: '#555', marginTop: 16, fontSize: 18 }}>Something went wrong. Please refresh the page.</p>
+          <button
+            onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
+            style={{ marginTop: 24, padding: '12px 32px', background: '#7BB445', color: '#fff', border: 'none', borderRadius: 8, fontSize: 16, cursor: 'pointer' }}
+          >
+            Refresh Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function App() {
   return (
+    <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <LanguageProvider>
@@ -105,6 +138,7 @@ function App() {
         </LanguageProvider>
       </HelmetProvider>
     </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
