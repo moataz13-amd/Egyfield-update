@@ -101,11 +101,11 @@ const createProduct = asyncHandler(async (req, res) => {
   const product = await Product.create({
     name: typeof name === 'string' ? JSON.parse(name) : name || {},
     description: typeof description === 'string' ? JSON.parse(description) : description || {},
+    origin: typeof origin === 'string' ? JSON.parse(origin) : origin || {},
+    packaging: typeof packaging === 'string' ? JSON.parse(packaging) : packaging || {},
+    season: typeof season === 'string' ? JSON.parse(season) : season || {},
     category,
     images,
-    origin: origin || 'Egypt',
-    packaging: packaging || '',
-    season: season || 'Year-round',
     certifications: certifications ? JSON.parse(certifications) : [],
     specifications: specifications ? (typeof specifications === 'string' ? JSON.parse(specifications) : specifications) : [],
     featured: featured === 'true',
@@ -155,10 +155,10 @@ const updateProduct = asyncHandler(async (req, res) => {
   if (name) product.name = typeof name === 'string' ? JSON.parse(name) : name;
   if (description) product.description = typeof description === 'string' ? JSON.parse(description) : description;
   if (category) product.category = category;
-  if (origin) product.origin = origin;
-  if (packaging !== undefined) product.packaging = packaging;
-  if (season) product.season = season;
-  if (certifications) product.certifications = JSON.parse(certifications);
+  if (origin) product.origin = typeof origin === 'string' ? JSON.parse(origin) : origin;
+  if (packaging !== undefined) product.packaging = typeof packaging === 'string' ? JSON.parse(packaging) : packaging;
+  if (season) product.season = typeof season === 'string' ? JSON.parse(season) : season;
+  if (certifications) product.certifications = typeof certifications === 'string' ? JSON.parse(certifications) : certifications;
   if (specifications) product.specifications = typeof specifications === 'string' ? JSON.parse(specifications) : specifications;
   if (featured !== undefined) product.featured = featured === 'true' || featured === true;
   if (isActive !== undefined) product.isActive = isActive === 'true' || isActive === true;

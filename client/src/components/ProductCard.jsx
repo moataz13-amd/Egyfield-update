@@ -8,9 +8,12 @@ const ProductCard = ({ product }) => {
   const { language, t } = useLanguage();
   const isAr = language === 'ar';
 
+  const readVal = (field) => typeof field === 'object' ? (field[language] || field.en || '') : field || '';
   const name = product.name?.[language] || product.name?.en || 'Product';
   const categoryName = product.category?.name?.[language] || product.category?.name?.en || '';
   const image = product.images?.[0]?.url || `https://placehold.co/400x300/7BB445/FFFFFF?text=${encodeURIComponent(name)}`;
+  const originVal = readVal(product.origin);
+  const seasonVal = readVal(product.season);
 
   return (
     <div className="product-card glass-card">
@@ -30,16 +33,16 @@ const ProductCard = ({ product }) => {
         </h3>
 
         <div className="product-card-meta">
-          {product.origin && (
+          {originVal && (
             <span className="product-meta-item">
               <MapPin size={14} className="meta-icon" />
-              <span>{product.origin}</span>
+              <span>{originVal}</span>
             </span>
           )}
-          {product.season && (
+          {seasonVal && (
             <span className="product-meta-item">
               <Calendar size={14} className="meta-icon" />
-              <span>{product.season}</span>
+              <span>{seasonVal}</span>
             </span>
           )}
         </div>

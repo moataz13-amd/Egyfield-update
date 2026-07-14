@@ -34,13 +34,15 @@ const ProductForm = () => {
   const [removeImages, setRemoveImages] = useState([]);
   const [name, setName] = useState(emptyLang());
   const [description, setDescription] = useState(emptyLang());
+  const [origin, setOrigin] = useState(emptyLang());
+  const [packaging, setPackaging] = useState(emptyLang());
+  const [season, setSeason] = useState(emptyLang());
   const [form, setForm] = useState({
-    category: '', origin: 'Egypt', packaging: '', season: 'Year-round',
-    featured: false, isActive: true,
+    category: '', featured: false, isActive: true,
   });
   const [certifications, setCertifications] = useState([
-    { name: 'ISO 22000', type: 'text' },
-    { name: 'HACCP', type: 'text' },
+    { name: emptyLang(), type: 'text' },
+    { name: emptyLang(), type: 'text' },
   ]);
   const [certUploading, setCertUploading] = useState(false);
   const [specifications, setSpecifications] = useState([
@@ -60,13 +62,19 @@ const ProductForm = () => {
       const p = res.data;
       setName(p.name ? { ...emptyLang(), ...p.name } : emptyLang());
       setDescription(p.description ? { ...emptyLang(), ...p.description } : emptyLang());
+      setOrigin(typeof p.origin === 'object' ? { ...emptyLang(), ...p.origin } : { ...emptyLang(), en: p.origin || '' });
+      setPackaging(typeof p.packaging === 'object' ? { ...emptyLang(), ...p.packaging } : { ...emptyLang(), en: p.packaging || '' });
+      setSeason(typeof p.season === 'object' ? { ...emptyLang(), ...p.season } : { ...emptyLang(), en: p.season || '' });
       setForm({
-        category: p.category?._id || '', origin: p.origin || 'Egypt',
-        packaging: p.packaging || '', season: p.season || 'Year-round',
+        category: p.category?._id || '',
         featured: p.featured || false, isActive: p.isActive !== false,
       });
       const rawCerts = p.certifications || [];
-      setCertifications(rawCerts.map(c => typeof c === 'string' ? { name: c, type: 'text' } : c));
+      setCertifications(rawCerts.map(c => {
+        if (typeof c === 'string') return { name: { en: c, ar: '', fr: '', it: '', tr: '' }, type: 'text' };
+        const n = c.name;
+        return { ...c, name: typeof n === 'object' ? { ...emptyLang(), ...n } : { ...emptyLang(), en: n || '', ar: '' } };
+      }));
       setExistingImages(p.images || []);
       if (p.specifications?.length) {
         setSpecifications(p.specifications.map(s => ({
@@ -83,12 +91,18 @@ const ProductForm = () => {
 
   const nameTimerRef = useRef(null);
   const descTimerRef = useRef(null);
+  const originTimerRef = useRef(null);
+  const packagingTimerRef = useRef(null);
+  const seasonTimerRef = useRef(null);
   const specTimerRef = useRef({});
 
   useEffect(() => {
     return () => {
       if (nameTimerRef.current) clearTimeout(nameTimerRef.current);
       if (descTimerRef.current) clearTimeout(descTimerRef.current);
+      if (originTimerRef.current) clearTimeout(originTimerRef.current);
+      if (packagingTimerRef.current) clearTimeout(packagingTimerRef.current);
+      if (seasonTimerRef.current) clearTimeout(seasonTimerRef.current);
       Object.values(specTimerRef.current).forEach(t => clearTimeout(t));
     };
   }, []);
@@ -103,19 +117,17 @@ const ProductForm = () => {
       return next;
     });
   };
-
-  const handleNameChange = (e) => {
+  const makeHandler = (setter, timerRef) => (e) => {
     const val = e.target.value;
-    setName(p => ({ ...p, [activeLang]: val }));
-    if (nameTimerRef.current) clearTimeout(nameTimerRef.current);
-    nameTimerRef.current = setTimeout(() => translateAll(val, setName), 800);
+    setter(p => ({ ...p, [activeLang]: val }));
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => translateAll(val, setter), 800);
   };
-  const handleDescChange = (e) => {
-    const val = e.target.value;
-    setDescription(p => ({ ...p, [activeLang]: val }));
-    if (descTimerRef.current) clearTimeout(descTimerRef.current);
-    descTimerRef.current = setTimeout(() => translateAll(val, setDescription), 800);
-  };
+  const handleNameChange = makeHandler(setName, nameTimerRef);
+  const handleDescChange = makeHandler(setDescription, descTimerRef);
+  const handleOriginChange = makeHandler(setOrigin, originTimerRef);
+  const handlePackagingChange = makeHandler(setPackaging, packagingTimerRef);
+  const handleSeasonChange = makeHandler(setSeason, seasonTimerRef);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -134,14 +146,15 @@ const ProductForm = () => {
   };
 
   const addTextCert = () => {
-    setCertifications(prev => [...prev, { name: '', type: 'text' }]);
+    setCertifications(prev => [...prev, { name: emptyLang(), type: 'text' }]);
   };
   const removeCert = (i) => {
     setCertifications(prev => prev.filter((_, idx) => idx !== i));
   };
   const updateCertName = (i, val) => {
-    setCertifications(prev => prev.map((c, idx) => idx === i ? { ...c, name: val } : c));
+    setCertifications(prev => prev.map((c, idx) => idx === i ? { ...c, name: { ...emptyLang(), ...(typeof c.name === 'object' ? c.name : {}), [activeLang]: val } } : c));
   };
+  const getCertName = (cert) => typeof cert.name === 'object' ? (cert.name[activeLang] || '') : cert.name;
   const handleCertFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -198,12 +211,14 @@ const ProductForm = () => {
     const payload = {
       name: JSON.stringify(name),
       description: JSON.stringify(description),
-      category: form.category, origin: form.origin,
-      packaging: form.packaging, season: form.season,
+      origin: JSON.stringify(origin),
+      packaging: JSON.stringify(packaging),
+      season: JSON.stringify(season),
+      category: form.category,
       featured: form.featured, isActive: form.isActive,
       imagesData: JSON.stringify(imagesData),
       removeImages: JSON.stringify(removeImages),
-      certifications: JSON.stringify(certifications.filter(c => c.name)),
+      certifications: JSON.stringify(certifications.filter(c => c.name && (typeof c.name === 'object' ? (c.name.en || c.name.ar) : c.name))),
       specifications: JSON.stringify(specifications.filter(s => s.label?.en || s.label?.ar)),
     };
 
@@ -256,16 +271,34 @@ const ProductForm = () => {
             style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}
             onClick={async () => {
               const langs = LANGS.filter(l => l.code !== 'en');
-              for (const lang of langs) {
-                if (name.en) { try { const t = await translateText(name.en, lang.code); setName(p => ({ ...p, [lang.code]: t })); } catch {} }
-                if (description.en) { try { const t = await translateText(description.en, lang.code); setDescription(p => ({ ...p, [lang.code]: t })); } catch {} }
+              async function fillFromEn(field, setter) {
+                if (!field.en) return;
+                for (const lang of langs) {
+                  try { const t = await translateText(field.en, lang.code); setter(p => ({ ...p, [lang.code]: t })); } catch {}
+                }
               }
+              await fillFromEn(name, setName);
+              await fillFromEn(description, setDescription);
+              await fillFromEn(origin, setOrigin);
+              await fillFromEn(packaging, setPackaging);
+              await fillFromEn(season, setSeason);
               // Translate spec labels from English
               for (const lang of langs) {
                 for (let i = 0; i < specifications.length; i++) {
                   const enLabel = specifications[i].label?.en;
-                  if (enLabel && !specifications[i].label?.[lang.code]) {
+                  if (enLabel) {
                     try { const t = await translateText(enLabel, lang.code); setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [lang.code]: t } } : s)); } catch {}
+                  }
+                }
+              }
+              // Translate certification names from English
+              for (const lang of langs) {
+                for (let i = 0; i < certifications.length; i++) {
+                  const c = certifications[i];
+                  if (c.type !== 'text') continue;
+                  const enName = typeof c.name === 'object' ? c.name.en : '';
+                  if (enName) {
+                    try { const t = await translateText(enName, lang.code); setCertifications(prev => prev.map((c2, idx) => idx === i ? { ...c2, name: { ...emptyLang(), ...(typeof c2.name === 'object' ? c2.name : {}), [lang.code]: t } } : c2)); } catch {}
                   }
                 }
               }
@@ -303,38 +336,38 @@ const ProductForm = () => {
               </select>
             </div>
             <div className="admin-form-group">
-              <label>{language === 'ar' ? 'المنشأ' : 'Origin'}</label>
-              <input className="admin-form-control" name="origin" value={form.origin} onChange={handleChange} />
+              <label>{isAr ? 'المنشأ' : 'Origin'} ({currentLang.label})</label>
+              <input className="admin-form-control" value={origin[activeLang] || ''} onChange={handleOriginChange} style={{ direction: currentLang.dir }} />
             </div>
           </div>
           <div className="admin-form-row">
             <div className="admin-form-group">
-              <label>{language === 'ar' ? 'التعبئة والتغليف' : 'Packaging'}</label>
-              <input className="admin-form-control" name="packaging" value={form.packaging} onChange={handleChange} placeholder="e.g. 500g, 1kg, 5kg" />
+              <label>{isAr ? 'التعبئة والتغليف' : 'Packaging'} ({currentLang.label})</label>
+              <input className="admin-form-control" value={packaging[activeLang] || ''} onChange={handlePackagingChange} placeholder="e.g. 500g, 1kg, 5kg" style={{ direction: currentLang.dir }} />
             </div>
             <div className="admin-form-group">
-              <label>{t('admin.season')}</label>
-              <input className="admin-form-control" name="season" value={form.season} onChange={handleChange} />
+              <label>{isAr ? 'الموسم' : 'Season'} ({currentLang.label})</label>
+              <input className="admin-form-control" value={season[activeLang] || ''} onChange={handleSeasonChange} style={{ direction: currentLang.dir }} />
             </div>
           </div>
           {/* Certifications */}
           <div className="admin-form-group">
-            <label>{language === 'ar' ? 'الشهادات' : 'Certifications'}</label>
+            <label>{isAr ? 'الشهادات' : 'Certifications'} ({currentLang.label})</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {certifications.map((cert, i) => (
                 <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'var(--admin-bg)', padding: '6px 10px', borderRadius: 'var(--admin-radius)', border: '1px solid var(--admin-border)' }}>
                   {cert.type === 'text' ? (
-                    <input className="admin-form-control" value={cert.name} onChange={e => updateCertName(i, e.target.value)} placeholder={language === 'ar' ? 'اسم الشهادة' : 'Certification name'} style={{ flex: 1, border: 'none', background: 'transparent', padding: '4px 0', fontSize: 13 }} />
+                    <input className="admin-form-control" value={getCertName(cert)} onChange={e => updateCertName(i, e.target.value)} placeholder={isAr ? 'اسم الشهادة' : 'Certification name'} style={{ flex: 1, border: 'none', background: 'transparent', padding: '4px 0', fontSize: 13 }} />
                   ) : cert.type === 'pdf' ? (
                     <>
                       <FileText size={16} color="var(--admin-danger)" />
-                      <span style={{ flex: 1, fontSize: 13, color: 'var(--admin-text)' }}>{cert.name}</span>
-                      {cert.url && <a href={cert.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--admin-primary)' }}>{language === 'ar' ? 'عرض' : 'View'}</a>}
+                      <span style={{ flex: 1, fontSize: 13, color: 'var(--admin-text)' }}>{typeof cert.name === 'object' ? (cert.name.en || '') : cert.name}</span>
+                      {cert.url && <a href={cert.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--admin-primary)' }}>{isAr ? 'عرض' : 'View'}</a>}
                     </>
                   ) : (
                     <>
                       <Image size={16} color="var(--admin-primary)" />
-                      <span style={{ flex: 1, fontSize: 13, color: 'var(--admin-text)' }}>{cert.name}</span>
+                      <span style={{ flex: 1, fontSize: 13, color: 'var(--admin-text)' }}>{typeof cert.name === 'object' ? (cert.name.en || '') : cert.name}</span>
                       {cert.url && <img src={cert.url} alt="" style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'cover' }} />}
                     </>
                   )}

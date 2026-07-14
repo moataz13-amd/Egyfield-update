@@ -103,33 +103,33 @@ const ProductDetail = () => {
               <p className="product-description">{description}</p>
 
               <div className="product-specs">
-                {product.origin && (
+                {(() => { const v = typeof product.origin === 'object' ? product.origin?.[language] || product.origin?.en : product.origin; return v ? (
                   <div className="product-spec">
                     <MapPin size={18} />
                     <div>
                       <span className="product-spec-label">{t('products.origin')}</span>
-                      <span className="product-spec-value">{product.origin}</span>
+                      <span className="product-spec-value">{v}</span>
                     </div>
                   </div>
-                )}
-                {product.packaging && (
+                ) : null; })()}
+                {(() => { const v = typeof product.packaging === 'object' ? product.packaging?.[language] || product.packaging?.en : product.packaging; return v ? (
                   <div className="product-spec">
                     <Package size={18} />
                     <div>
                       <span className="product-spec-label">{t('products.packaging')}</span>
-                      <span className="product-spec-value">{product.packaging}</span>
+                      <span className="product-spec-value">{v}</span>
                     </div>
                   </div>
-                )}
-                {product.season && (
+                ) : null; })()}
+                {(() => { const v = typeof product.season === 'object' ? product.season?.[language] || product.season?.en : product.season; return v ? (
                   <div className="product-spec">
                     <Calendar size={18} />
                     <div>
                       <span className="product-spec-label">{t('products.season')}</span>
-                      <span className="product-spec-value">{product.season}</span>
+                      <span className="product-spec-value">{v}</span>
                     </div>
                   </div>
-                )}
+                ) : null; })()}
               </div>
 
               {product.certifications?.length > 0 && (
@@ -138,19 +138,19 @@ const ProductDetail = () => {
                   <div className="product-cert-list">
                     {product.certifications.map((cert, i) => {
                       const isText = typeof cert === 'string' || cert.type === 'text';
-                      const name = typeof cert === 'string' ? cert : cert.name;
-                      if (isText) return <span key={i} className="badge badge-accent">{name}</span>;
+                      const certName = typeof cert === 'string' ? cert : (typeof cert.name === 'object' ? (cert.name[language] || cert.name.en || '') : cert.name);
+                      if (isText) return <span key={i} className="badge badge-accent">{certName}</span>;
                       if (cert.type === 'pdf') return (
-                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={name}>
+                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={certName}>
                           <FileText size={16} />
-                          <span>{name}</span>
+                          <span>{certName}</span>
                           <ExternalLink size={12} />
                         </a>
                       );
                       return (
-                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={name}>
-                          <img src={cert.url} alt={name} className="product-cert-thumb" />
-                          <span>{name}</span>
+                        <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={certName}>
+                          <img src={cert.url} alt={certName} className="product-cert-thumb" />
+                          <span>{certName}</span>
                         </a>
                       );
                     })}
