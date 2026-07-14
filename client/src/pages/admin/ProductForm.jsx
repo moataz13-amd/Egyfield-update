@@ -93,25 +93,28 @@ const ProductForm = () => {
     };
   }, []);
 
+  const translateAll = async (val, setter) => {
+    if (!val.trim()) return;
+    const targets = LANGS.filter(l => l.code !== activeLang).map(l => l.code);
+    const results = await Promise.all(targets.map(t => translateText(val, t).catch(() => null)));
+    setter(p => {
+      const next = { ...p };
+      targets.forEach((t, idx) => { if (results[idx]) next[t] = results[idx]; });
+      return next;
+    });
+  };
+
   const handleNameChange = (e) => {
     const val = e.target.value;
     setName(p => ({ ...p, [activeLang]: val }));
     if (nameTimerRef.current) clearTimeout(nameTimerRef.current);
-    nameTimerRef.current = setTimeout(async () => {
-      if (!val.trim()) return;
-      const target = activeLang === 'en' ? 'ar' : 'en';
-      try { const t = await translateText(val, target); setName(p => ({ ...p, [target]: t })); } catch {}
-    }, 800);
+    nameTimerRef.current = setTimeout(() => translateAll(val, setName), 800);
   };
   const handleDescChange = (e) => {
     const val = e.target.value;
     setDescription(p => ({ ...p, [activeLang]: val }));
     if (descTimerRef.current) clearTimeout(descTimerRef.current);
-    descTimerRef.current = setTimeout(async () => {
-      if (!val.trim()) return;
-      const target = activeLang === 'en' ? 'ar' : 'en';
-      try { const t = await translateText(val, target); setDescription(p => ({ ...p, [target]: t })); } catch {}
-    }, 800);
+    descTimerRef.current = setTimeout(() => translateAll(val, setDescription), 800);
   };
 
   const handleChange = (e) => {
@@ -173,8 +176,14 @@ const ProductForm = () => {
     if (specTimerRef.current[i]) clearTimeout(specTimerRef.current[i]);
     specTimerRef.current[i] = setTimeout(async () => {
       if (!val.trim()) return;
-      const target = activeLang === 'en' ? 'ar' : 'en';
-      try { const t = await translateText(val, target); setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [target]: t } } : s)); } catch {}
+      const targets = LANGS.filter(l => l.code !== activeLang).map(l => l.code);
+      const results = await Promise.all(targets.map(t => translateText(val, t).catch(() => null)));
+      setSpecifications(prev => prev.map((s, idx) => {
+        if (idx !== i) return s;
+        const label = { ...s.label };
+        targets.forEach((t, j) => { if (results[j]) label[t] = results[j]; });
+        return { ...s, label };
+      }));
     }, 800);
   };
 
@@ -250,6 +259,15 @@ const ProductForm = () => {
               for (const lang of langs) {
                 if (name.en) { try { const t = await translateText(name.en, lang.code); setName(p => ({ ...p, [lang.code]: t })); } catch {} }
                 if (description.en) { try { const t = await translateText(description.en, lang.code); setDescription(p => ({ ...p, [lang.code]: t })); } catch {} }
+              }
+              // Translate spec labels from English
+              for (const lang of langs) {
+                for (let i = 0; i < specifications.length; i++) {
+                  const enLabel = specifications[i].label?.en;
+                  if (enLabel && !specifications[i].label?.[lang.code]) {
+                    try { const t = await translateText(enLabel, lang.code); setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [lang.code]: t } } : s)); } catch {}
+                  }
+                }
               }
               toast.success(isAr ? 'تمت الترجمة!' : 'Translation complete!');
             }}>
