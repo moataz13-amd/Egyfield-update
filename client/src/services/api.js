@@ -19,9 +19,26 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor — handle 401
+const parseJsonFields = (obj) => {
+  if (Array.isArray(obj)) return obj.map(parseJsonFields);
+  if (obj && typeof obj === 'object') {
+    for (const key of Object.keys(obj)) {
+      if (typeof obj[key] === 'string' && (obj[key].startsWith('{') || obj[key].startsWith('['))) {
+        try { obj[key] = JSON.parse(obj[key]); } catch {}
+      } else if (typeof obj[key] === 'object') {
+        parseJsonFields(obj[key]);
+      }
+    }
+  }
+  return obj;
+};
+
+// Response interceptor — handle 401 + auto-parse JSON-in-text-column fields
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (response.data) parseJsonFields(response.data);
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('egyfield-token');
