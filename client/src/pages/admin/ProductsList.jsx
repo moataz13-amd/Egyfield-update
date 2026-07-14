@@ -194,7 +194,7 @@ const ProductsList = () => {
                     </span>
                   </td>
                   <td>
-                    <span className="pl-season">{p.season || '—'}</span>
+                    <span className="pl-season">{typeof p.season === 'object' ? (p.season[language] || p.season.en || '—') : (p.season || '—')}</span>
                   </td>
                   <td style={{ textAlign: 'center' }}>
                     <button

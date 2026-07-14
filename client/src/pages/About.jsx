@@ -115,12 +115,13 @@ const About = () => {
               <div className="cert-grid">
                 {certifications.map((cert, i) => {
                   const isFile = cert.type === 'image' || cert.type === 'pdf';
+                  const certName = typeof cert.name === 'object' ? (cert.name[lang] || cert.name.en || '') : cert.name;
                   if (isFile) return (
                     <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className={`cert-card cert-card-file glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
                       <div className="cert-icon">
-                        {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={cert.name} className="cert-file-thumb" />}
+                        {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={certName} className="cert-file-thumb" />}
                       </div>
-                      <h3>{cert.name}</h3>
+                      <h3>{certName}</h3>
                       <span className="cert-view-link"><ExternalLink size={14} /> {language === 'ar' ? 'عرض' : 'View'}</span>
                     </a>
                   );
@@ -129,7 +130,7 @@ const About = () => {
                       <div className="cert-icon">
                         {i % 2 === 0 ? <ShieldCheck size={40} /> : <Award size={40} />}
                       </div>
-                      <h3>{cert.name}</h3>
+                      <h3>{certName}</h3>
                       <p>{cert.description?.[lang] || cert.description?.en || ''}</p>
                     </div>
                   );
