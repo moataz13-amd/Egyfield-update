@@ -58,7 +58,12 @@ class Document {
 
   toObject() {
     const obj = Object.assign({}, this);
-    for (const key of Object.keys(obj)) { if (key.startsWith('_')) delete obj[key]; }
+    for (const key of Object.keys(obj)) {
+      if (key.startsWith('_')) delete obj[key];
+      else if (typeof obj[key] === 'string' && (obj[key].startsWith('{') || obj[key].startsWith('['))) {
+        try { obj[key] = JSON.parse(obj[key]); } catch {}
+      }
+    }
     obj._id = this.id;
     return obj;
   }
