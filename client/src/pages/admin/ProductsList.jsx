@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useProducts, useCategories } from '../../hooks/useProducts';
 import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
-import api from '../../services/api';
+import api, { resolveField } from '../../services/api';
 import toast from 'react-hot-toast';
 import { Plus, Search, Edit2, Trash2, Eye, ChevronLeft, ChevronRight, Package, Star, CheckCircle, XCircle, Filter } from 'lucide-react';
 
@@ -130,7 +130,7 @@ const ProductsList = () => {
               <option value="">{t('admin.allCategories')}</option>
               {categories?.map(c => (
                 <option key={c._id} value={c._id}>
-                  {c.name?.[language] || c.name?.en}
+                    {resolveField(c.name, language) || '—'}
                 </option>
               ))}
             </select>
@@ -172,14 +172,14 @@ const ProductsList = () => {
                       <img
                         className="pl-product-img"
                         src={p.images?.[0]?.url || 'https://placehold.co/56x56/F4F6F9/94a3b8?text=No+img'}
-                        alt={p.name?.en || ''}
+                        alt={resolveField(p.name, 'en') || ''}
                       />
                     </div>
                   </td>
                   <td>
                     <div className="pl-name-cell">
-                      <span className="pl-name-en">{p.name?.en || '—'}</span>
-                      <span className="pl-name-ar">{p.name?.ar || '—'}</span>
+                      <span className="pl-name-en">{resolveField(p.name, 'en') || '—'}</span>
+                      <span className="pl-name-ar">{resolveField(p.name, 'ar') || '—'}</span>
                     </div>
                   </td>
                   <td>
@@ -190,11 +190,11 @@ const ProductsList = () => {
                       }}
                     >
                       <span className="pl-badge-dot" />
-                      {p.category?.name?.[language] || p.category?.name?.en || '—'}
+                      {resolveField(p.category?.name, language) || '—'}
                     </span>
                   </td>
                   <td>
-                    <span className="pl-season">{typeof p.season === 'object' ? (p.season[language] || p.season.en || '—') : (p.season || '—')}</span>
+                    <span className="pl-season">{resolveField(p.season, language) || '—'}</span>
                   </td>
                   <td style={{ textAlign: 'center' }}>
                     <button
@@ -218,7 +218,7 @@ const ProductsList = () => {
                       <a href={`/products/${p._id}`} target="_blank" rel="noopener noreferrer" className="table-action-btn pl-action-view" title={t('admin.view')}>
                         <Eye size={14} />
                       </a>
-                      <button className="table-action-btn danger" title={t('admin.delete')} onClick={() => handleDelete(p._id, p.name?.[language] || p.name?.en)}>
+                      <button className="table-action-btn danger" title={t('admin.delete')} onClick={() => handleDelete(p._id, resolveField(p.name, language))}>
                         <Trash2 size={14} />
                       </button>
                     </div>
