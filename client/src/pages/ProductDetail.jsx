@@ -164,7 +164,7 @@ const ProductDetail = () => {
                   <table className="product-specs-table">
                     <tbody>
                       {product.specifications.map((spec, i) => {
-                        const label = language === 'ar' && spec.arLabel ? spec.arLabel : spec.enLabel || spec.arLabel;
+                        const label = spec.label?.[language] || spec.label?.en || spec.enLabel || spec.arLabel;
                         return (
                           <tr key={i}>
                             <td className="spec-label">{label}</td>

@@ -25,8 +25,14 @@ const getProducts = asyncHandler(async (req, res) => {
     query.$or = [
       { 'name.en': { $regex: search, $options: 'i' } },
       { 'name.ar': { $regex: search, $options: 'i' } },
+      { 'name.fr': { $regex: search, $options: 'i' } },
+      { 'name.it': { $regex: search, $options: 'i' } },
+      { 'name.tr': { $regex: search, $options: 'i' } },
       { 'description.en': { $regex: search, $options: 'i' } },
       { 'description.ar': { $regex: search, $options: 'i' } },
+      { 'description.fr': { $regex: search, $options: 'i' } },
+      { 'description.it': { $regex: search, $options: 'i' } },
+      { 'description.tr': { $regex: search, $options: 'i' } },
     ];
   }
 
@@ -81,7 +87,7 @@ const getProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private (Admin)
 const createProduct = asyncHandler(async (req, res) => {
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, imagesData, specifications } = req.body;
+  const { name, description, category, origin, packaging, season, certifications, featured, isActive, imagesData, specifications } = req.body;
 
   const images = imagesData
     ? (typeof imagesData === 'string' ? JSON.parse(imagesData) : imagesData)
@@ -93,8 +99,8 @@ const createProduct = asyncHandler(async (req, res) => {
       : [];
 
   const product = await Product.create({
-    name: { ar: nameAr, en: nameEn },
-    description: { ar: descriptionAr, en: descriptionEn },
+    name: typeof name === 'string' ? JSON.parse(name) : name || {},
+    description: typeof description === 'string' ? JSON.parse(description) : description || {},
     category,
     images,
     origin: origin || 'Egypt',
@@ -122,7 +128,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('Product not found');
   }
 
-  const { nameAr, nameEn, descriptionAr, descriptionEn, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData, specifications } = req.body;
+  const { name, description, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData, specifications } = req.body;
 
   // Remove specified images from Cloudinary
   if (removeImages) {
@@ -146,10 +152,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.images.push(...newImages);
   }
 
-  if (nameAr) product.name.ar = nameAr;
-  if (nameEn) product.name.en = nameEn;
-  if (descriptionAr) product.description.ar = descriptionAr;
-  if (descriptionEn) product.description.en = descriptionEn;
+  if (name) product.name = typeof name === 'string' ? JSON.parse(name) : name;
+  if (description) product.description = typeof description === 'string' ? JSON.parse(description) : description;
   if (category) product.category = category;
   if (origin) product.origin = origin;
   if (packaging !== undefined) product.packaging = packaging;
