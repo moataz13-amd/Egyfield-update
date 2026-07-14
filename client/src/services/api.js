@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-function deepParse(obj) {
+export function deepParse(obj) {
   if (typeof obj !== 'object' || obj === null) return obj;
   if (Array.isArray(obj)) return obj.map(deepParse);
   for (const key of Object.keys(obj)) {
