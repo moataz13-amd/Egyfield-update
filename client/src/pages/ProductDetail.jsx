@@ -165,10 +165,11 @@ const ProductDetail = () => {
                     <tbody>
                       {product.specifications.map((spec, i) => {
                         const label = spec.label?.[language] || spec.label?.en || spec.enLabel || spec.arLabel;
+                        const value = spec.value?.[language] || spec.value?.en || (typeof spec.value === 'string' ? spec.value : '');
                         return (
                           <tr key={i}>
                             <td className="spec-label">{label}</td>
-                            <td className="spec-value">{spec.value}</td>
+                            <td className="spec-value">{value}</td>
                           </tr>
                         );
                       })}

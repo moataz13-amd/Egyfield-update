@@ -46,14 +46,14 @@ const ProductForm = () => {
   ]);
   const [certUploading, setCertUploading] = useState(false);
   const [specifications, setSpecifications] = useState([
-    { label: { en: 'Properties', ar: 'الخاصية', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Details', ar: 'تفاصيل', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Ingredients', ar: 'المكونات', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Available Sizes', ar: 'المقاسات المتاحة', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Processing Steps', ar: 'خطوات المعالجة', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Characteristics', ar: 'الخصائص', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Packaging', ar: 'التعبئة', fr: '', it: '', tr: '' }, value: '' },
-    { label: { en: 'Shelf Life', ar: 'مدة الصلاحية', fr: '', it: '', tr: '' }, value: '' },
+    { label: { en: 'Properties', ar: 'الخاصية', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Details', ar: 'تفاصيل', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Ingredients', ar: 'المكونات', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Available Sizes', ar: 'المقاسات المتاحة', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Processing Steps', ar: 'خطوات المعالجة', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Characteristics', ar: 'الخصائص', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Packaging', ar: 'التعبئة', fr: '', it: '', tr: '' }, value: emptyLang() },
+    { label: { en: 'Shelf Life', ar: 'مدة الصلاحية', fr: '', it: '', tr: '' }, value: emptyLang() },
   ]);
 
   useEffect(() => {
@@ -80,6 +80,7 @@ const ProductForm = () => {
         setSpecifications(p.specifications.map(s => ({
           ...s,
           label: s.label ? { ...emptyLang(), ...s.label } : { en: s.enLabel || '', ar: s.arLabel || '', fr: '', it: '', tr: '' },
+          value: typeof s.value === 'object' ? { ...emptyLang(), ...s.value } : { en: s.value || '', ar: '', fr: '', it: '', tr: '' },
         })));
       }
       setFetching(false);
@@ -95,6 +96,7 @@ const ProductForm = () => {
   const packagingTimerRef = useRef(null);
   const seasonTimerRef = useRef(null);
   const specTimerRef = useRef({});
+  const specValTimerRef = useRef({});
 
   useEffect(() => {
     return () => {
@@ -104,6 +106,7 @@ const ProductForm = () => {
       if (packagingTimerRef.current) clearTimeout(packagingTimerRef.current);
       if (seasonTimerRef.current) clearTimeout(seasonTimerRef.current);
       Object.values(specTimerRef.current).forEach(t => clearTimeout(t));
+      Object.values(specValTimerRef.current).forEach(t => clearTimeout(t));
     };
   }, []);
 
@@ -171,8 +174,28 @@ const ProductForm = () => {
     e.target.value = '';
   };
 
+  const handleSpecValueChange = (i, e) => {
+    const val = e.target.value;
+    updateSpecValue(i, activeLang, val);
+    if (specValTimerRef.current[i]) clearTimeout(specValTimerRef.current[i]);
+    specValTimerRef.current[i] = setTimeout(async () => {
+      if (!val.trim()) return;
+      const targets = LANGS.filter(l => l.code !== activeLang).map(l => l.code);
+      const results = await Promise.all(targets.map(t => translateText(val, t).catch(() => null)));
+      setSpecifications(prev => prev.map((s, idx) => {
+        if (idx !== i) return s;
+        const value = { ...s.value };
+        targets.forEach((t, j) => { if (results[j]) value[t] = results[j]; });
+        return { ...s, value };
+      }));
+    }, 800);
+  };
+  const updateSpecValue = (i, lang, val) => {
+    setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, value: { ...s.value, [lang]: val } } : s));
+  };
+
   const addSpecRow = () => {
-    setSpecifications(prev => [...prev, { label: emptyLang(), value: '' }]);
+    setSpecifications(prev => [...prev, { label: emptyLang(), value: emptyLang() }]);
   };
   const removeSpecRow = (i) => {
     setSpecifications(prev => prev.filter((_, idx) => idx !== i));
@@ -219,7 +242,7 @@ const ProductForm = () => {
       imagesData: JSON.stringify(imagesData),
       removeImages: JSON.stringify(removeImages),
       certifications: JSON.stringify(certifications.filter(c => c.name && (typeof c.name === 'object' ? (c.name.en || c.name.ar) : c.name))),
-      specifications: JSON.stringify(specifications.filter(s => s.label?.en || s.label?.ar)),
+      specifications: JSON.stringify(specifications.filter(s => (s.label?.en || s.label?.ar) || (s.value?.en || s.value?.ar))),
     };
 
     try {
@@ -282,12 +305,16 @@ const ProductForm = () => {
               await fillFromEn(origin, setOrigin);
               await fillFromEn(packaging, setPackaging);
               await fillFromEn(season, setSeason);
-              // Translate spec labels from English
+              // Translate spec labels & values from English
               for (const lang of langs) {
                 for (let i = 0; i < specifications.length; i++) {
                   const enLabel = specifications[i].label?.en;
                   if (enLabel) {
                     try { const t = await translateText(enLabel, lang.code); setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [lang.code]: t } } : s)); } catch {}
+                  }
+                  const enValue = specifications[i].value?.en;
+                  if (enValue) {
+                    try { const t = await translateText(enValue, lang.code); setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, value: { ...s.value, [lang.code]: t } } : s)); } catch {}
                   }
                 }
               }
@@ -402,10 +429,10 @@ const ProductForm = () => {
                   onChange={e => handleSpecLabelChange(i, e)}
                   style={{ width: 160, direction: currentLang.dir }} />
                 <input className="admin-form-control"
-                  placeholder={isAr ? 'القيمة' : 'Value'}
-                  value={s.value}
-                  onChange={e => updateSpec(i, 'value', e.target.value)}
-                  style={{ flex: 1 }} />
+                  placeholder={`${isAr ? 'القيمة' : 'Value'} (${currentLang.label})`}
+                  value={s.value?.[activeLang] || ''}
+                  onChange={e => handleSpecValueChange(i, e)}
+                  style={{ flex: 1, direction: currentLang.dir }} />
                 <button type="button" onClick={() => removeSpecRow(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--admin-danger)', padding: 4 }}>
                   <Trash2 size={16} />
                 </button>
