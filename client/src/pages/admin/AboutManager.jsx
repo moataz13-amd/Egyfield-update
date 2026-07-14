@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import { Save, Loader, Plus, Trash2, BookOpen, Target, Eye, Clock, Award, Globe, Upload, FileText, Image, X } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
+import { translateText } from '../../utils/translate';
+import { Languages } from 'lucide-react';
 
 const AboutManager = () => {
   const { language } = useContext(LanguageContext);
@@ -203,6 +205,43 @@ const AboutManager = () => {
               <span>{tab.name}</span>
             </button>
           ))}
+          <button
+            type="button"
+            className="admin-btn admin-btn-secondary admin-btn-sm"
+            style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}
+            onClick={async () => {
+              const langs = editTabs.filter(t => t.code !== 'en');
+              for (const lang of langs) {
+                const fields = ['storyText1', 'storyText2', 'storyBadge', 'missionText', 'visionText'];
+                for (const f of fields) {
+                  const src = data[f]?.en || data[f]?.['en'];
+                  if (src && !data[f]?.[lang.code]) {
+                    try {
+                      const t = await translateText(src, lang.code);
+                      updateField(f, lang.code, t);
+                    } catch {}
+                  }
+                }
+                for (const evt of (data.timeline || [])) {
+                  if (evt.title?.en && !evt.title?.[lang.code]) {
+                    try {
+                      const t = await translateText(evt.title.en, lang.code);
+                      updateTimelineItem(data.timeline.indexOf(evt), 'title', lang.code, t);
+                    } catch {}
+                  }
+                  if (evt.description?.en && !evt.description?.[lang.code]) {
+                    try {
+                      const t = await translateText(evt.description.en, lang.code);
+                      updateTimelineItem(data.timeline.indexOf(evt), 'description', lang.code, t);
+                    } catch {}
+                  }
+                }
+              }
+              toast.success(isAr ? 'تمت الترجمة!' : 'Translation complete!');
+            }}
+          >
+            <Languages size={14} /> {isAr ? 'ترجمة من الإنجليزية' : 'Translate from English'}
+          </button>
         </div>
 
         {/* ─── Story Section ─── */}

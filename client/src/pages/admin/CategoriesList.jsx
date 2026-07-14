@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Plus, Edit2, Trash2, X, Save, ToggleLeft, ToggleRight, Loader, Upload } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
+import TranslateButton from '../../components/TranslateButton';
 
 const CategoriesList = () => {
   const { t, language } = useContext(LanguageContext);
@@ -158,6 +159,9 @@ const CategoriesList = () => {
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'الاسم بالإنجليزية' : 'Name (EN)'}</label>
                     <input className="admin-form-control" value={form.nameEn} onChange={e => setForm(p => ({ ...p, nameEn: e.target.value }))} required />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                    <TranslateButton sourceText={form.nameEn} targetLang="ar" onTranslated={v => setForm(p => ({ ...p, nameAr: v }))} />
                   </div>
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'الاسم بالعربية' : 'Name (AR)'}</label>

@@ -8,6 +8,7 @@ import api from '../../services/api';
 import toast from 'react-hot-toast';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
+import TranslateButton from '../../components/TranslateButton';
 
 const PartnersManager = () => {
   const { language } = useContext(LanguageContext);
@@ -367,6 +368,9 @@ const PartnersManager = () => {
                     required
                     placeholder="e.g. Al-Rasheed Trading"
                   />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                  <TranslateButton sourceText={form.nameEn} targetLang="ar" onTranslated={v => setForm(p => ({ ...p, nameAr: v }))} />
                 </div>
                 <div className="admin-form-group">
                   <label>{language === 'ar' ? 'الاسم بالعربية' : 'Name (Arabic)'}</label>

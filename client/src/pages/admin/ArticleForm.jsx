@@ -10,6 +10,8 @@ import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
 import toast from 'react-hot-toast';
 import RichTextEditor from '../../components/RichTextEditor';
+import { translateText } from '../../utils/translate';
+import { Languages } from 'lucide-react';
 
 const LANGS = [
   { code: 'ar', label: 'العربية', flag: '🇪🇬', dir: 'rtl' },
@@ -193,6 +195,28 @@ const ArticleForm = () => {
                     {l.label}
                   </button>
                 ))}
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const langs = LANGS.filter(l => l.code !== 'en');
+                    for (const lang of langs) {
+                      if (title.en && !title[lang.code]) {
+                        try { set(setTitle)(lang.code, await translateText(title.en, lang.code)); } catch {}
+                      }
+                      if (summary.en && !summary[lang.code]) {
+                        try { set(setSummary)(lang.code, await translateText(summary.en, lang.code)); } catch {}
+                      }
+                      if (content.en && !content[lang.code]) {
+                        try { set(setContent)(lang.code, await translateText(content.en, lang.code)); } catch {}
+                      }
+                    }
+                    toast.success(isAr ? 'تمت الترجمة!' : 'Translation complete!');
+                  }}
+                  className="admin-btn admin-btn-secondary admin-btn-sm"
+                  style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}
+                >
+                  <Languages size={14} /> {isAr ? 'ترجمة من الإنجليزية' : 'Translate from English'}
+                </button>
               </div>
 
               {/* Tab Body */}

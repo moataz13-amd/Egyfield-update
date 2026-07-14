@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Save, ArrowLeft, Upload, X, Loader, Plus, Trash2, FileText, Image } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
+import TranslateButton from '../../components/TranslateButton';
 
 const ProductForm = () => {
   const { t, language } = useContext(LanguageContext);
@@ -165,6 +166,9 @@ const ProductForm = () => {
               <label>{language === 'ar' ? 'اسم المنتج بالإنجليزية' : 'Product Name (English)'}</label>
               <input className="admin-form-control" name="nameEn" value={form.nameEn} onChange={handleChange} required />
             </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+              <TranslateButton sourceText={form.nameEn} targetLang="ar" onTranslated={v => setForm(p => ({ ...p, nameAr: v }))} />
+            </div>
             <div className="admin-form-group">
               <label>{language === 'ar' ? 'اسم المنتج بالعربية' : 'Product Name (Arabic)'}</label>
               <input className="admin-form-control" name="nameAr" value={form.nameAr} onChange={handleChange} required style={{ direction: 'rtl' }} />
@@ -174,6 +178,9 @@ const ProductForm = () => {
             <div className="admin-form-group">
               <label>{language === 'ar' ? 'الوصف بالإنجليزية' : 'Description (English)'}</label>
               <textarea className="admin-form-control" name="descriptionEn" value={form.descriptionEn} onChange={handleChange} required />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+              <TranslateButton sourceText={form.descriptionEn} targetLang="ar" onTranslated={v => setForm(p => ({ ...p, descriptionAr: v }))} />
             </div>
             <div className="admin-form-group">
               <label>{language === 'ar' ? 'الوصف بالعربية' : 'Description (Arabic)'}</label>
@@ -254,6 +261,7 @@ const ProductForm = () => {
             {specifications.map((s, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
                 <input className="admin-form-control" placeholder={language === 'ar' ? 'التسمية (إنج)' : 'Label (EN)'} value={s.enLabel} onChange={e => updateSpec(i, 'enLabel', e.target.value)} style={{ width: 140 }} />
+                <TranslateButton sourceText={s.enLabel} targetLang="ar" onTranslated={v => updateSpec(i, 'arLabel', v)} />
                 <input className="admin-form-control" placeholder={language === 'ar' ? 'التسمية (عربي)' : 'Label (AR)'} value={s.arLabel} onChange={e => updateSpec(i, 'arLabel', e.target.value)} style={{ width: 140 }} />
                 <input className="admin-form-control" placeholder={language === 'ar' ? 'القيمة' : 'Value'} value={s.value} onChange={e => updateSpec(i, 'value', e.target.value)} style={{ flex: 1 }} />
                 <button type="button" onClick={() => removeSpecRow(i)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--admin-danger)', padding: 4 }}>

@@ -7,6 +7,9 @@ import toast from 'react-hot-toast';
 import { Save, Lock, Settings as SettingsIcon, Share2, Info, Search, Loader, Image as ImageIcon, Upload, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 import compressImage from '../../utils/imageCompression';
 import uploadToCloudinary from '../../utils/directUpload';
+import TranslateButton from '../../components/TranslateButton';
+import { translateText } from '../../utils/translate';
+import { Languages } from 'lucide-react';
 
 const SUPPORTED_LANGS = [
   { code: 'en', name: 'English' },
@@ -263,6 +266,9 @@ const Settings = () => {
                     <label>{language === 'ar' ? 'اسم الشركة (بالإنجليزية)' : 'Company Name (English)'}</label>
                     <input className="admin-form-control" value={settings.companyName?.en || ''} onChange={e => handleChange('companyName', 'en', e.target.value)} required />
                   </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                    <TranslateButton sourceText={settings.companyName?.en} targetLang="ar" onTranslated={v => handleChange('companyName', 'ar', v)} />
+                  </div>
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'اسم الشركة (بالعربية)' : 'Company Name (Arabic)'}</label>
                     <input className="admin-form-control" value={settings.companyName?.ar || ''} onChange={e => handleChange('companyName', 'ar', e.target.value)} required style={{ direction: 'rtl' }} />
@@ -272,6 +278,9 @@ const Settings = () => {
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'الشعار اللفظي (بالإنجليزية)' : 'Tagline (English)'}</label>
                     <input className="admin-form-control" value={settings.tagline?.en || ''} onChange={e => handleChange('tagline', 'en', e.target.value)} />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                    <TranslateButton sourceText={settings.tagline?.en} targetLang="ar" onTranslated={v => handleChange('tagline', 'ar', v)} />
                   </div>
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'الشعار اللفظي (بالعربية)' : 'Tagline (Arabic)'}</label>
@@ -337,6 +346,9 @@ const Settings = () => {
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'عنوان المكتب (بالإنجليزية)' : 'Office Address (English)'}</label>
                     <input className="admin-form-control" value={settings.address?.en || ''} onChange={e => handleChange('address', 'en', e.target.value)} />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                    <TranslateButton sourceText={settings.address?.en} targetLang="ar" onTranslated={v => handleChange('address', 'ar', v)} />
                   </div>
                   <div className="admin-form-group">
                     <label>{language === 'ar' ? 'عنوان المكتب (بالعربية)' : 'Office Address (Arabic)'}</label>
@@ -552,9 +564,30 @@ const Settings = () => {
                 <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '24px 0' }} />
 
                 {/* Hero Title and Subtitle inputs for all languages */}
-                <h5 style={{ marginBottom: 16, fontWeight: '600' }}>
-                  {language === 'ar' ? 'العناوين والنصوص التعريفية' : 'Title & Subtitle Translations'}
-                </h5>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <h5 style={{ margin: 0, fontWeight: '600' }}>
+                    {language === 'ar' ? 'العناوين والنصوص التعريفية' : 'Title & Subtitle Translations'}
+                  </h5>
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn-secondary admin-btn-sm"
+                    style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                    onClick={async () => {
+                      const langs = SUPPORTED_LANGS.filter(l => l.code !== 'en');
+                      for (const lang of langs) {
+                        if (settings.heroTitle?.en && !settings.heroTitle?.[lang.code]) {
+                          try { handleChange('heroTitle', lang.code, await translateText(settings.heroTitle.en, lang.code)); } catch {}
+                        }
+                        if (settings.heroSubtitle?.en && !settings.heroSubtitle?.[lang.code]) {
+                          try { handleChange('heroSubtitle', lang.code, await translateText(settings.heroSubtitle.en, lang.code)); } catch {}
+                        }
+                      }
+                      toast.success(language === 'ar' ? 'تمت الترجمة!' : 'Translation complete!');
+                    }}
+                  >
+                    <Languages size={14} /> {language === 'ar' ? 'ترجمة من الإنجليزية' : 'Translate from English'}
+                  </button>
+                </div>
 
                 {SUPPORTED_LANGS.map(lang => (
                   <div key={lang.code} style={{ 
@@ -648,6 +681,9 @@ const Settings = () => {
                           <label style={{ fontSize: 12 }}>{language === 'ar' ? 'العنوان (إنجليزي)' : 'Title (English)'}</label>
                           <input className="admin-form-control" value={cover.title?.en || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].title = { ...(u.pageCovers[pg.key].title || {}), en: e.target.value }; return u; }); }} />
                         </div>
+                        <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                          <TranslateButton sourceText={cover.title?.en} targetLang="ar" onTranslated={v => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].title = { ...(u.pageCovers[pg.key].title || {}), ar: v }; return u; }); }} />
+                        </div>
                         <div className="admin-form-group">
                           <label style={{ fontSize: 12 }}>{language === 'ar' ? 'العنوان (عربي)' : 'Title (Arabic)'}</label>
                           <input className="admin-form-control" style={{ direction: 'rtl' }} value={cover.title?.ar || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].title = { ...(u.pageCovers[pg.key].title || {}), ar: e.target.value }; return u; }); }} />
@@ -657,6 +693,9 @@ const Settings = () => {
                         <div className="admin-form-group">
                           <label style={{ fontSize: 12 }}>{language === 'ar' ? 'الوصف (إنجليزي)' : 'Subtitle (English)'}</label>
                           <input className="admin-form-control" value={cover.subtitle?.en || ''} onChange={e => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].subtitle = { ...(u.pageCovers[pg.key].subtitle || {}), en: e.target.value }; return u; }); }} />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: 2 }}>
+                          <TranslateButton sourceText={cover.subtitle?.en} targetLang="ar" onTranslated={v => { setSettings(prev => { const u = { ...prev }; if (!u.pageCovers) u.pageCovers = {}; if (!u.pageCovers[pg.key]) u.pageCovers[pg.key] = {}; u.pageCovers[pg.key].subtitle = { ...(u.pageCovers[pg.key].subtitle || {}), ar: v }; return u; }); }} />
                         </div>
                         <div className="admin-form-group">
                           <label style={{ fontSize: 12 }}>{language === 'ar' ? 'الوصف (عربي)' : 'Subtitle (Arabic)'}</label>
