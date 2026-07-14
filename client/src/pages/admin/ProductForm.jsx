@@ -83,11 +83,13 @@ const ProductForm = () => {
 
   const nameTimerRef = useRef(null);
   const descTimerRef = useRef(null);
+  const specTimerRef = useRef({});
 
   useEffect(() => {
     return () => {
       if (nameTimerRef.current) clearTimeout(nameTimerRef.current);
       if (descTimerRef.current) clearTimeout(descTimerRef.current);
+      Object.values(specTimerRef.current).forEach(t => clearTimeout(t));
     };
   }, []);
 
@@ -164,6 +166,16 @@ const ProductForm = () => {
   };
   const updateSpecLabel = (i, lang, val) => {
     setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [lang]: val } } : s));
+  };
+  const handleSpecLabelChange = (i, e) => {
+    const val = e.target.value;
+    updateSpecLabel(i, activeLang, val);
+    if (specTimerRef.current[i]) clearTimeout(specTimerRef.current[i]);
+    specTimerRef.current[i] = setTimeout(async () => {
+      if (!val.trim()) return;
+      const target = activeLang === 'en' ? 'ar' : 'en';
+      try { const t = await translateText(val, target); setSpecifications(prev => prev.map((s, idx) => idx === i ? { ...s, label: { ...s.label, [target]: t } } : s)); } catch {}
+    }, 800);
   };
 
   const handleSubmit = async (e) => {
@@ -333,10 +345,10 @@ const ProductForm = () => {
             </label>
             {specifications.map((s, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                <input className="admin-form-control"
+                  <input className="admin-form-control"
                   placeholder={`${isAr ? 'التسمية' : 'Label'} (${currentLang.label})`}
                   value={s.label?.[activeLang] || ''}
-                  onChange={e => updateSpecLabel(i, activeLang, e.target.value)}
+                  onChange={e => handleSpecLabelChange(i, e)}
                   style={{ width: 160, direction: currentLang.dir }} />
                 <input className="admin-form-control"
                   placeholder={isAr ? 'القيمة' : 'Value'}
