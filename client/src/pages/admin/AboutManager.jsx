@@ -214,26 +214,24 @@ const AboutManager = () => {
               for (const lang of langs) {
                 const fields = ['storyText1', 'storyText2', 'storyBadge', 'missionText', 'visionText'];
                 for (const f of fields) {
-                  const src = data[f]?.en || data[f]?.['en'];
-                  if (src && !data[f]?.[lang.code]) {
-                    try {
-                      const t = await translateText(src, lang.code);
-                      updateField(f, lang.code, t);
-                    } catch {}
+                  const src = data[f]?.en;
+                  if (src) {
+                    try { updateField(f, lang.code, await translateText(src, lang.code)); } catch {}
                   }
                 }
                 for (const evt of (data.timeline || [])) {
-                  if (evt.title?.en && !evt.title?.[lang.code]) {
-                    try {
-                      const t = await translateText(evt.title.en, lang.code);
-                      updateTimelineItem(data.timeline.indexOf(evt), 'title', lang.code, t);
-                    } catch {}
+                  const idx = data.timeline.indexOf(evt);
+                  if (evt.title?.en) {
+                    try { updateTimelineItem(idx, 'title', lang.code, await translateText(evt.title.en, lang.code)); } catch {}
                   }
-                  if (evt.description?.en && !evt.description?.[lang.code]) {
-                    try {
-                      const t = await translateText(evt.description.en, lang.code);
-                      updateTimelineItem(data.timeline.indexOf(evt), 'description', lang.code, t);
-                    } catch {}
+                  if (evt.description?.en) {
+                    try { updateTimelineItem(idx, 'description', lang.code, await translateText(evt.description.en, lang.code)); } catch {}
+                  }
+                }
+                for (const cert of (data.certifications || [])) {
+                  const idx = data.certifications.indexOf(cert);
+                  if (cert.description?.en) {
+                    try { updateCertItem(idx, 'description', lang.code, await translateText(cert.description.en, lang.code)); } catch {}
                   }
                 }
               }

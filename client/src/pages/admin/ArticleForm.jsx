@@ -200,15 +200,9 @@ const ArticleForm = () => {
                   onClick={async () => {
                     const langs = LANGS.filter(l => l.code !== 'en');
                     for (const lang of langs) {
-                      if (title.en && !title[lang.code]) {
-                        try { set(setTitle)(lang.code, await translateText(title.en, lang.code)); } catch {}
-                      }
-                      if (summary.en && !summary[lang.code]) {
-                        try { set(setSummary)(lang.code, await translateText(summary.en, lang.code)); } catch {}
-                      }
-                      if (content.en && !content[lang.code]) {
-                        try { set(setContent)(lang.code, await translateText(content.en, lang.code)); } catch {}
-                      }
+                      if (title.en) { try { set(setTitle)(lang.code, await translateText(title.en, lang.code)); } catch {} }
+                      if (summary.en) { try { set(setSummary)(lang.code, await translateText(summary.en, lang.code)); } catch {} }
+                      if (content.en) { try { set(setContent)(lang.code, await translateText(content.en, lang.code)); } catch {} }
                     }
                     toast.success(isAr ? 'تمت الترجمة!' : 'Translation complete!');
                   }}

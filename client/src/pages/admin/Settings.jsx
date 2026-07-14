@@ -575,10 +575,10 @@ const Settings = () => {
                     onClick={async () => {
                       const langs = SUPPORTED_LANGS.filter(l => l.code !== 'en');
                       for (const lang of langs) {
-                        if (settings.heroTitle?.en && !settings.heroTitle?.[lang.code]) {
+                        if (settings.heroTitle?.en) {
                           try { handleChange('heroTitle', lang.code, await translateText(settings.heroTitle.en, lang.code)); } catch {}
                         }
-                        if (settings.heroSubtitle?.en && !settings.heroSubtitle?.[lang.code]) {
+                        if (settings.heroSubtitle?.en) {
                           try { handleChange('heroSubtitle', lang.code, await translateText(settings.heroSubtitle.en, lang.code)); } catch {}
                         }
                       }
