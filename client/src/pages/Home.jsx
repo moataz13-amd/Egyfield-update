@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
 import { useFeaturedProducts, useCategories } from '../hooks/useProducts';
-import { resolveField } from '../services/api';
+import api, { resolveField } from '../services/api';
 import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
 import AnimatedCounter from '../components/AnimatedCounter';
 import Loader from '../components/Loader';
-import { Shield, Globe, Package, CalendarCheck, ArrowRight, ArrowLeft, Leaf, CheckCircle2 } from 'lucide-react';
+import { Shield, Globe, Package, CalendarCheck, ArrowRight, ArrowLeft, Leaf, Award, FileText, ExternalLink } from 'lucide-react';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './Home.css';
 
@@ -18,8 +18,13 @@ const Home = () => {
   const seo = useSEO();
   const { data: featuredProducts, isLoading: productsLoading } = useFeaturedProducts();
   const { data: categories } = useCategories();
+  const [certifications, setCertifications] = useState([]);
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
   const isAr = language === 'ar';
+
+  useEffect(() => {
+    api.get('/about').then(res => setCertifications(res.data?.certifications || [])).catch(() => {});
+  }, []);
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -162,6 +167,42 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* ===== Certifications ===== */}
+      {certifications.length > 0 && (
+        <section className="section home-cert-section">
+          <div className="container">
+            <div className="section-header reveal">
+              <h2>{isAr ? 'شهاداتنا' : 'Our Certifications'}</h2>
+              <p>{isAr ? 'نفخر بشهادات الجودة والاعتمادات التي حصلنا عليها' : 'We are proud of our quality certifications and accreditations'}</p>
+            </div>
+            <div className="home-cert-grid">
+              {certifications.map((cert, i) => {
+                const isFile = cert.type === 'image' || cert.type === 'pdf';
+                const certName = typeof cert.name === 'object' ? resolveField(cert.name, language) : cert.name;
+                if (isFile) return (
+                  <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className={`home-cert-card home-cert-card-file glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
+                    <div className="home-cert-icon">
+                      {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={certName} className="home-cert-file-thumb" />}
+                    </div>
+                    <h3>{certName}</h3>
+                    <span className="home-cert-view-link"><ExternalLink size={14} /> {isAr ? 'عرض' : 'View'}</span>
+                  </a>
+                );
+                return (
+                  <div key={i} className={`home-cert-card glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
+                    <div className="home-cert-icon">
+                      <Award size={40} />
+                    </div>
+                    <h3>{certName}</h3>
+                    <p>{resolveField(cert.description, language)}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== CTA Banner ===== */}
       <section className="cta-section">
