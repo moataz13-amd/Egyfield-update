@@ -34,13 +34,13 @@ export function resolveField(field, language = 'en') {
   if (typeof field === 'string') return field;
   if (typeof field === 'object') {
     const langVal = field[language];
-    if (typeof langVal === 'string') return langVal;
+    if (typeof langVal === 'string' && langVal) return langVal;
     const enVal = field.en;
-    if (typeof enVal === 'string') return enVal;
+    if (typeof enVal === 'string' && enVal) return enVal;
     const arVal = field.ar;
-    if (typeof arVal === 'string') return arVal;
+    if (typeof arVal === 'string' && arVal) return arVal;
     for (const val of Object.values(field)) {
-      if (typeof val === 'string') return val;
+      if (typeof val === 'string' && val) return val;
     }
     return '';
   }
