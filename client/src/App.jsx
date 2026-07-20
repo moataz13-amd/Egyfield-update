@@ -1,4 +1,4 @@
-import React from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
@@ -13,33 +13,36 @@ import { ConfirmProvider } from './context/ConfirmContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import Loader from './components/Loader';
 
-// Pages
-import Home from './pages/Home';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Articles from './pages/Articles';
-import ArticleDetail from './pages/ArticleDetail';
-import Partners from './pages/Partners';
-import NotFound from './pages/NotFound';
+// Lazy loaded pages
+const Home = lazy(() => import('./pages/Home'));
+const Products = lazy(() => import('./pages/Products'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Articles = lazy(() => import('./pages/Articles'));
+const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
+const Partners = lazy(() => import('./pages/Partners'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Admin Pages
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminLayout from './pages/admin/AdminLayout';
-import Dashboard from './pages/admin/Dashboard';
-import ProductsList from './pages/admin/ProductsList';
-import ProductForm from './pages/admin/ProductForm';
-import CategoriesList from './pages/admin/CategoriesList';
-import InquiriesList from './pages/admin/InquiriesList';
-import ArticlesList from './pages/admin/Articles';
-import ArticleForm from './pages/admin/ArticleForm';
-import Analytics from './pages/admin/Analytics';
-import Settings from './pages/admin/Settings';
-import AboutManager from './pages/admin/AboutManager';
-import PartnersManager from './pages/admin/PartnersManager';
-import AdminAccounts from './pages/admin/AdminAccounts';
+// Lazy loaded admin pages
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin'));
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'));
+const ProductsList = lazy(() => import('./pages/admin/ProductsList'));
+const ProductForm = lazy(() => import('./pages/admin/ProductForm'));
+const CategoriesList = lazy(() => import('./pages/admin/CategoriesList'));
+const InquiriesList = lazy(() => import('./pages/admin/InquiriesList'));
+const ArticlesList = lazy(() => import('./pages/admin/Articles'));
+const ArticleForm = lazy(() => import('./pages/admin/ArticleForm'));
+const Analytics = lazy(() => import('./pages/admin/Analytics'));
+const Settings = lazy(() => import('./pages/admin/Settings'));
+const AboutManager = lazy(() => import('./pages/admin/AboutManager'));
+const PartnersManager = lazy(() => import('./pages/admin/PartnersManager'));
+const AdminAccounts = lazy(() => import('./pages/admin/AdminAccounts'));
+
+const PageLoader = () => <Loader fullPage />;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,7 +63,6 @@ class ErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
   componentDidCatch(error, info) {
-    console.error('[ErrorBoundary] caught:', error, info);
     this.setState({ componentStack: info?.componentStack });
   }
   render() {
@@ -99,20 +101,20 @@ function App() {
                   <NavbarWrapper />
                   <Routes>
                     {/* Public routes */}
-                    <Route path="/" element={<Home />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/products/:id" element={<ProductDetail />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/articles" element={<Articles />} />
-                    <Route path="/articles/:slug" element={<ArticleDetail />} />
-                    <Route path="/partners" element={<Partners />} />
-                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/" element={<Suspense fallback={<PageLoader />}><Home /></Suspense>} />
+                    <Route path="/products" element={<Suspense fallback={<PageLoader />}><Products /></Suspense>} />
+                    <Route path="/products/:id" element={<Suspense fallback={<PageLoader />}><ProductDetail /></Suspense>} />
+                    <Route path="/about" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
+                    <Route path="/articles" element={<Suspense fallback={<PageLoader />}><Articles /></Suspense>} />
+                    <Route path="/articles/:slug" element={<Suspense fallback={<PageLoader />}><ArticleDetail /></Suspense>} />
+                    <Route path="/partners" element={<Suspense fallback={<PageLoader />}><Partners /></Suspense>} />
+                    <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
 
                     {/* Admin login */}
-                    <Route path="/admin/login" element={<AdminLogin />} />
+                    <Route path="/admin/login" element={<Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>} />
 
                     {/* Admin panel routes */}
-                    <Route path="/admin" element={<AdminLayout />}>
+                    <Route path="/admin" element={<Suspense fallback={<PageLoader />}><AdminLayout /></Suspense>}>
                       <Route index element={<Dashboard />} />
                       <Route path="products" element={<ProductsList />} />
                       <Route path="products/new" element={<ProductForm />} />
@@ -130,7 +132,7 @@ function App() {
                     </Route>
 
                     {/* 404 route */}
-                    <Route path="*" element={<NotFound />} />
+                    <Route path="*" element={<Suspense fallback={<PageLoader />}><NotFound /></Suspense>} />
                   </Routes>
                   <FooterWrapper />
                   <PublicLangFloat />

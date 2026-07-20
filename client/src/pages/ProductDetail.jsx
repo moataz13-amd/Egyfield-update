@@ -84,7 +84,7 @@ const ProductDetail = () => {
                       className={`gallery-thumb ${i === activeImage ? 'gallery-thumb-active' : ''}`}
                       onClick={() => setActiveImage(i)}
                     >
-                      <img src={img.url} alt={`${name} ${i + 1}`} />
+                      <img src={img.url} alt={`${name} ${i + 1}`} loading="lazy" />
                     </button>
                   ))}
                 </div>
@@ -150,7 +150,7 @@ const ProductDetail = () => {
                       );
                       return (
                         <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={certName}>
-                          <img src={cert.url} alt={certName} className="product-cert-thumb" />
+                          <img src={cert.url} alt={certName} className="product-cert-thumb" loading="lazy" />
                           <span>{certName}</span>
                         </a>
                       );

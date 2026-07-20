@@ -119,7 +119,7 @@ const About = () => {
                   if (isFile) return (
                     <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className={`cert-card cert-card-file glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
                       <div className="cert-icon">
-                        {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={certName} className="cert-file-thumb" />}
+                        {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={certName} className="cert-file-thumb" loading="lazy" />}
                       </div>
                       <h3>{certName}</h3>
                       <span className="cert-view-link"><ExternalLink size={14} /> {language === 'ar' ? 'عرض' : 'View'}</span>

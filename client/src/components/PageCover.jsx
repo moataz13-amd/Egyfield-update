@@ -42,7 +42,7 @@ const PageCover = ({ pageKey, fallbackTitle, fallbackSubtitle, children }) => {
     <div className={`page-cover ${hasImage ? 'page-cover--image' : 'page-cover--gradient'}`}>
       {hasImage && (
         <div className="page-cover-img-wrapper">
-          <img src={cover.image.url} alt={title} className="page-cover-img" />
+          <img src={cover.image.url} alt={title} className="page-cover-img" loading="lazy" />
           {showOverlay && <div className="page-cover-overlay" />}
         </div>
       )}
