@@ -117,7 +117,7 @@ export const translations = {
       quickLinks: 'Quick Links',
       contactInfo: 'Contact Info',
       followUs: 'Follow Us',
-      rights: '© 2026 EgyField. All rights reserved.',
+      rights: '© EgyField. All rights reserved.',
     },
     notFound: {
       title: '404',
@@ -304,7 +304,7 @@ export const translations = {
       quickLinks: 'روابط سريعة',
       contactInfo: 'معلومات التواصل',
       followUs: 'تابعنا',
-      rights: '© 2026 إيجي فيلد. جميع الحقوق محفوظة.',
+      rights: '© إيجي فيلد. جميع الحقوق محفوظة.',
     },
     notFound: {
       title: '404',
@@ -490,7 +490,7 @@ export const translations = {
       quickLinks: 'Liens Rapides',
       contactInfo: 'Coordonnées',
       followUs: 'Suivez-nous',
-      rights: '© 2026 EgyField. Tous droits réservés.',
+      rights: '© EgyField. Tous droits réservés.',
     },
     notFound: {
       title: '404',
@@ -675,7 +675,7 @@ export const translations = {
       quickLinks: 'Link Rapidi',
       contactInfo: 'Informazioni di Contatto',
       followUs: 'Seguici',
-      rights: '© 2026 EgyField. Tutti i diritti riservati.',
+      rights: '© EgyField. Tutti i diritti riservati.',
     },
     notFound: {
       title: '404',
@@ -860,7 +860,7 @@ export const translations = {
       quickLinks: 'Hızlı Bağlantılar',
       contactInfo: 'İletişim Bilgileri',
       followUs: 'Bizi Takip Edin',
-      rights: '© 2026 EgyField. Tüm hakları saklıdır.',
+      rights: '© EgyField. Tüm hakları saklıdır.',
     },
     notFound: {
       title: '404',

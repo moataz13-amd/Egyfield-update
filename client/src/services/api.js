@@ -119,4 +119,15 @@ export const deleteInquiry = (id) => api.delete(`/inquiries/${id}`);
 // Auth
 export const loginAdmin = (data) => api.post('/auth/login', data);
 
+// SEO
+export const getGlobalSeo = () => api.get('/seo/global');
+export const updateGlobalSeo = (data) => api.put('/seo/global', data);
+export const getSeoPages = (params) => api.get('/seo/pages', { params });
+export const getSeoPage = (id) => api.get(`/seo/pages/${id}`);
+export const createSeoPage = (data) => api.post('/seo/pages', data);
+export const updateSeoPage = (id, data) => api.put(`/seo/pages/${id}`, data);
+export const deleteSeoPage = (id) => api.delete(`/seo/pages/${id}`);
+export const runSeoAudit = () => api.get('/seo/audit');
+export const getSeoAnalysis = () => api.get('/seo/analysis');
+
 export default api;

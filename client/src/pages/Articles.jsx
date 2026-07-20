@@ -11,7 +11,7 @@ import { ar, enUS } from 'date-fns/locale';
 
 const Articles = () => {
   const { t, language } = useLanguage();
-  const seo = useSEO();
+  const seo = useSEO('/articles');
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -48,11 +48,21 @@ const Articles = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{seo.metaTitle || (language === 'ar' ? 'أحدث المقالات — إيجي فيلد' : 'Latest Articles — EgyField')}</title>
-        <meta name="description" content={seo.metaDescription || 'Read EgyField articles about crop seasons, packaging excellence, quality standards, and global export procedures.'} />
-        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
-      </Helmet>
+      <SeoMeta
+        title={seo.metaTitle || (isAr ? 'المقالات والأخبار' : 'Articles & Insights')}
+        description={seo.metaDescription}
+        keywords={seo.keywords}
+        ogTitle={seo.ogTitle}
+        ogDescription={seo.ogDescription}
+        ogImage={seo.ogImage}
+        twitterTitle={seo.twitterTitle}
+        twitterDescription={seo.twitterDescription}
+        twitterImage={seo.twitterImage}
+        canonicalUrl={seo.canonicalUrl}
+        robots={seo.robots}
+        language={language}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: isAr ? 'المقالات' : 'Articles', isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+      />
       <div className="articles-page" style={{ minHeight: '100vh', background: '#fafafa' }}>
       {/* Page Cover */}
       <PageCover

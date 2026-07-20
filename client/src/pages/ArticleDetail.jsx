@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
-import { Calendar, Eye, ArrowLeft, Loader, FileText, Share2, Check, X } from 'lucide-react';
+import SeoMeta from '../components/SeoMeta';
+import { Calendar, Eye, ArrowLeft, Loader, FileText, Share2, Check, X, Clock, User, BookOpen } from 'lucide-react';
 import api, { resolveField } from '../services/api';
 import { format } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
@@ -133,13 +134,34 @@ const ArticleDetail = () => {
     ? format(new Date(article.createdAt), 'dd MMMM yyyy', { locale: dateLocale }) 
     : '';
 
+  const wordCount = (contentText || '').split(/\s+/).length;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: titleText,
+    description: summaryText?.substring(0, 200),
+    image: article.image?.url,
+    datePublished: article.createdAt,
+    dateModified: article.updatedAt || article.createdAt,
+    author: { '@type': 'Organization', name: 'EgyField' },
+    publisher: { '@type': 'Organization', name: 'EgyField', logo: { '@type': 'ImageObject', url: 'https://egyfield.com/src/assets/egyfield.svg' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://egyfield.com/articles/${slug}` },
+    wordCount,
+    timeRequired: `PT${readingTime}M`,
+  };
+
   return (
     <>
-      <Helmet>
-        <title>{seo.metaTitle ? `${seo.metaTitle} — ${titleText}` : `${titleText} — EgyField Articles`}</title>
-        <meta name="description" content={seo.metaDescription || summaryText?.substring(0, 160) || 'Read article on EgyField'} />
-        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
-      </Helmet>
+      <SeoMeta
+        title={titleText}
+        description={summaryText?.substring(0, 160) || seo.metaDescription}
+        keywords={seo.keywords}
+        ogImage={article.image?.url}
+        canonicalUrl={`https://egyfield.com/articles/${slug}`}
+        language={language}
+        jsonld={articleSchema}
+      />
     <div className="article-detail-page">
       <div className="container" style={{ maxWidth: 1400 }}>
         
@@ -160,6 +182,14 @@ const ArticleDetail = () => {
               <span className="article-meta-item">
                 <Eye size={15} className="article-meta-icon" /> {article.views} {language === 'ar' ? 'مشاهدة' : 'views'}
               </span>
+              <span className="article-meta-item">
+                <Clock size={15} className="article-meta-icon" /> {readingTime} {language === 'ar' ? 'دقيقة قراءة' : 'min read'}
+              </span>
+              {article.author && (
+                <span className="article-meta-item">
+                  <User size={15} className="article-meta-icon" /> {article.author}
+                </span>
+              )}
             </div>
 
             <button 

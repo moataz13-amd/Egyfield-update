@@ -93,6 +93,9 @@ app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/admin/cloudinary', require('./routes/cloudinaryRoutes'));
 app.get('/api/settings', require('./controllers/settingsController').getSettings);
 
+// SEO routes (public: sitemap, robots)
+app.use('/api', require('./routes/seoRoutes'));
+
 // Error handler
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;

@@ -9,13 +9,14 @@ import Hero from '../components/Hero';
 import ProductCard from '../components/ProductCard';
 import AnimatedCounter from '../components/AnimatedCounter';
 import Loader from '../components/Loader';
+import SeoMeta from '../components/SeoMeta';
 import { Shield, Globe, Package, CalendarCheck, ArrowRight, ArrowLeft, Leaf, Award, FileText, ExternalLink } from 'lucide-react';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './Home.css';
 
 const Home = () => {
   const { t, language, isRTL } = useLanguage();
-  const seo = useSEO();
+  const seo = useSEO('/');
   const { data: featuredProducts, isLoading: productsLoading } = useFeaturedProducts();
   const { data: categories } = useCategories();
   const [certifications, setCertifications] = useState([]);
@@ -59,11 +60,29 @@ const Home = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{seo.metaTitle || 'EgyField — Agricultural Exports'}</title>
-        <meta name="description" content={seo.metaDescription || 'EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, and grains & legumes. Worldwide delivery.'} />
-        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
-      </Helmet>
+      <SeoMeta
+        title={seo.metaTitle}
+        description={seo.metaDescription}
+        keywords={seo.keywords}
+        ogTitle={seo.ogTitle}
+        ogDescription={seo.ogDescription}
+        ogImage={seo.ogImage}
+        twitterTitle={seo.twitterTitle}
+        twitterDescription={seo.twitterDescription}
+        twitterImage={seo.twitterImage}
+        canonicalUrl={seo.canonicalUrl}
+        robots={seo.robots}
+        language={language}
+        jsonld={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'EgyField',
+          url: 'https://egyfield.com',
+          logo: 'https://egyfield.com/src/assets/egyfield.svg',
+          description: "Egypt's Finest Agricultural Exports",
+          sameAs: ['https://facebook.com/egyfield', 'https://instagram.com/egyfield', 'https://linkedin.com/company/egyfield'],
+        }}
+      />
 
       <Hero />
 

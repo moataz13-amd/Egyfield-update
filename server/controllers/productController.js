@@ -87,7 +87,7 @@ const getProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private (Admin)
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, description, category, origin, packaging, season, certifications, featured, isActive, imagesData, specifications } = req.body;
+  const { name, description, category, origin, packaging, season, certifications, featured, isActive, imagesData, specifications, faq } = req.body;
 
   const images = imagesData
     ? (typeof imagesData === 'string' ? JSON.parse(imagesData) : imagesData)
@@ -108,6 +108,7 @@ const createProduct = asyncHandler(async (req, res) => {
     images,
     certifications: certifications ? JSON.parse(certifications) : [],
     specifications: specifications ? (typeof specifications === 'string' ? JSON.parse(specifications) : specifications) : [],
+    faq: faq ? (typeof faq === 'string' ? JSON.parse(faq) : faq) : [],
     featured: featured === 'true',
     isActive: isActive === undefined ? true : (isActive === 'true' || isActive === true),
   });
@@ -128,7 +129,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('Product not found');
   }
 
-  const { name, description, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData, specifications } = req.body;
+  const { name, description, category, origin, packaging, season, certifications, featured, isActive, removeImages, imagesData, specifications, faq } = req.body;
 
   // Remove specified images from Cloudinary
   if (removeImages) {
@@ -160,6 +161,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   if (season) product.season = typeof season === 'string' ? JSON.parse(season) : season;
   if (certifications) product.certifications = typeof certifications === 'string' ? JSON.parse(certifications) : certifications;
   if (specifications) product.specifications = typeof specifications === 'string' ? JSON.parse(specifications) : specifications;
+  if (faq) product.faq = typeof faq === 'string' ? JSON.parse(faq) : faq;
   if (featured !== undefined) product.featured = featured === 'true' || featured === true;
   if (isActive !== undefined) product.isActive = isActive === 'true' || isActive === true;
 

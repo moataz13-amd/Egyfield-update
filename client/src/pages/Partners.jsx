@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import { useSEO } from '../hooks/useSEO';
+import SeoMeta from '../components/SeoMeta';
 import { ExternalLink, Handshake } from 'lucide-react';
 import PageCover from '../components/PageCover';
 import api from '../services/api';
@@ -9,12 +11,12 @@ import './Partners.css';
 
 const Partners = () => {
   const { language } = useLanguage();
+  const seo = useSEO('/partners');
   const lang = language || 'en';
   const [settings, setSettings] = useState(null);
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pageActive, setPageActive] = useState(null);
-  const seo = settings?.seo || {};
 
   // Check if the page is enabled by admin
   useEffect(() => {
@@ -53,11 +55,21 @@ const Partners = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{seo.metaTitle || (language === 'ar' ? 'شركاؤنا — إيجي فيلد' : 'Our Partners — EgyField')}</title>
-        <meta name="description" content={seo.metaDescription || "EgyField's trusted global partners and distributors delivering premium agricultural products worldwide."} />
-        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
-      </Helmet>
+      <SeoMeta
+        title={seo.metaTitle || (language === 'ar' ? 'شركاؤنا' : 'Our Partners')}
+        description={seo.metaDescription}
+        keywords={seo.keywords}
+        ogTitle={seo.ogTitle}
+        ogDescription={seo.ogDescription}
+        ogImage={seo.ogImage}
+        twitterTitle={seo.twitterTitle}
+        twitterDescription={seo.twitterDescription}
+        twitterImage={seo.twitterImage}
+        canonicalUrl={seo.canonicalUrl}
+        robots={seo.robots}
+        language={language}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: language === 'ar' ? 'الشركاء' : 'Partners', isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+      />
 
       <div className="partners-page">
         {/* Page Cover */}

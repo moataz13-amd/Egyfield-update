@@ -8,12 +8,13 @@ import ProductCard from '../components/ProductCard';
 import CategoryFilter from '../components/CategoryFilter';
 import PageCover from '../components/PageCover';
 import Loader from '../components/Loader';
+import SeoMeta from '../components/SeoMeta';
 import { Search, Sparkles, Filter, Leaf, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Products.css';
 
 const Products = () => {
   const { t, language } = useLanguage();
-  const seo = useSEO();
+  const seo = useSEO('/products');
   const isAr = language === 'ar';
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('search') || '');
@@ -49,11 +50,27 @@ const Products = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{seo.metaTitle || (isAr ? 'منتجاتنا الزراعية الممتازة — إيجي فيلد' : 'Premium Agricultural Products — EgyField')}</title>
-        <meta name="description" content={seo.metaDescription || "Browse EgyField's complete range of premium Egyptian agricultural exports: fresh onions, citrus fruit, frozen vegetables, and fine grains."} />
-        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
-      </Helmet>
+      <SeoMeta
+        title={seo.metaTitle || (isAr ? 'منتجاتنا الزراعية الممتازة' : 'Premium Agricultural Products')}
+        description={seo.metaDescription}
+        keywords={seo.keywords}
+        ogTitle={seo.ogTitle}
+        ogDescription={seo.ogDescription}
+        ogImage={seo.ogImage}
+        twitterTitle={seo.twitterTitle}
+        twitterDescription={seo.twitterDescription}
+        twitterImage={seo.twitterImage}
+        canonicalUrl={seo.canonicalUrl}
+        robots={seo.robots}
+        language={language}
+        jsonld={{
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: isAr ? 'المنتجات' : 'Products',
+          description: seo.metaDescription || "Browse EgyField's premium Egyptian agricultural exports",
+          isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' },
+        }}
+      />
 
       <div className="products-page">
         {/* ===== Page Cover ===== */}

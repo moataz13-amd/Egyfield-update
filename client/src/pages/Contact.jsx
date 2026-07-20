@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import { useSEO } from '../hooks/useSEO';
+import SeoMeta from '../components/SeoMeta';
 import ContactForm from '../components/ContactForm';
 import PageCover from '../components/PageCover';
 import { MapPin, Phone, Mail, Clock, ArrowUpRight, Sparkles } from 'lucide-react';
@@ -9,9 +11,9 @@ import './Contact.css';
 
 const Contact = () => {
   const { t, language } = useLanguage();
+  const seo = useSEO('/contact');
   const [settings, setSettings] = useState(null);
   const isAr = language === 'ar';
-  const seo = settings?.seo || {};
 
   useEffect(() => {
     api.get('/settings')
@@ -74,11 +76,21 @@ const Contact = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{seo.metaTitle || `${t('contact.title')} — ${resolveField(settings?.companyName, currentLang) || 'EgyField'}`}</title>
-        <meta name="description" content={seo.metaDescription || 'Get in touch with EgyField export team for premium agricultural crop orders, custom packaging, and export quotes.'} />
-        {seo.keywords?.length > 0 && <meta name="keywords" content={seo.keywords.join(', ')} />}
-      </Helmet>
+      <SeoMeta
+        title={seo.metaTitle || t('contact.title')}
+        description={seo.metaDescription}
+        keywords={seo.keywords}
+        ogTitle={seo.ogTitle}
+        ogDescription={seo.ogDescription}
+        ogImage={seo.ogImage}
+        twitterTitle={seo.twitterTitle}
+        twitterDescription={seo.twitterDescription}
+        twitterImage={seo.twitterImage}
+        canonicalUrl={seo.canonicalUrl}
+        robots={seo.robots}
+        language={language}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'ContactPage', name: t('contact.title'), isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+      />
 
       <div className="contact-page">
         {/* ===== Page Cover ===== */}

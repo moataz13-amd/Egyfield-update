@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useLanguage } from '../hooks/useLanguage';
+import SeoMeta from '../components/SeoMeta';
 import { Home, Sprout } from 'lucide-react';
 import './NotFound.css';
 
@@ -9,9 +10,11 @@ const NotFound = () => {
 
   return (
     <>
-      <Helmet>
-        <title>404 — Page Not Found</title>
-      </Helmet>
+      <SeoMeta
+        title="404 — Page Not Found"
+        description="The page you are looking for does not exist. Return to EgyField homepage."
+        robots="noindex, follow"
+      />
 
       <div className="notfound-page">
         <div className="container notfound-container">

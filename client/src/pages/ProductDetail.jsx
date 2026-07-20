@@ -6,8 +6,9 @@ import { useProduct, useProducts } from '../hooks/useProducts';
 import { resolveField } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import ContactForm from '../components/ContactForm';
+import SeoMeta from '../components/SeoMeta';
 import Loader from '../components/Loader';
-import { MapPin, Package, Calendar, Award, ChevronLeft, ChevronRight, Table, FileText, ExternalLink } from 'lucide-react';
+import { MapPin, Package, Calendar, Award, ChevronLeft, ChevronRight, Table, FileText, ExternalLink, HelpCircle } from 'lucide-react';
 import { getCategoryIcon } from '../utils/categoryIcons';
 import './ProductDetail.css';
 
@@ -36,12 +37,42 @@ const ProductDetail = () => {
     ? product.images
     : [{ url: `https://placehold.co/800x600/7BB445/FFFFFF?text=${encodeURIComponent(name)}` }];
 
+  const specRows = product.specifications?.map(s => ({ label: resolveField(s.label, language) || s.enLabel || s.arLabel, value: resolveField(s.value, language) || (typeof s.value === 'string' ? s.value : '') })) || [];
+  const faqItems = product.faq || [];
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: name,
+    description: description?.substring(0, 500),
+    image: images?.[0]?.url,
+    category: categoryName,
+    ...(product.origin ? { countryOfOrigin: resolveField(product.origin, language) } : {}),
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@type': 'Organization', name: 'EgyField' },
+    },
+    ...(faqItems.length > 0 ? {
+      mainEntity: faqItems.map(faq => ({
+        '@type': 'Question',
+        name: resolveField(faq.question, language) || faq.question?.en || '',
+        acceptedAnswer: { '@type': 'Answer', text: resolveField(faq.answer, language) || faq.answer?.en || '' }
+      }))
+    } : {}),
+  };
+
   return (
     <>
-      <Helmet>
-        <title>{name} — EgyField Products</title>
-        <meta name="description" content={description?.substring(0, 160)} />
-      </Helmet>
+      <SeoMeta
+        title={name}
+        description={description?.substring(0, 160)}
+        keywords={[categoryName, name, 'Egyptian exports', 'agricultural products'].filter(Boolean)}
+        ogImage={images?.[0]?.url}
+        canonicalUrl={`https://egyfield.com/products/${id}`}
+        language={language}
+        jsonld={productSchema}
+      />
 
       <div className="product-detail">
         <div className="container">
@@ -176,6 +207,24 @@ const ProductDetail = () => {
                       })}
                     </tbody>
                   </table>
+                </div>
+              )}
+
+              {product.faq?.length > 0 && (
+                <div className="product-faq">
+                  <h4><HelpCircle size={18} /> {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}</h4>
+                  <div className="product-faq-list">
+                    {product.faq.map((item, i) => {
+                      const q = resolveField(item.question, language) || item.question?.en || '';
+                      const a = resolveField(item.answer, language) || item.answer?.en || '';
+                      return (
+                        <details key={i} className="product-faq-item">
+                          <summary className="product-faq-question">{q}</summary>
+                          <p className="product-faq-answer">{a}</p>
+                        </details>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

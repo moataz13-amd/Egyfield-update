@@ -41,6 +41,9 @@ const Settings = lazy(() => import('./pages/admin/Settings'));
 const AboutManager = lazy(() => import('./pages/admin/AboutManager'));
 const PartnersManager = lazy(() => import('./pages/admin/PartnersManager'));
 const AdminAccounts = lazy(() => import('./pages/admin/AdminAccounts'));
+const SeoGlobal = lazy(() => import('./pages/admin/SeoGlobal'));
+const SeoManager = lazy(() => import('./pages/admin/SeoManager'));
+const SeoAudit = lazy(() => import('./pages/admin/SeoAudit'));
 
 const PageLoader = () => <Loader fullPage />;
 
@@ -129,6 +132,9 @@ function App() {
                       <Route path="about" element={<AboutManager />} />
                       <Route path="partners" element={<PartnersManager />} />
                       <Route path="accounts" element={<AdminAccounts />} />
+                      <Route path="seo" element={<SeoManager />} />
+                      <Route path="seo-global" element={<SeoGlobal />} />
+                      <Route path="seo-audit" element={<SeoAudit />} />
                     </Route>
 
                     {/* 404 route */}
