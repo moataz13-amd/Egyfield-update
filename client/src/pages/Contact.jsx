@@ -5,7 +5,7 @@ import { useSEO } from '../hooks/useSEO';
 import SeoMeta from '../components/SeoMeta';
 import ContactForm from '../components/ContactForm';
 import PageCover from '../components/PageCover';
-import { MapPin, Phone, Mail, Clock, ArrowUpRight, Sparkles } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ArrowUpRight, Sparkles, MessageCircle } from 'lucide-react';
 import api, { resolveField } from '../services/api';
 import './Contact.css';
 
@@ -38,6 +38,8 @@ const Contact = () => {
   const addressVal = resolveField(settings?.address, currentLang) || t('contact.addressText');
   const phoneVal = resolveField(settings?.phone) || t('contact.phoneText');
   const emailVal = resolveField(settings?.email) || t('contact.emailText');
+  const whatsappVal = settings?.whatsapp || '+20 123 456 7890';
+  const waLink = `https://wa.me/${whatsappVal.replace(/[^\d]/g, '')}`;
 
   const contactCards = [
     {
@@ -47,6 +49,14 @@ const Contact = () => {
       link: `https://maps.google.com/?q=${encodeURIComponent(resolveField(settings?.address) || 'Cairo, Egypt')}`,
       color: '#7BB445',
       bg: 'rgba(123, 180, 69, 0.08)',
+    },
+    {
+      icon: <MessageCircle size={22} />,
+      title: isAr ? 'واتساب' : 'WhatsApp',
+      value: whatsappVal,
+      link: waLink,
+      color: '#25D366',
+      bg: 'rgba(37, 211, 102, 0.08)',
     },
     {
       icon: <Phone size={22} />,

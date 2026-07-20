@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Inquiry = require('../models/Inquiry');
+const { sendInquiryNotification } = require('../utils/email');
 
 // @desc    Submit inquiry (public)
 // @route   POST /api/inquiries
@@ -20,6 +21,8 @@ const createInquiry = asyncHandler(async (req, res) => {
     productInterest: productInterest || '',
     message,
   });
+
+  sendInquiryNotification(inquiry);
 
   res.status(201).json({ message: 'Inquiry submitted successfully', inquiry });
 });
