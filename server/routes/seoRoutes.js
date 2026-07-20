@@ -8,10 +8,6 @@ const {
 } = require('../controllers/seoController');
 const { protect, requirePermission } = require('../middleware/authMiddleware');
 
-// Public routes
-router.get('/sitemap.xml', generateSitemap);
-router.get('/robots.txt', generateRobots);
-
 // Global SEO (admin)
 router.get('/global', protect, requirePermission('settings'), getGlobalSeo);
 router.put('/global', protect, requirePermission('settings'), updateGlobalSeo);

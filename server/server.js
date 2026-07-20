@@ -93,8 +93,10 @@ app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/admin/cloudinary', require('./routes/cloudinaryRoutes'));
 app.get('/api/settings', require('./controllers/settingsController').getSettings);
 
-// SEO routes (public: sitemap, robots)
-app.use('/api', require('./routes/seoRoutes'));
+// SEO routes (public: sitemap, robots at root; admin at /api/seo)
+app.use('/api/seo', require('./routes/seoRoutes'));
+app.get('/sitemap.xml', require('./controllers/seoController').generateSitemap);
+app.get('/robots.txt', require('./controllers/seoController').generateRobots);
 
 // Error handler
 app.use((err, req, res, next) => {
