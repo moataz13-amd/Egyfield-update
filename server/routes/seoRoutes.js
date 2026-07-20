@@ -4,7 +4,7 @@ const {
   getGlobalSeo, updateGlobalSeo,
   getSeoPages, getSeoPage, createSeoPage, updateSeoPage, deleteSeoPage,
   generateSitemap, generateRobots,
-  runSeoAudit, getSeoAnalysis,
+  runSeoAudit, getSeoAnalysis, analyzeSeo,
 } = require('../controllers/seoController');
 const { protect, requirePermission } = require('../middleware/authMiddleware');
 
@@ -29,5 +29,6 @@ router.route('/pages/:id')
 // SEO Audit (admin)
 router.get('/audit', protect, runSeoAudit);
 router.get('/analysis', protect, getSeoAnalysis);
+router.post('/analyze', protect, analyzeSeo);
 
 module.exports = router;

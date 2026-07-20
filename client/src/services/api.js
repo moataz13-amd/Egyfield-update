@@ -129,5 +129,6 @@ export const updateSeoPage = (id, data) => api.put(`/seo/pages/${id}`, data);
 export const deleteSeoPage = (id) => api.delete(`/seo/pages/${id}`);
 export const runSeoAudit = () => api.get('/seo/audit');
 export const getSeoAnalysis = () => api.get('/seo/analysis');
+export const analyzeSeo = (data) => api.post('/seo/analyze', data);
 
 export default api;

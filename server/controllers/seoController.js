@@ -335,9 +335,200 @@ const getSeoAnalysis = asyncHandler(async (req, res) => {
   res.json(analysis);
 });
 
+// ========================
+// PER-PAGE SEO ANALYZER (like Yoast / Rank Math)
+// ========================
+
+const analyzeSeo = asyncHandler(async (req, res) => {
+  const { title, description, keywords, ogTitle, ogDescription, ogImage,
+    twitterTitle, twitterDescription, twitterImage, robots, follow,
+    canonicalUrl, schemaType, breadcrumbTitle, content, images } = req.body;
+
+  const checks = [];
+  let score = 100;
+
+  // --- Meta Title (30% weight) ---
+  if (!title || !title.trim()) {
+    checks.push({ field: 'title', status: 'error', message: 'SEO title is missing', fix: 'Add a unique SEO title between 40-60 characters' });
+    score -= 12;
+  } else {
+    const tLen = title.trim().length;
+    if (tLen < 30) {
+      checks.push({ field: 'title', status: 'warning', message: `SEO title too short (${tLen} chars). Aim for 40-60.`, fix: 'Expand your title to 40-60 characters including your focus keyword' });
+      score -= 4;
+    } else if (tLen > 70) {
+      checks.push({ field: 'title', status: 'warning', message: `SEO title too long (${tLen} chars). Google will truncate after ~60.`, fix: 'Shorten your title to under 60 characters' });
+      score -= 4;
+    } else {
+      checks.push({ field: 'title', status: 'good', message: `SEO title length is optimal (${tLen} chars)` });
+      score += 2;
+    }
+    if (keywords && keywords.length > 0) {
+      const kwUsed = keywords.filter(kw => title.toLowerCase().includes(kw.toLowerCase())).length;
+      if (kwUsed === 0) {
+        checks.push({ field: 'title_keyword', status: 'warning', message: 'Focus keyword not found in SEO title', fix: 'Include your primary keyword in the title' });
+        score -= 3;
+      } else {
+        checks.push({ field: 'title_keyword', status: 'good', message: `Keyword appears in title (${kwUsed}/${keywords.length} keywords)` });
+        score += 2;
+      }
+    }
+  }
+
+  // --- Meta Description (25% weight) ---
+  if (!description || !description.trim()) {
+    checks.push({ field: 'description', status: 'error', message: 'Meta description is missing', fix: 'Write a compelling meta description of 150-160 characters' });
+    score -= 10;
+  } else {
+    const dLen = description.trim().length;
+    if (dLen < 120) {
+      checks.push({ field: 'description', status: 'warning', message: `Meta description too short (${dLen} chars). Aim for 150-160.`, fix: 'Expand your description to 150-160 characters with a clear CTA' });
+      score -= 3;
+    } else if (dLen > 170) {
+      checks.push({ field: 'description', status: 'warning', message: `Meta description too long (${dLen} chars). Google will truncate.`, fix: 'Shorten your description to under 160 characters' });
+      score -= 3;
+    } else {
+      checks.push({ field: 'description', status: 'good', message: `Meta description length is optimal (${dLen} chars)` });
+      score += 2;
+    }
+    if (keywords && keywords.length > 0) {
+      const kwUsed = keywords.filter(kw => description.toLowerCase().includes(kw.toLowerCase())).length;
+      if (kwUsed > 0) {
+        checks.push({ field: 'desc_keyword', status: 'good', message: `Keyword appears in description (${kwUsed}/${keywords.length})` });
+        score += 1;
+      }
+    }
+  }
+
+  // --- Keywords (10% weight) ---
+  if (!keywords || keywords.length === 0) {
+    checks.push({ field: 'keywords', status: 'warning', message: 'No focus keywords defined', fix: 'Add 1-3 focus keywords relevant to this page content' });
+    score -= 4;
+  } else if (keywords.length > 5) {
+    checks.push({ field: 'keywords', status: 'warning', message: `Too many keywords (${keywords.length}). Stick to 1-3.`, fix: 'Reduce to 1-3 highly relevant keywords' });
+    score -= 2;
+  } else {
+    checks.push({ field: 'keywords', status: 'good', message: `${keywords.length} focus keyword(s) defined` });
+    score += 2;
+  }
+
+  // --- Open Graph (10% weight) ---
+  if (!ogTitle || !ogTitle.trim()) {
+    checks.push({ field: 'og_title', status: 'warning', message: 'Open Graph title missing', fix: 'Add an OG title for better social sharing' });
+    score -= 3;
+  } else {
+    checks.push({ field: 'og_title', status: 'good', message: 'OG title is set' });
+    score += 1;
+  }
+  if (!ogDescription || !ogDescription.trim()) {
+    checks.push({ field: 'og_desc', status: 'warning', message: 'Open Graph description missing', fix: 'Add an OG description for social previews' });
+    score -= 2;
+  } else {
+    checks.push({ field: 'og_desc', status: 'good', message: 'OG description is set' });
+    score += 1;
+  }
+  if (!ogImage || !ogImage.trim()) {
+    checks.push({ field: 'og_image', status: 'info', message: 'Open Graph image not set', fix: 'Add an OG image (1200x630px recommended) for link previews' });
+    score -= 1;
+  } else {
+    checks.push({ field: 'og_image', status: 'good', message: 'OG image is set' });
+    score += 1;
+  }
+
+  // --- Twitter Cards (5% weight) ---
+  if (!twitterTitle || !twitterTitle.trim()) {
+    checks.push({ field: 'twitter_title', status: 'info', message: 'Twitter title missing (falls back to OG title)', fix: 'Add a dedicated Twitter title' });
+  }
+  if (!twitterImage || !twitterImage.trim()) {
+    checks.push({ field: 'twitter_image', status: 'info', message: 'Twitter image missing (falls back to OG image)', fix: 'Add a dedicated Twitter card image' });
+  }
+
+  // --- Canonical URL (5% weight) ---
+  if (!canonicalUrl || !canonicalUrl.trim()) {
+    checks.push({ field: 'canonical', status: 'warning', message: 'Canonical URL not set', fix: 'Set a canonical URL to prevent duplicate content issues' });
+    score -= 4;
+  } else if (!canonicalUrl.startsWith('https://')) {
+    checks.push({ field: 'canonical', status: 'warning', message: 'Canonical URL should use HTTPS', fix: 'Use https:// in your canonical URL' });
+    score -= 2;
+  } else {
+    checks.push({ field: 'canonical', status: 'good', message: 'Canonical URL is set' });
+    score += 1;
+  }
+
+  // --- Schema Type (5% weight) ---
+  if (!schemaType || !schemaType.trim()) {
+    checks.push({ field: 'schema', status: 'info', message: 'Schema type not specified', fix: 'Add a schema type (WebPage, Product, Article, FAQPage, etc.)' });
+    score -= 2;
+  } else {
+    checks.push({ field: 'schema', status: 'good', message: `Schema type: ${schemaType}` });
+    score += 2;
+  }
+
+  // --- Breadcrumb Title (3% weight) ---
+  if (!breadcrumbTitle || !breadcrumbTitle.trim()) {
+    checks.push({ field: 'breadcrumb', status: 'info', message: 'Breadcrumb title not set', fix: 'Set a breadcrumb title for better navigation UX' });
+  }
+
+  // --- Robots (2% weight) ---
+  if (robots === 'noindex') {
+    checks.push({ field: 'robots', status: 'info', message: 'Page is set to noindex — it will not appear in search results', fix: 'Change to index if you want this page in Google' });
+  }
+
+  // --- Image Alt (5% weight, only for products) ---
+  if (images && Array.isArray(images)) {
+    const withAlt = images.filter(img => img.alt || img.altText).length;
+    const total = images.length;
+    if (total > 0 && withAlt < total) {
+      checks.push({ field: 'images', status: 'warning', message: `${total - withAlt}/${total} images missing ALT text`, fix: 'Add descriptive ALT text to all images' });
+      score -= 3;
+    } else if (total > 0) {
+      checks.push({ field: 'images', status: 'good', message: `All ${total} images have ALT text` });
+      score += 2;
+    }
+  }
+
+  // --- Content Length (only if content provided) ---
+  if (content) {
+    const cLen = content.trim().split(/\s+/).length;
+    if (cLen < 100) {
+      checks.push({ field: 'content', status: 'warning', message: `Content is very short (${cLen} words). Aim for 300+ words.`, fix: 'Add more detailed content — Google favors comprehensive pages' });
+      score -= 3;
+    } else if (cLen < 300) {
+      checks.push({ field: 'content', status: 'info', message: `Content could be longer (${cLen} words). 300+ recommended.`, fix: 'Expand your content to 300+ words for better ranking' });
+      score -= 1;
+    } else {
+      checks.push({ field: 'content', status: 'good', message: `Content length is good (${cLen} words)` });
+      score += 2;
+    }
+  }
+
+  // Clamp score
+  score = Math.max(0, Math.min(100, score));
+
+  // Grade
+  let grade = 'bad';
+  if (score >= 90) grade = 'perfect';
+  else if (score >= 75) grade = 'good';
+  else if (score >= 50) grade = 'average';
+  else if (score >= 30) grade = 'poor';
+
+  res.json({
+    score,
+    grade,
+    checks,
+    summary: {
+      errors: checks.filter(c => c.status === 'error').length,
+      warnings: checks.filter(c => c.status === 'warning').length,
+      good: checks.filter(c => c.status === 'good').length,
+      info: checks.filter(c => c.status === 'info').length,
+    },
+  });
+});
+
 module.exports = {
   getGlobalSeo, updateGlobalSeo,
   getSeoPages, getSeoPage, createSeoPage, updateSeoPage, deleteSeoPage,
   generateSitemap, generateRobots,
   runSeoAudit, getSeoAnalysis,
+  analyzeSeo,
 };

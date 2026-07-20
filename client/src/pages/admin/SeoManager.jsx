@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import api, { getSeoPages, createSeoPage, updateSeoPage, deleteSeoPage } from '../../services/api';
 import { LanguageContext } from '../../context/LanguageContext';
 import { useConfirm } from '../../context/ConfirmContext';
+import SeoAnalyzer from '../../components/SeoAnalyzer';
 import toast from 'react-hot-toast';
 import { Search, Plus, Edit2, Trash2, Save, X, Globe, FileText, Package, Folder, ChevronDown } from 'lucide-react';
 
@@ -160,94 +161,100 @@ const SeoManager = () => {
       <Helmet><title>{isAr ? 'مدير تحسين محركات البحث' : 'SEO Manager'} — EgyField Admin</title></Helmet>
 
       {editingId && (
-        <div className="admin-data-table-wrapper" style={{ padding: 28, marginBottom: 24 }}>
-          <h4 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 20px' }}>
-            {creating ? <><Plus size={18} /> {isAr ? 'إضافة جديدة' : 'New SEO Settings'}</> : <><Edit2 size={18} /> {isAr ? 'تعديل' : 'Edit SEO'}</>}
-          </h4>
-          <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label>{isAr ? 'عنوان SEO' : 'SEO Title'}</label>
-              <input className="admin-form-control" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
-            </div>
-            <div className="admin-form-group">
-              <label>{isAr ? 'الوصف' : 'Meta Description'}</label>
-              <textarea className="admin-form-control" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} />
-            </div>
-          </div>
-          <div className="admin-form-group">
-            <label>{isAr ? 'الكلمات المفتاحية (مفصولة بفواصل)' : 'Keywords (comma-separated)'}</label>
-            <input className="admin-form-control" value={form.keywords.join(', ')} onChange={e => setForm({ ...form, keywords: e.target.value.split(',').map(k => k.trim()) })} />
-          </div>
-          <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label>{isAr ? 'عنوان OG' : 'OG Title'}</label>
-              <input className="admin-form-control" value={form.ogTitle} onChange={e => setForm({ ...form, ogTitle: e.target.value })} />
-            </div>
-            <div className="admin-form-group">
-              <label>{isAr ? 'وصف OG' : 'OG Description'}</label>
-              <textarea className="admin-form-control" value={form.ogDescription} onChange={e => setForm({ ...form, ogDescription: e.target.value })} rows={2} />
-            </div>
-          </div>
-          <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label>{isAr ? 'صورة OG (URL)' : 'OG Image URL'}</label>
-              <input className="admin-form-control" value={form.ogImage} onChange={e => setForm({ ...form, ogImage: e.target.value })} />
-            </div>
-            <div className="admin-form-group">
-              <label>{isAr ? 'عنوان Twitter' : 'Twitter Title'}</label>
-              <input className="admin-form-control" value={form.twitterTitle} onChange={e => setForm({ ...form, twitterTitle: e.target.value })} />
-            </div>
-          </div>
-          <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label>{isAr ? 'وصف Twitter' : 'Twitter Description'}</label>
-              <textarea className="admin-form-control" value={form.twitterDescription} onChange={e => setForm({ ...form, twitterDescription: e.target.value })} rows={2} />
-            </div>
-            <div className="admin-form-group">
-              <label>{isAr ? 'صورة Twitter (URL)' : 'Twitter Image URL'}</label>
-              <input className="admin-form-control" value={form.twitterImage} onChange={e => setForm({ ...form, twitterImage: e.target.value })} />
-            </div>
-          </div>
-          <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label>{isAr ? 'الرابط الأساسي (Canonical)' : 'Canonical URL'}</label>
-              <input className="admin-form-control" value={form.canonicalUrl} onChange={e => setForm({ ...form, canonicalUrl: e.target.value })} placeholder="https://egyfield.com/about" />
-            </div>
-            <div className="admin-form-group">
-              <label>{isAr ? 'عنوان مسار التنقل' : 'Breadcrumb Title'}</label>
-              <input className="admin-form-control" value={form.breadcrumbTitle} onChange={e => setForm({ ...form, breadcrumbTitle: e.target.value })} />
-            </div>
-          </div>
-          <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label>{isAr ? 'نوع Schema' : 'Schema Type'}</label>
-              <input className="admin-form-control" value={form.schemaType} onChange={e => setForm({ ...form, schemaType: e.target.value })} placeholder="WebPage, Product, Article, FAQPage" />
-            </div>
-            <div className="admin-form-group">
-              <label>{isAr ? 'إعدادات الزحف' : 'Crawl Settings'}</label>
-              <div style={{ display: 'flex', gap: 16, paddingTop: 4 }}>
-                <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <input type="radio" name="robots" value="index" checked={form.robots === 'index'} onChange={e => setForm({ ...form, robots: e.target.value })} /> index
-                </label>
-                <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <input type="radio" name="robots" value="noindex" checked={form.robots === 'noindex'} onChange={e => setForm({ ...form, robots: e.target.value })} /> noindex
-                </label>
-                <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <input type="radio" name="follow" value="follow" checked={form.follow === 'follow'} onChange={e => setForm({ ...form, follow: e.target.value })} /> follow
-                </label>
-                <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <input type="radio" name="follow" value="nofollow" checked={form.follow === 'nofollow'} onChange={e => setForm({ ...form, follow: e.target.value })} /> nofollow
-                </label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24, marginBottom: 24 }}>
+          {/* Form */}
+          <div className="admin-data-table-wrapper" style={{ padding: 28 }}>
+            <h4 style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 20px' }}>
+              {creating ? <><Plus size={18} /> {isAr ? 'إضافة جديدة' : 'New SEO Settings'}</> : <><Edit2 size={18} /> {isAr ? 'تعديل' : 'Edit SEO'}</>}
+            </h4>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>{isAr ? 'عنوان SEO' : 'SEO Title'}</label>
+                <input className="admin-form-control" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
+              </div>
+              <div className="admin-form-group">
+                <label>{isAr ? 'الوصف' : 'Meta Description'}</label>
+                <textarea className="admin-form-control" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} />
               </div>
             </div>
+            <div className="admin-form-group">
+              <label>{isAr ? 'الكلمات المفتاحية (مفصولة بفواصل)' : 'Keywords (comma-separated)'}</label>
+              <input className="admin-form-control" value={form.keywords.join(', ')} onChange={e => setForm({ ...form, keywords: e.target.value.split(',').map(k => k.trim()) })} />
+            </div>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>{isAr ? 'عنوان OG' : 'OG Title'}</label>
+                <input className="admin-form-control" value={form.ogTitle} onChange={e => setForm({ ...form, ogTitle: e.target.value })} />
+              </div>
+              <div className="admin-form-group">
+                <label>{isAr ? 'وصف OG' : 'OG Description'}</label>
+                <textarea className="admin-form-control" value={form.ogDescription} onChange={e => setForm({ ...form, ogDescription: e.target.value })} rows={2} />
+              </div>
+            </div>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>{isAr ? 'صورة OG (URL)' : 'OG Image URL'}</label>
+                <input className="admin-form-control" value={form.ogImage} onChange={e => setForm({ ...form, ogImage: e.target.value })} />
+              </div>
+              <div className="admin-form-group">
+                <label>{isAr ? 'عنوان Twitter' : 'Twitter Title'}</label>
+                <input className="admin-form-control" value={form.twitterTitle} onChange={e => setForm({ ...form, twitterTitle: e.target.value })} />
+              </div>
+            </div>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>{isAr ? 'وصف Twitter' : 'Twitter Description'}</label>
+                <textarea className="admin-form-control" value={form.twitterDescription} onChange={e => setForm({ ...form, twitterDescription: e.target.value })} rows={2} />
+              </div>
+              <div className="admin-form-group">
+                <label>{isAr ? 'صورة Twitter (URL)' : 'Twitter Image URL'}</label>
+                <input className="admin-form-control" value={form.twitterImage} onChange={e => setForm({ ...form, twitterImage: e.target.value })} />
+              </div>
+            </div>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>{isAr ? 'الرابط الأساسي (Canonical)' : 'Canonical URL'}</label>
+                <input className="admin-form-control" value={form.canonicalUrl} onChange={e => setForm({ ...form, canonicalUrl: e.target.value })} placeholder="https://egyfield.com/about" />
+              </div>
+              <div className="admin-form-group">
+                <label>{isAr ? 'عنوان مسار التنقل' : 'Breadcrumb Title'}</label>
+                <input className="admin-form-control" value={form.breadcrumbTitle} onChange={e => setForm({ ...form, breadcrumbTitle: e.target.value })} />
+              </div>
+            </div>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label>{isAr ? 'نوع Schema' : 'Schema Type'}</label>
+                <input className="admin-form-control" value={form.schemaType} onChange={e => setForm({ ...form, schemaType: e.target.value })} placeholder="WebPage, Product, Article, FAQPage" />
+              </div>
+              <div className="admin-form-group">
+                <label>{isAr ? 'إعدادات الزحف' : 'Crawl Settings'}</label>
+                <div style={{ display: 'flex', gap: 12, paddingTop: 4, flexWrap: 'wrap' }}>
+                  <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <input type="radio" name="robots" value="index" checked={form.robots === 'index'} onChange={e => setForm({ ...form, robots: e.target.value })} /> index
+                  </label>
+                  <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <input type="radio" name="robots" value="noindex" checked={form.robots === 'noindex'} onChange={e => setForm({ ...form, robots: e.target.value })} /> noindex
+                  </label>
+                  <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <input type="radio" name="follow" value="follow" checked={form.follow === 'follow'} onChange={e => setForm({ ...form, follow: e.target.value })} /> follow
+                  </label>
+                  <label style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <input type="radio" name="follow" value="nofollow" checked={form.follow === 'nofollow'} onChange={e => setForm({ ...form, follow: e.target.value })} /> nofollow
+                  </label>
+                </div>
+              </div>
+            </div>
+            <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '20px 0' }} />
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+                <Save size={16} /> {saving ? (isAr ? 'جار الحفظ...' : 'Saving...') : (isAr ? 'حفظ' : 'Save')}
+              </button>
+              <button className="btn btn-outline" onClick={cancelEdit}><X size={16} /> {isAr ? 'إلغاء' : 'Cancel'}</button>
+            </div>
           </div>
-          <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '20px 0' }} />
-          <div style={{ display: 'flex', gap: 12 }}>
-            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-              <Save size={16} /> {saving ? (isAr ? 'جار الحفظ...' : 'Saving...') : (isAr ? 'حفظ' : 'Save')}
-            </button>
-            <button className="btn btn-outline" onClick={cancelEdit}><X size={16} /> {isAr ? 'إلغاء' : 'Cancel'}</button>
-          </div>
+
+          {/* SEO Analyzer Panel */}
+          <SeoAnalyzer form={form} language={language} />
         </div>
       )}
 
