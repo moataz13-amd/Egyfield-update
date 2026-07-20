@@ -97,7 +97,7 @@ function App() {
             <AuthProvider>
               <Router>
                 <ScrollToTop />
-                <div className="app-wrapper">
+                <div id="main-content" className="app-wrapper">
                   <NavbarWrapper />
                   <Routes>
                     {/* Public routes */}

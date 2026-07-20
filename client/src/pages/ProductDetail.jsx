@@ -58,7 +58,7 @@ const ProductDetail = () => {
             {/* Image Gallery */}
             <div className="product-gallery">
               <div className="product-gallery-main">
-                <img src={images[activeImage]?.url} alt={name} />
+                <img src={images[activeImage]?.url} alt={name} decoding="async" />
                 {images.length > 1 && (
                   <>
                     <button
@@ -84,7 +84,7 @@ const ProductDetail = () => {
                       className={`gallery-thumb ${i === activeImage ? 'gallery-thumb-active' : ''}`}
                       onClick={() => setActiveImage(i)}
                     >
-                      <img src={img.url} alt={`${name} ${i + 1}`} loading="lazy" />
+                      <img src={img.url} alt={`${name} ${i + 1}`} loading="lazy" decoding="async" />
                     </button>
                   ))}
                 </div>
@@ -150,7 +150,7 @@ const ProductDetail = () => {
                       );
                       return (
                         <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className="product-cert-file" title={certName}>
-                          <img src={cert.url} alt={certName} className="product-cert-thumb" loading="lazy" />
+                          <img src={cert.url} alt={certName} className="product-cert-thumb" loading="lazy" decoding="async" />
                           <span>{certName}</span>
                         </a>
                       );

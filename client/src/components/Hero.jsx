@@ -64,12 +64,18 @@ const Hero = () => {
             src={img.url} 
             alt="" 
             className="hero-bg-img" 
+            fetchpriority={index === 0 ? 'high' : 'low'}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            width="1920"
+            height="800"
             style={{
               position: index === 0 ? 'relative' : 'absolute',
               inset: 0,
               width: '100%',
               height: index === 0 ? 'auto' : '100%',
               objectFit: 'cover',
+              aspectRatio: '1920/800',
               opacity: index === currentImageIndex ? 1 : 0,
               transition: 'opacity 1s ease-in-out',
               zIndex: index === currentImageIndex ? 1 : 0

@@ -1,5 +1,6 @@
 export const translations = {
   en: {
+    common: { loading: 'Loading...' },
     nav: {
       home: 'Home',
       products: 'Products',
@@ -8,6 +9,7 @@ export const translations = {
       partners: 'Partners',
       contact: 'Contact',
       admin: 'Admin',
+      changeLanguage: 'Change language',
     },
     hero: {
       title: "Egypt's Finest Agricultural Exports",
@@ -185,6 +187,7 @@ export const translations = {
     },
   },
   ar: {
+    common: { loading: 'جار التحميل...' },
     nav: {
       home: 'الرئيسية',
       products: 'المنتجات',
@@ -193,6 +196,7 @@ export const translations = {
       partners: 'شركاؤنا',
       contact: 'تواصل معنا',
       admin: 'لوحة التحكم',
+      changeLanguage: 'تغيير اللغة',
     },
     hero: {
       title: 'أجود الحاصلات الزراعية المصرية',
@@ -370,6 +374,7 @@ export const translations = {
     },
   },
   fr: {
+    common: { loading: 'Chargement...' },
     nav: {
       home: 'Accueil',
       products: 'Produits',
@@ -378,6 +383,7 @@ export const translations = {
       partners: 'Partenaires',
       contact: 'Contact',
       admin: 'Admin',
+      changeLanguage: 'Changer de langue',
     },
     hero: {
       title: "Les Meilleures Exportations Agricoles d'Égypte",
@@ -553,6 +559,7 @@ export const translations = {
     },
   },
   it: {
+    common: { loading: 'Caricamento...' },
     nav: {
       home: 'Home',
       products: 'Prodotti',
@@ -561,6 +568,7 @@ export const translations = {
       partners: 'Partner',
       contact: 'Contatti',
       admin: 'Admin',
+      changeLanguage: 'Cambia lingua',
     },
     hero: {
       title: "Le Migliori Esportazioni Agricole dell'Egitto",
@@ -736,6 +744,7 @@ export const translations = {
     },
   },
   tr: {
+    common: { loading: 'Yükleniyor...' },
     nav: {
       home: 'Anasayfa',
       products: 'Ürünler',
@@ -744,6 +753,7 @@ export const translations = {
       partners: 'Ortaklarımız',
       contact: 'İletişim',
       admin: 'Yönetici',
+      changeLanguage: 'Dil değiştir',
     },
     hero: {
       title: "Mısır'ın En Kaliteli Tarım İhracatı",

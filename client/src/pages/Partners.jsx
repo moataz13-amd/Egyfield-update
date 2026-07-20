@@ -91,6 +91,7 @@ const Partners = () => {
                         alt={partner.name?.[lang] || partner.name?.en} 
                         className="partner-logo-img"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                     <div className="partner-info">

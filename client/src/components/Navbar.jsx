@@ -18,7 +18,7 @@ const Navbar = () => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -42,7 +42,7 @@ const Navbar = () => {
     const handler = (e) => {
       if (langRef.current && !langRef.current.contains(e.target)) setLangOpen(false);
     };
-    document.addEventListener('mousedown', handler);
+    document.addEventListener('mousedown', handler, { passive: true });
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
@@ -64,7 +64,7 @@ const Navbar = () => {
   return (
     <>
       {/* ===== Top Navbar (Desktop + Mobile header) ===== */}
-      <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
+      <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`} aria-label="Primary navigation">
         <div className="container navbar-container">
           <Link to="/" className="navbar-brand">
             <Logo className="navbar-logo-img" variant={scrolled ? 'dark' : 'light'} />
@@ -77,10 +77,11 @@ const Navbar = () => {
                 const Icon = link.icon;
                 return (
                   <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className={`navbar-link ${location.pathname === link.path ? 'navbar-link-active' : ''}`}
-                    >
+                      <Link
+                        to={link.path}
+                        className={`navbar-link ${location.pathname === link.path ? 'navbar-link-active' : ''}`}
+                        aria-current={location.pathname === link.path ? 'page' : undefined}
+                      >
                       <Icon size={20} strokeWidth={location.pathname === link.path ? 2.4 : 1.8} />
                       <span className="navbar-link-tooltip">{link.label}</span>
                     </Link>
@@ -95,7 +96,7 @@ const Navbar = () => {
             <button
               className="navbar-mobile-lang-btn"
               onClick={() => setLangOpen(!langOpen)}
-              aria-label="Change language"
+              aria-label={t('nav.changeLanguage') || 'Change language'}
             >
               <Globe size={18} />
               <span>{currentLang.name}</span>
@@ -121,7 +122,7 @@ const Navbar = () => {
       </nav>
 
       {/* ===== Bottom Nav Bar (Mobile only) ===== */}
-      <nav className="bottom-nav">
+      <nav className="bottom-nav" aria-label="Bottom navigation">
         {navLinks.map((link) => {
           const Icon = link.icon;
           const isActive = location.pathname === link.path;
@@ -130,6 +131,7 @@ const Navbar = () => {
               key={link.path}
               to={link.path}
               className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
             >
               <div className="bottom-nav-icon-container">
                 <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />

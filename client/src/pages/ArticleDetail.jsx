@@ -189,6 +189,7 @@ const ArticleDetail = () => {
               <img 
                 src={article.image.url} 
                 alt={titleText} 
+                decoding="async"
               />
             </div>
           )}

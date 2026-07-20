@@ -8,6 +8,7 @@ const Logo = ({ className = '', variant = 'dark' }) => {
       alt="EgyField" 
       className={className} 
       style={{ objectFit: 'contain' }}
+      decoding="async"
     />
   );
 };

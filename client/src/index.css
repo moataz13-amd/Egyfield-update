@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-
 /* ===== CSS Reset & Design System ===== */
 :root {
   /* Brand Colors */
@@ -702,5 +700,23 @@ textarea.form-control {
   background: rgba(18, 60, 26, 0.1);
   color: var(--primary-light);
   font-weight: 600;
+}
+
+/* ===== Skip Link (Accessibility) ===== */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  z-index: 10000;
+  padding: 12px 24px;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 600;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 0;
 }
 

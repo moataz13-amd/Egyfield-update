@@ -101,7 +101,7 @@ const Home = () => {
               >
                 <div className="category-card-img">
                   {cat.image?.url ? (
-                    <img src={cat.image.url} alt={resolveField(cat.name, language)} loading="lazy" />
+                    <img src={cat.image.url} alt={resolveField(cat.name, language)} loading="lazy" decoding="async" />
                   ) : (
                     <div className="category-card-icon" style={{ color: cat.color || 'var(--primary-dark)' }}>
                       {getCategoryIcon(cat.slug, 40)}
@@ -183,7 +183,7 @@ const Home = () => {
                 if (isFile) return (
                   <a key={i} href={cert.url} target="_blank" rel="noopener noreferrer" className={`home-cert-card home-cert-card-file glass-card reveal ${i > 0 ? `reveal-delay-${i + 1}` : ''}`}>
                     <div className="home-cert-icon">
-                      {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={certName} className="home-cert-file-thumb" loading="lazy" />}
+                      {cert.type === 'pdf' ? <FileText size={40} /> : <img src={cert.url} alt={certName} className="home-cert-file-thumb" loading="lazy" decoding="async" />}
                     </div>
                     <h3>{certName}</h3>
                     <span className="home-cert-view-link"><ExternalLink size={14} /> {isAr ? 'عرض' : 'View'}</span>

@@ -1,24 +1,80 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, and grains & legumes. Worldwide delivery." />
-  <meta name="keywords" content="Egyptian agriculture, agricultural exports, EgyField, premium crops, Egypt" />
+  <meta name="description" content="EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, grains & legumes. Worldwide delivery." />
+  <meta name="keywords" content="Egyptian agriculture, agricultural exports, EgyField, premium crops, Egypt, fresh produce" />
   <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0F1A08" />
+
+  <!-- Open Graph -->
   <meta property="og:title" content="EgyField — Premium Egyptian Agricultural Exports" />
   <meta property="og:description" content="Premium Egyptian agricultural exports: pickles, fresh produce, frozen products, grains & legumes. Worldwide delivery." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://egyfield.com" />
-  <link rel="icon" type="image/svg+xml" href="src/assets/EgyField1.svg" />
+  <meta property="og:image" content="https://egyfield.com/src/assets/egyfield.svg" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="EgyField — Premium Egyptian Agricultural Exports" />
+  <meta name="twitter:description" content="Premium Egyptian agricultural exports: pickles, fresh produce, frozen products, grains & legumes. Worldwide delivery." />
+
+  <!-- Google Fonts: preconnect + preload + swap display -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300..900&family=Inter:wght@400;500;600;700&family=Outfit:wght@300..800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300..900&family=Inter:wght@400;500;600;700&family=Outfit:wght@300..800&display=swap" /></noscript>
   <link rel="dns-prefetch" href="/api" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="src/assets/EgyField1.svg" />
+  <link rel="apple-touch-icon" href="src/assets/EgyField1.svg" />
+
   <title>EgyField — Premium Egyptian Agricultural Exports</title>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "EgyField",
+    "url": "https://egyfield.com",
+    "logo": "https://egyfield.com/src/assets/egyfield.svg",
+    "description": "Premium Egyptian agricultural exports: pickles, fresh produce, frozen products, grains & legumes.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+20-123-456-7890",
+      "contactType": "customer service",
+      "availableLanguage": ["English", "Arabic", "French", "Italian", "Turkish"]
+    },
+    "sameAs": [
+      "https://facebook.com/egyfield",
+      "https://instagram.com/egyfield",
+      "https://linkedin.com/company/egyfield"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "EgyField",
+    "url": "https://egyfield.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://egyfield.com/products?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 </head>
 
 <body>
+  <!-- Skip to main content for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

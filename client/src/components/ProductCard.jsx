@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="product-card glass-card">
       <div className="product-card-image">
-        <img src={image} alt={name} loading="lazy" />
+        <img src={image} alt={name} loading="lazy" decoding="async" />
         <div className="product-card-overlay">
           <Link to={`/products/${product._id}`} className="product-card-view-btn">
             <Eye size={18} />

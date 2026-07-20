@@ -111,8 +111,18 @@ app.use('/api', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const path = require('path');
   const distPath = path.join(process.cwd(), 'client/dist');
-  app.use(express.static(distPath));
+
+  // Cache static assets aggressively
+  app.use(express.static(distPath, {
+    maxAge: '1y',
+    immutable: true,
+    etag: true,
+    lastModified: true,
+  }));
+
+  // Don't cache index.html (served dynamically)
   app.get('/*splat', (req, res) => {
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.sendFile(path.resolve(distPath, 'index.html'));
   });
 }
