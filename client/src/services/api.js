@@ -117,7 +117,7 @@ export const updateInquiryStatus = (id, status) => api.put(`/inquiries/${id}/sta
 export const deleteInquiry = (id) => api.delete(`/inquiries/${id}`);
 
 // Auth
-export const loginAdmin = (data) => api.post('/auth/login', data);
+export const loginAdmin = (data) => api.post('/login', data);
 
 // SEO
 export const getGlobalSeo = () => api.get('/seo/global');
