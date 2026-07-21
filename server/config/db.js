@@ -32,7 +32,11 @@ const connectDB = async () => {
         role: 'superadmin',
         permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
       }]);
-      if (!insErr) console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
+      if (insErr) {
+        console.error('Admin seed failed:', insErr.message);
+        throw insErr;
+      }
+      console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
     }
     connected = true;
   } catch (error) {
