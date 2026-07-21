@@ -243,4 +243,69 @@ const debugAuth = asyncHandler(async (req, res) => {
   res.json(result);
 });
 
-module.exports = { loginAdmin, registerAdmin, getMe, changePassword, debugAuth };
+const DEFAULT_ADMIN = {
+  username: 'admin',
+  email: 'admin@egyfield.com',
+  password: 'EgyField@2024',
+  role: 'superadmin',
+  permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
+};
+
+// @desc    Seed/reset superadmin — call once to guarantee admin exists with correct password
+// @route   POST /api/auth/seed
+// @access  Public
+const seedAdmin = asyncHandler(async (req, res) => {
+  if (!supabase) {
+    res.status(500);
+    throw new Error('Supabase not configured');
+  }
+
+  const salt = await bcrypt.genSalt(12);
+  const hashedPassword = await bcrypt.hash(DEFAULT_ADMIN.password, salt);
+
+  // Try upsert: if email exists → update password; otherwise → insert
+  const { data: existing } = await supabase
+    .from('admins')
+    .select('id')
+    .eq('email', DEFAULT_ADMIN.email)
+    .limit(1)
+    .maybeSingle();
+
+  let result;
+
+  if (existing) {
+    const { data, error } = await supabase
+      .from('admins')
+      .update({ password: hashedPassword })
+      .eq('id', existing.id)
+      .select('id, email, username, role')
+      .single();
+    if (error) {
+      res.status(500);
+      throw new Error('Failed to update admin: ' + error.message);
+    }
+    result = { action: 'updated', admin: data };
+  } else {
+    const { data, error } = await supabase
+      .from('admins')
+      .insert([{
+        username: DEFAULT_ADMIN.username,
+        email: DEFAULT_ADMIN.email,
+        password: hashedPassword,
+        role: DEFAULT_ADMIN.role,
+        permissions: DEFAULT_ADMIN.permissions,
+      }])
+      .select('id, email, username, role')
+      .single();
+    if (error) {
+      res.status(500);
+      throw new Error('Failed to create admin: ' + error.message);
+    }
+    result = { action: 'created', admin: data };
+  }
+
+  console.log(`[auth/seed] ${result.action} admin: ${DEFAULT_ADMIN.email}`);
+  res.json({ ...result, message: 'Admin ready — login with admin@egyfield.com / EgyField@2024' });
+});
+
+module.exports = { loginAdmin, registerAdmin, getMe, changePassword, debugAuth, seedAdmin };
