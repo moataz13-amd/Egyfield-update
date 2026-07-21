@@ -12,6 +12,7 @@ const generateToken = (id) => {
 const DEFAULT_ADMIN = {
   username: 'admin',
   email: 'admin@egyfield.com',
+  password: 'EgyField@2024',
   role: 'superadmin',
   permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
 };
@@ -242,14 +243,6 @@ const debugAuth = asyncHandler(async (req, res) => {
 
   res.json(result);
 });
-
-const DEFAULT_ADMIN = {
-  username: 'admin',
-  email: 'admin@egyfield.com',
-  password: 'EgyField@2024',
-  role: 'superadmin',
-  permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
-};
 
 // @desc    Seed/reset superadmin — call once to guarantee admin exists with correct password
 // @route   POST /api/auth/seed
