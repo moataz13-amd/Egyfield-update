@@ -1,16 +1,30 @@
-const nodemailer = require('nodemailer');
+let transporter = null;
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || '',
-  },
-});
+const getTransporter = () => {
+  if (!transporter) {
+    try {
+      const nodemailer = require('nodemailer');
+      transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER || '',
+          pass: process.env.SMTP_PASS || '',
+        },
+      });
+    } catch (err) {
+      console.warn('Email disabled — nodemailer not available:', err.message);
+      return null;
+    }
+  }
+  return transporter;
+};
 
 const sendInquiryNotification = async (inquiry) => {
+  const t = getTransporter();
+  if (!t) return;
+
   const to = process.env.NOTIFICATION_EMAIL || 'info@egyfield.com';
 
   const html = `
@@ -27,7 +41,7 @@ const sendInquiryNotification = async (inquiry) => {
   `;
 
   try {
-    await transporter.sendMail({
+    await t.sendMail({
       from: process.env.SMTP_FROM || `"EgyField Inquiries" <${process.env.SMTP_USER || 'noreply@egyfield.com'}>`,
       to,
       subject: `New Inquiry from ${inquiry.name} — EgyField`,
