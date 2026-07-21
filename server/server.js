@@ -15,6 +15,12 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
+// Debug logging for Vercel — log every request
+app.use('/api', (req, res, next) => {
+  console.log(`[${req.method}] ${req.originalUrl || req.url} -> path: ${req.path}, baseUrl: ${req.baseUrl}`);
+  next();
+});
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -61,8 +67,15 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
     dbConnected: !!app.locals.dbConnected,
+    env: process.env.NODE_ENV || 'unknown',
+    onVercel: !!process.env.VERCEL,
     timestamp: new Date().toISOString(),
   });
+});
+
+// Root health
+app.get('/api', (req, res) => {
+  res.json({ message: 'EgyField API', version: '1.0.0' });
 });
 
 // Lazy DB connection middleware (skips /health)
