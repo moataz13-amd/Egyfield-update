@@ -22,7 +22,7 @@ const connectDB = async () => {
       throw error;
     }
     const { count } = await supabase.from('admins').select('*', { count: 'exact', head: true });
-    if (count === 0) {
+    if (!count || count === 0) {
       const salt = await bcrypt.genSalt(12);
       const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
       const { error: insErr } = await supabase.from('admins').insert([{
