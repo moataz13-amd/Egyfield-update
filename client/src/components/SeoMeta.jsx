@@ -6,10 +6,10 @@ const LANG_MAP = { en: 'en', ar: 'ar', fr: 'fr', it: 'it', tr: 'tr' };
 
 const SeoMeta = ({ title, description, keywords, ogTitle, ogDescription, ogImage, twitterTitle, twitterDescription, twitterImage, canonicalUrl, robots, jsonld }) => {
   const { language } = useContext(LanguageContext);
-  const siteUrl = 'https://egyfield.com';
-  const fullTitle = title ? `${title} — EgyField` : 'EgyField — Premium Egyptian Agricultural Exports';
-  const fullDesc = description || 'EgyField specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, grains & legumes. Worldwide delivery.';
-  const ogImg = ogImage || 'https://egyfield.com/src/assets/egyfield.svg';
+  const siteUrl = 'https://deltaharvest.com';
+  const fullTitle = title ? `${title} — Delta Harvest` : 'Delta Harvest — Premium Egyptian Agricultural Exports';
+  const fullDesc = description || 'Delta Harvest specializes in premium Egyptian agricultural exports: pickles, fresh produce, frozen products, grains & legumes. Worldwide delivery.';
+  const ogImg = ogImage || 'https://deltaharvest.com/src/assets/Delta%20Harvest-8.png';
   const currentPath = window.location.pathname + window.location.search;
   const fullCanonical = canonicalUrl || (siteUrl + currentPath.split('?')[0]);
 

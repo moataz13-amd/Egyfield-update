@@ -63,7 +63,7 @@ const api = axios.create({
 // Request interceptor — attach token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('egyfield-token');
+    const token = localStorage.getItem('deltaharvest-token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -77,8 +77,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('egyfield-token');
-      localStorage.removeItem('egyfield-admin');
+      localStorage.removeItem('deltaharvest-token');
+      localStorage.removeItem('deltaharvest-admin');
       if (window.location.pathname.startsWith('/admin')) {
         window.location.href = '/admin/login';
       }

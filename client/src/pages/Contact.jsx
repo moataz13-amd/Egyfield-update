@@ -99,7 +99,7 @@ const Contact = () => {
         canonicalUrl={seo.canonicalUrl}
         robots={seo.robots}
         language={language}
-        jsonld={{ '@context': 'https://schema.org', '@type': 'ContactPage', name: t('contact.title'), isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'ContactPage', name: t('contact.title'), isPartOf: { '@type': 'WebSite', name: 'Delta Harvest', url: 'https://deltaharvest.com' } }}
       />
 
       <div className="contact-page">

@@ -675,7 +675,7 @@ export const translations = {
       quickLinks: 'Link Rapidi',
       contactInfo: 'Informazioni di Contatto',
       followUs: 'Seguici',
-      rights: '© EgyField. Tutti i diritti riservati.',
+      rights: '© Delta Harvest. Tutti i diritti riservati.',
     },
     notFound: {
       title: '404',

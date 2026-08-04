@@ -12,7 +12,7 @@ const NotFound = () => {
     <>
       <SeoMeta
         title="404 — Page Not Found"
-        description="The page you are looking for does not exist. Return to EgyField homepage."
+        description="The page you are looking for does not exist. Return to Delta Harvest homepage."
         robots="noindex, follow"
       />
 

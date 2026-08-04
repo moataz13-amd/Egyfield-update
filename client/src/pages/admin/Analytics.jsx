@@ -93,7 +93,7 @@ const Analytics = () => {
 
   return (
     <>
-      <Helmet><title>{t('admin.analytics')} — EgyField Admin</title></Helmet>
+      <Helmet><title>{t('admin.analytics')} — Delta Harvest Admin</title></Helmet>
 
       {/* Filter Selector */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>

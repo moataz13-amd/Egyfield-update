@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Package, Tags, MessageSquare, BarChart3, Settings,
   LogOut, ChevronLeft, ChevronRight, Menu, X, User, Users, Languages, BookOpen, FileText, Handshake, Search, Globe
 } from 'lucide-react';
-import egyFieldLogo from '../../assets/egyfield.svg';
+import deltaHarvestLogo from '../../assets/Delta Harvest-8.png';
 import api from '../../services/api';
 import './admin.css';
 
@@ -89,7 +89,7 @@ const AdminLayout = () => {
 
         <div className="sidebar-header">
           <Link to="/" title={language === 'ar' ? 'الذهاب للموقع الرئيسي' : 'Go to main website'}>
-            <img src={egyFieldLogo} alt="EgyField" className="sidebar-header-logo-img" />
+            <img src={deltaHarvestLogo} alt="Delta Harvest" className="sidebar-header-logo-img" />
           </Link>
           <button className="mobile-sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Close sidebar">
             <X size={20} />

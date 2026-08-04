@@ -7,15 +7,15 @@ const testimonials = [
     name: 'Ahmed Hassan',
     company: 'Dubai Foods Trading',
     country: 'UAE',
-    text: 'EgyField has been our trusted supplier for over 3 years. Their pickled products are consistently high quality and always delivered on time.',
-    textAr: 'إيجي فيلد شريكنا الموثوق لأكثر من 3 سنوات. منتجاتهم المخللة عالية الجودة باستمرار وتُسلم دائماً في الوقت المحدد.',
+    text: 'Delta Harvest has been our trusted supplier for over 3 years. Their pickled products are consistently high quality and always delivered on time.',
+    textAr: 'دلتا هارفست شريكنا الموثوق لأكثر من 3 سنوات. منتجاتهم المخللة عالية الجودة باستمرار وتُسلم دائماً في الوقت المحدد.',
   },
   {
     name: 'Maria Schmidt',
     company: 'EuroFresh GmbH',
     country: 'Germany',
-    text: 'The quality of Egyptian fresh produce from EgyField is exceptional. Their strawberries and oranges are always top-grade.',
-    textAr: 'جودة المنتجات الطازجة المصرية من إيجي فيلد استثنائية. فراولتهم وبرتقالهم دائماً من الدرجة الأولى.',
+    text: 'The quality of Egyptian fresh produce from Delta Harvest is exceptional. Their strawberries and oranges are always top-grade.',
+    textAr: 'جودة المنتجات الطازجة المصرية من دلتا هارفست استثنائية. فراولتهم وبرتقالهم دائماً من الدرجة الأولى.',
   },
   {
     name: 'James Chen',
@@ -28,8 +28,8 @@ const testimonials = [
     name: 'Fatima Al-Sayed',
     company: 'Gulf Agricultural Trading',
     country: 'Saudi Arabia',
-    text: 'EgyField provides premium grains and legumes with all necessary certifications. A reliable partner for bulk orders.',
-    textAr: 'إيجي فيلد توفر حبوباً وبقوليات فاخرة مع جميع الشهادات اللازمة. شريك موثوق للطلبات الكبيرة.',
+    text: 'Delta Harvest provides premium grains and legumes with all necessary certifications. A reliable partner for bulk orders.',
+    textAr: 'دلتا هارفست توفر حبوباً وبقوليات فاخرة مع جميع الشهادات اللازمة. شريك موثوق للطلبات الكبيرة.',
   },
 ];
 

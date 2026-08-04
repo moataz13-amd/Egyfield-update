@@ -59,7 +59,7 @@ const SeoAudit = () => {
 
   return (
     <>
-      <Helmet><title>{isAr ? 'تدقيق تحسين محركات البحث' : 'SEO Audit'} — EgyField Admin</title></Helmet>
+      <Helmet><title>{isAr ? 'تدقيق تحسين محركات البحث' : 'SEO Audit'} — Delta Harvest Admin</title></Helmet>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{isAr ? 'تدقيق تحسين محركات البحث' : 'SEO Audit'}</h2>

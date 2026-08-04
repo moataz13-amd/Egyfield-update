@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { AuthContext } from '../../context/AuthContext';
 import { LanguageContext } from '../../context/LanguageContext';
 import { LogIn, Loader, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import egyFieldLogo from '../../assets/egyfield.svg';
+import deltaHarvestLogo from '../../assets/Delta Harvest-8.png';
 import './admin.css';
 
 const AdminLogin = () => {
@@ -43,7 +43,7 @@ const AdminLogin = () => {
 
   return (
     <>
-      <Helmet><title>{isAr ? 'تسجيل الدخول — EgyField' : 'Admin Login — EgyField'}</title></Helmet>
+      <Helmet><title>{isAr ? 'تسجيل الدخول — Delta Harvest' : 'Admin Login — Delta Harvest'}</title></Helmet>
       <div className="admin-login-page">
         {/* Decorative background elements */}
         <div className="admin-login-bg-shape admin-login-bg-shape-1" />
@@ -52,7 +52,7 @@ const AdminLogin = () => {
 
         <div className="admin-login-card">
           <div className="admin-login-logo">
-            <img src={egyFieldLogo} alt="EgyField" className="admin-login-logo-img" />
+            <img src={deltaHarvestLogo} alt="Delta Harvest" className="admin-login-logo-img" />
             <h1>{isAr ? 'لوحة التحكم' : 'Admin Panel'}</h1>
             <p>{isAr ? 'سجل الدخول للمتابعة' : 'Sign in to your dashboard'}</p>
           </div>
@@ -71,7 +71,7 @@ const AdminLogin = () => {
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder={isAr ? 'admin@egyfield.com' : 'admin@egyfield.com'}
+                  placeholder={isAr ? 'admin@deltaharvest.com' : 'admin@deltaharvest.com'}
                   required
                   autoComplete="email"
                 />
@@ -118,7 +118,7 @@ const AdminLogin = () => {
 
           <div className="admin-login-footer">
             <span>{isAr ? 'مدعوم بواسطة' : 'Powered by'}</span>
-            <strong> EgyField</strong>
+            <strong> Delta Harvest</strong>
           </div>
         </div>
       </div>

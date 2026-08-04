@@ -68,7 +68,7 @@ const Partners = () => {
         canonicalUrl={seo.canonicalUrl}
         robots={seo.robots}
         language={language}
-        jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: language === 'ar' ? 'الشركاء' : 'Partners', isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: language === 'ar' ? 'الشركاء' : 'Partners', isPartOf: { '@type': 'WebSite', name: 'Delta Harvest', url: 'https://deltaharvest.com' } }}
       />
 
       <div className="partners-page">

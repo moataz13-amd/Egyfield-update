@@ -82,7 +82,7 @@ const ArticleDetail = () => {
 
   const handleShare = async () => {
     const shareData = {
-      title: resolveField(article.title, language) || 'EgyField Article',
+      title: resolveField(article.title, language) || 'Delta Harvest Article',
       text: resolveField(article.summary, language) || '',
       url: window.location.href,
     };
@@ -144,9 +144,9 @@ const ArticleDetail = () => {
     image: article.image?.url,
     datePublished: article.createdAt,
     dateModified: article.updatedAt || article.createdAt,
-    author: { '@type': 'Organization', name: 'EgyField' },
-    publisher: { '@type': 'Organization', name: 'EgyField', logo: { '@type': 'ImageObject', url: 'https://egyfield.com/src/assets/egyfield.svg' } },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://egyfield.com/articles/${slug}` },
+    author: { '@type': 'Organization', name: 'Delta Harvest' },
+    publisher: { '@type': 'Organization', name: 'Delta Harvest', logo: { '@type': 'ImageObject', url: 'https://deltaharvest.com/src/assets/Delta%20Harvest-8.png' } },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://deltaharvest.com/articles/${slug}` },
     wordCount,
     timeRequired: `PT${readingTime}M`,
   };
@@ -158,7 +158,7 @@ const ArticleDetail = () => {
         description={summaryText?.substring(0, 160) || seo.metaDescription}
         keywords={seo.keywords}
         ogImage={article.image?.url}
-        canonicalUrl={`https://egyfield.com/articles/${slug}`}
+        canonicalUrl={`https://deltaharvest.com/articles/${slug}`}
         language={language}
         jsonld={articleSchema}
       />

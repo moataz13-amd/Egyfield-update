@@ -101,7 +101,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <Helmet><title>{t('admin.dashboard')} — EgyField Admin</title></Helmet>
+      <Helmet><title>{t('admin.dashboard')} — Delta Harvest Admin</title></Helmet>
 
       {/* Stats */}
       <div className="stats-row">

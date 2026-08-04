@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem('egyfield-token');
-      const adminData = localStorage.getItem('egyfield-admin');
+      const token = localStorage.getItem('deltaharvest-token');
+      const adminData = localStorage.getItem('deltaharvest-admin');
 
       if (token) {
         try {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
           const { data } = await api.get('/auth/me');
           const updatedAdmin = { ...data, token };
           
-          localStorage.setItem('egyfield-admin', JSON.stringify(updatedAdmin));
+          localStorage.setItem('deltaharvest-admin', JSON.stringify(updatedAdmin));
           setAdmin(updatedAdmin);
         } catch {
           logout();
@@ -36,15 +36,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
-    localStorage.setItem('egyfield-token', data.token);
-    localStorage.setItem('egyfield-admin', JSON.stringify(data));
+    localStorage.setItem('deltaharvest-token', data.token);
+    localStorage.setItem('deltaharvest-admin', JSON.stringify(data));
     setAdmin(data);
     return data;
   };
 
   const logout = () => {
-    localStorage.removeItem('egyfield-token');
-    localStorage.removeItem('egyfield-admin');
+    localStorage.removeItem('deltaharvest-token');
+    localStorage.removeItem('deltaharvest-admin');
     setAdmin(null);
   };
 

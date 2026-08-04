@@ -13,7 +13,7 @@ export const languages = [
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('egyfield-lang') || 'en';
+    return localStorage.getItem('deltaharvest-lang') || 'en';
   });
 
   const t = (key) => {
@@ -28,7 +28,7 @@ export const LanguageProvider = ({ children }) => {
   const isRTL = language === 'ar';
 
   useEffect(() => {
-    localStorage.setItem('egyfield-lang', language);
+    localStorage.setItem('deltaharvest-lang', language);
     document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
     document.documentElement.setAttribute('lang', language);
   }, [language, isRTL]);

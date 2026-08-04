@@ -158,7 +158,7 @@ const SeoManager = () => {
 
   return (
     <>
-      <Helmet><title>{isAr ? 'مدير تحسين محركات البحث' : 'SEO Manager'} — EgyField Admin</title></Helmet>
+      <Helmet><title>{isAr ? 'مدير تحسين محركات البحث' : 'SEO Manager'} — Delta Harvest Admin</title></Helmet>
 
       {editingId && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 24, marginBottom: 24 }}>
@@ -214,7 +214,7 @@ const SeoManager = () => {
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label>{isAr ? 'الرابط الأساسي (Canonical)' : 'Canonical URL'}</label>
-                <input className="admin-form-control" value={form.canonicalUrl} onChange={e => setForm({ ...form, canonicalUrl: e.target.value })} placeholder="https://egyfield.com/about" />
+                <input className="admin-form-control" value={form.canonicalUrl} onChange={e => setForm({ ...form, canonicalUrl: e.target.value })} placeholder="https://deltaharvest.com/about" />
               </div>
               <div className="admin-form-group">
                 <label>{isAr ? 'عنوان مسار التنقل' : 'Breadcrumb Title'}</label>

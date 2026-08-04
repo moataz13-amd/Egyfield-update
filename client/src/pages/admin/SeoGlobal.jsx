@@ -71,7 +71,7 @@ const SeoGlobal = () => {
 
   return (
     <>
-      <Helmet><title>{isAr ? 'الإعدادات العامة لتحسين محركات البحث' : 'Global SEO'} — EgyField Admin</title></Helmet>
+      <Helmet><title>{isAr ? 'الإعدادات العامة لتحسين محركات البحث' : 'Global SEO'} — Delta Harvest Admin</title></Helmet>
 
       <div className="settings-tabs">
         <button className={`settings-tab ${activeTab === 'basic' ? 'active' : ''}`} onClick={() => setActiveTab('basic')}><Search size={14} /> {isAr ? 'أساسي' : 'Basic Meta'}</button>
@@ -114,7 +114,7 @@ const SeoGlobal = () => {
               </div>
               <div className="admin-form-group">
                 <label>{isAr ? 'صورة Open Graph (رابط URL)' : 'OG Image URL'}</label>
-                <input className="admin-form-control" value={form.ogImage} onChange={e => setForm({ ...form, ogImage: e.target.value })} placeholder="https://egyfield.com/src/assets/egyfield.svg" />
+                <input className="admin-form-control" value={form.ogImage} onChange={e => setForm({ ...form, ogImage: e.target.value })} placeholder="https://deltaharvest.com/src/assets/Delta%20Harvest-8.png" />
               </div>
               <div className="admin-form-row">
                 <Input label={isAr ? 'عنوان Twitter' : 'Twitter Title'} value={form.twitterTitle} field="twitterTitle" />
@@ -122,7 +122,7 @@ const SeoGlobal = () => {
               </div>
               <div className="admin-form-group">
                 <label>{isAr ? 'صورة Twitter (رابط URL)' : 'Twitter Image URL'}</label>
-                <input className="admin-form-control" value={form.twitterImage} onChange={e => setForm({ ...form, twitterImage: e.target.value })} placeholder="https://egyfield.com/src/assets/egyfield.svg" />
+                <input className="admin-form-control" value={form.twitterImage} onChange={e => setForm({ ...form, twitterImage: e.target.value })} placeholder="https://deltaharvest.com/src/assets/Delta%20Harvest-8.png" />
               </div>
             </div>
           )}
@@ -146,7 +146,7 @@ const SeoGlobal = () => {
               </div>
               <div className="admin-form-group">
                 <label>{isAr ? 'روابط التواصل الاجتماعي (سطر لكل رابط)' : 'Social Links (one per line)'}</label>
-                <textarea className="admin-form-control" value={form.socialLinks} onChange={e => setForm({ ...form, socialLinks: e.target.value })} rows={4} placeholder="https://facebook.com/egyfield\nhttps://instagram.com/egyfield" />
+                <textarea className="admin-form-control" value={form.socialLinks} onChange={e => setForm({ ...form, socialLinks: e.target.value })} rows={4} placeholder="https://facebook.com/deltaharvest\nhttps://instagram.com/deltaharvest" />
               </div>
             </div>
           )}

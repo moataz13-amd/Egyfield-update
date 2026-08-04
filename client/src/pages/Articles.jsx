@@ -61,7 +61,7 @@ const Articles = () => {
         canonicalUrl={seo.canonicalUrl}
         robots={seo.robots}
         language={language}
-        jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: isAr ? 'المقالات' : 'Articles', isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: isAr ? 'المقالات' : 'Articles', isPartOf: { '@type': 'WebSite', name: 'Delta Harvest', url: 'https://deltaharvest.com' } }}
       />
       <div className="articles-page" style={{ minHeight: '100vh', background: '#fafafa' }}>
       {/* Page Cover */}

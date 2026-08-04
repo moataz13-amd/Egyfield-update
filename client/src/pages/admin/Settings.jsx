@@ -28,7 +28,7 @@ const Settings = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [coverUploading, setCoverUploading] = useState(null);
   const [settings, setSettings] = useState({
-    companyName: { en: 'EgyField', ar: 'إيجي فيلد' },
+    companyName: { en: 'Delta Harvest', ar: 'دلتا هارفست' },
     tagline: { en: '', ar: '' },
     foundedYear: 2015,
     email: '',
@@ -225,7 +225,7 @@ const Settings = () => {
 
   return (
     <>
-      <Helmet><title>{t('admin.settings')} — EgyField Admin</title></Helmet>
+      <Helmet><title>{t('admin.settings')} — Delta Harvest Admin</title></Helmet>
 
       {/* Tabs list */}
       <div className="settings-tabs">

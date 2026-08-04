@@ -53,7 +53,7 @@ const About = () => {
         canonicalUrl={seo.canonicalUrl}
         robots={seo.robots}
         language={language}
-        jsonld={{ '@context': 'https://schema.org', '@type': 'AboutPage', name: t('about.title'), isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' } }}
+        jsonld={{ '@context': 'https://schema.org', '@type': 'AboutPage', name: t('about.title'), isPartOf: { '@type': 'WebSite', name: 'Delta Harvest', url: 'https://deltaharvest.com' } }}
       />
 
       <div className="about-page">

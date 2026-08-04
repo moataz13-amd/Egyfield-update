@@ -187,7 +187,7 @@ const AboutManager = () => {
 
   return (
     <>
-      <Helmet><title>{isAr ? 'إدارة صفحة من نحن' : 'About Page Manager'} — EgyField Admin</title></Helmet>
+      <Helmet><title>{isAr ? 'إدارة صفحة من نحن' : 'About Page Manager'} — Delta Harvest Admin</title></Helmet>
 
       <div className="admin-data-table-wrapper" style={{ padding: 28 }}>
         

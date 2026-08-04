@@ -67,8 +67,8 @@ const Products = () => {
           '@context': 'https://schema.org',
           '@type': 'CollectionPage',
           name: isAr ? 'المنتجات' : 'Products',
-          description: seo.metaDescription || "Browse EgyField's premium Egyptian agricultural exports",
-          isPartOf: { '@type': 'WebSite', name: 'EgyField', url: 'https://egyfield.com' },
+          description: seo.metaDescription || "Browse Delta Harvest's premium Egyptian agricultural exports",
+          isPartOf: { '@type': 'WebSite', name: 'Delta Harvest', url: 'https://deltaharvest.com' },
         }}
       />
 

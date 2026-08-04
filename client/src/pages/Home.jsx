@@ -76,11 +76,11 @@ const Home = () => {
         jsonld={{
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: 'EgyField',
-          url: 'https://egyfield.com',
-          logo: 'https://egyfield.com/src/assets/egyfield.svg',
+          name: 'Delta Harvest',
+          url: 'https://deltaharvest.com',
+          logo: 'https://deltaharvest.com/src/assets/Delta%20Harvest-8.png',
           description: "Egypt's Finest Agricultural Exports",
-          sameAs: ['https://facebook.com/egyfield', 'https://instagram.com/egyfield', 'https://linkedin.com/company/egyfield'],
+          sameAs: ['https://facebook.com/deltaharvest', 'https://instagram.com/deltaharvest', 'https://linkedin.com/company/deltaharvest'],
         }}
       />
 
@@ -166,7 +166,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== Why EgyField ===== */}
+      {/* ===== Why Delta Harvest ===== */}
       <section className="section why-section">
         <div className="container">
           <div className="section-header reveal">

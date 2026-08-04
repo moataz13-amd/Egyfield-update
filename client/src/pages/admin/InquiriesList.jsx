@@ -214,7 +214,7 @@ const InquiriesList = () => {
                         <Check size={14} /> {language === 'ar' ? 'تحديد كمقروء ومجاب' : 'Mark as Replied'}
                       </button>
                     )}
-                    <a href={`mailto:${selectedInquiry.email}?subject=Inquiry Reply - EgyField&body=Dear ${selectedInquiry.name},`} className="admin-btn admin-btn-secondary admin-btn-sm">
+                    <a href={`mailto:${selectedInquiry.email}?subject=Inquiry Reply - Delta Harvest&body=Dear ${selectedInquiry.name},`} className="admin-btn admin-btn-secondary admin-btn-sm">
                       {language === 'ar' ? 'الرد عبر البريد الإلكتروني' : 'Reply via Email'}
                     </a>
                   </div>

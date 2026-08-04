@@ -51,7 +51,7 @@ const ProductDetail = () => {
       '@type': 'Offer',
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
-      seller: { '@type': 'Organization', name: 'EgyField' },
+      seller: { '@type': 'Organization', name: 'Delta Harvest' },
     },
     ...(faqItems.length > 0 ? {
       mainEntity: faqItems.map(faq => ({
@@ -69,7 +69,7 @@ const ProductDetail = () => {
         description={description?.substring(0, 160)}
         keywords={[categoryName, name, 'Egyptian exports', 'agricultural products'].filter(Boolean)}
         ogImage={images?.[0]?.url}
-        canonicalUrl={`https://egyfield.com/products/${id}`}
+        canonicalUrl={`https://deltaharvest.com/products/${id}`}
         language={language}
         jsonld={productSchema}
       />

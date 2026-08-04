@@ -72,7 +72,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fafafa', padding: 24 }}>
-          <h1 style={{ color: '#7BB445', fontSize: 48, margin: 0 }}>EgyField</h1>
+          <h1 style={{ color: '#7BB445', fontSize: 48, margin: 0 }}>Delta Harvest</h1>
           <p style={{ color: '#555', marginTop: 16, fontSize: 18 }}>Something went wrong. Please refresh the page.</p>
           <pre style={{ background: '#1e1e1e', color: '#f8f8f2', padding: 16, borderRadius: 8, fontSize: 12, maxWidth: '90vw', overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-all', marginTop: 16 }}>
             {this.state.componentStack}
