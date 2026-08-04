@@ -57,7 +57,7 @@ const getSettings = asyncHandler(async (req, res) => {
     if (!settings.pageCovers) {
       settings.pageCovers = {
         products: { title: { en: 'Our Products', ar: 'منتجاتنا' }, subtitle: { en: 'Explore our premium Egyptian agricultural exports', ar: 'استكشف أجود الحاصلات الزراعية المصرية للتصدير' }, image: { url: '', publicId: '' }, enabled: false, showText: true },
-        about: { title: { en: 'About Us', ar: 'من نحن' }, subtitle: { en: 'Learn more about EgyField', ar: 'تعرف على إيجي فيلد' }, image: { url: '', publicId: '' }, enabled: false, showText: true },
+        about: { title: { en: 'About Us', ar: 'من نحن' }, subtitle: { en: 'Learn more about Delta Harvest', ar: 'تعرف على إيجي فيلد' }, image: { url: '', publicId: '' }, enabled: false, showText: true },
         contact: { title: { en: 'Contact Us', ar: 'تواصل معنا' }, subtitle: { en: "We're here to help", ar: 'نحن هنا لمساعدتك' }, image: { url: '', publicId: '' }, enabled: false, showText: true },
         articles: { title: { en: 'Articles & Insights', ar: 'المقالات والأخبار' }, subtitle: { en: 'Latest news and agricultural insights', ar: 'أحدث الأخبار والرؤى الزراعية' }, image: { url: '', publicId: '' }, enabled: false, showText: true },
         partners: { title: { en: 'Our Partners', ar: 'شركاؤنا' }, subtitle: { en: 'Trusted global partners and distributors', ar: 'شركاء وموزعون عالميون موثوقون' }, image: { url: '', publicId: '' }, enabled: false, showText: true },

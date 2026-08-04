@@ -210,8 +210,8 @@ const seedDatabase = async () => {
     // Create admin
     const admin = await Admin.create({
       username: 'admin',
-      email: 'admin@egyfield.com',
-      password: 'EgyField@2024',
+      email: 'admin@deltaharvest.com',
+      password: 'Delta Harvest@2024',
     });
     console.log(`✅ Admin created: ${admin.email}`);
 
@@ -233,7 +233,7 @@ const seedDatabase = async () => {
       images: [
         {
           url: `https://placehold.co/800x600/7BB445/FFFFFF?text=${encodeURIComponent(p.name.en)}`,
-          publicId: `egyfield/products/placeholder_${p.catSlug}_${Date.now()}`,
+          publicId: `deltaharvest/products/placeholder_${p.catSlug}_${Date.now()}`,
         },
       ],
       origin: p.origin,
@@ -248,7 +248,7 @@ const seedDatabase = async () => {
     console.log(`✅ Created ${createdProducts.length} products`);
 
     console.log('\n🌱 Database seeded successfully!');
-    console.log('Admin login: admin@egyfield.com / EgyField@2024');
+    console.log('Admin login: admin@deltaharvest.com / Delta Harvest@2024');
 
     process.exit(0);
   } catch (error) {

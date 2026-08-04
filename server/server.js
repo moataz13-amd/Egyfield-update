@@ -75,7 +75,7 @@ app.get('/api/health', (req, res) => {
 
 // Root health
 app.get('/api', (req, res) => {
-  res.json({ message: 'EgyField API', version: '1.0.0' });
+  res.json({ message: 'Delta Harvest API', version: '1.0.0' });
 });
 
 // Lazy DB connection middleware (skips /health)

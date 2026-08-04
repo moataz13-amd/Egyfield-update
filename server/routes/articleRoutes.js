@@ -13,11 +13,11 @@ const {
 } = require('../controllers/articleController');
 const { protect, requirePermission } = require('../middleware/authMiddleware');
 
-// Dedicated article image upload (stored in egyfield/articles)
+// Dedicated article image upload (stored in deltaharvest/articles)
 const articleStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: 'egyfield/articles',
+    folder: 'deltaharvest/articles',
     format: async () => 'webp',
     transformation: [{ width: 1200, crop: 'limit', quality: 'auto' }],
   },

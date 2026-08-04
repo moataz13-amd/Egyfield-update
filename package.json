@@ -1,8 +1,8 @@
 {
-  "name": "egyfield-root",
+  "name": "deltaharvest-root",
   "version": "1.0.0",
   "private": true,
-  "description": "EgyField Agriculture Export Platform",
+  "description": "Delta Harvest Agriculture Export Platform",
   "workspaces": [
     "client"
   ],

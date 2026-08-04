@@ -5,7 +5,7 @@ const cloudinary = require('../config/cloudinary');
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'egyfield/products',
+    folder: 'deltaharvest/products',
     format: async () => 'webp',
     transformation: [{ width: 800, crop: 'limit', quality: 'auto' }],
   },

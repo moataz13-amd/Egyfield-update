@@ -25,7 +25,7 @@ const sendInquiryNotification = async (inquiry) => {
   const t = getTransporter();
   if (!t) return;
 
-  const to = process.env.NOTIFICATION_EMAIL || 'info@egyfield.com';
+  const to = process.env.NOTIFICATION_EMAIL || 'info@deltaharvest.com';
 
   const html = `
     <h2>New Inquiry Received</h2>
@@ -42,9 +42,9 @@ const sendInquiryNotification = async (inquiry) => {
 
   try {
     await t.sendMail({
-      from: process.env.SMTP_FROM || `"EgyField Inquiries" <${process.env.SMTP_USER || 'noreply@egyfield.com'}>`,
+      from: process.env.SMTP_FROM || `"Delta Harvest Inquiries" <${process.env.SMTP_USER || 'noreply@deltaharvest.com'}>`,
       to,
-      subject: `New Inquiry from ${inquiry.name} — EgyField`,
+      subject: `New Inquiry from ${inquiry.name} — Delta Harvest`,
       html,
     });
     console.log('Inquiry email sent to', to);

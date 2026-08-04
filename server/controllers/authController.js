@@ -11,8 +11,8 @@ const generateToken = (id) => {
 
 const DEFAULT_ADMIN = {
   username: 'admin',
-  email: 'admin@egyfield.com',
-  password: 'EgyField@2024',
+  email: 'admin@deltaharvest.com',
+  password: 'Delta Harvest@2024',
   role: 'superadmin',
   permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
 };
@@ -49,10 +49,10 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
   if (!admin) {
     // Self-healing: if default admin email and no admin exists, create one
-    if (email === 'admin@egyfield.com' && supabase) {
+    if (email === 'admin@deltaharvest.com' && supabase) {
       console.log('[auth] Default admin not found — auto-creating...');
       const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
+      const hashedPassword = await bcrypt.hash('Delta Harvest@2024', salt);
 
       const { data: created, error: createErr } = await supabase
         .from('admins')
@@ -100,10 +100,10 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
   if (!isMatch) {
     // Self-healing: if default admin email, reset password to known value
-    if (email === 'admin@egyfield.com' && supabase) {
+    if (email === 'admin@deltaharvest.com' && supabase) {
       console.log('[auth] Default admin password mismatch — resetting...');
       const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
+      const hashedPassword = await bcrypt.hash('Delta Harvest@2024', salt);
 
       const { error: updateErr } = await supabase
         .from('admins')
@@ -298,7 +298,7 @@ const seedAdmin = asyncHandler(async (req, res) => {
   }
 
   console.log(`[auth/seed] ${result.action} admin: ${DEFAULT_ADMIN.email}`);
-  res.json({ ...result, message: 'Admin ready — login with admin@egyfield.com / EgyField@2024' });
+  res.json({ ...result, message: 'Admin ready — login with admin@deltaharvest.com / Delta Harvest@2024' });
 });
 
 module.exports = { loginAdmin, registerAdmin, getMe, changePassword, debugAuth, seedAdmin };

@@ -4,11 +4,11 @@ const AboutContent = require('../models/AboutContent');
 // Default data used to seed the document on first access
 const defaultAbout = {
   storyText1: {
-    en: "Founded with a vision to share Egypt's agricultural bounty with the world, EgyField has grown into a leading export company specializing in premium quality food products.",
+    en: "Founded with a vision to share Egypt's agricultural bounty with the world, Delta Harvest has grown into a leading export company specializing in premium quality food products.",
     ar: 'تأسست برؤية لمشاركة ثروة مصر الزراعية مع العالم، نمت إيجي فيلد لتصبح شركة تصدير رائدة متخصصة في المنتجات الغذائية عالية الجودة.',
-    fr: "Fondée avec la vision de partager les richesses agricoles de l'Égypte avec le monde, EgyField est devenue une entreprise leader d'exportation spécialisée dans les produits alimentaires de qualité supérieure.",
-    it: "Fondata con la visione di condividere le ricchezze agricole dell'Egitto con il mondo, EgyField è cresciuta fino a diventare un'azienda leader nell'esportazione specializzata in prodotti alimentari di qualità superiore.",
-    tr: "Mısır'ın tarımsal zenginliğini dünyayla paylaşma vizyonuyla kurulan EgyField, birinci sınıf gıda ürünlerinde uzmanlaşmış lider bir ihracat şirketi haline geldi.",
+    fr: "Fondée avec la vision de partager les richesses agricoles de l'Égypte avec le monde, Delta Harvest est devenue une entreprise leader d'exportation spécialisée dans les produits alimentaires de qualité supérieure.",
+    it: "Fondata con la visione di condividere le ricchezze agricole dell'Egitto con il mondo, Delta Harvest è cresciuta fino a diventare un'azienda leader nell'esportazione specializzata in prodotti alimentari di qualità superiore.",
+    tr: "Mısır'ın tarımsal zenginliğini dünyayla paylaşma vizyonuyla kurulan Delta Harvest, birinci sınıf gıda ürünlerinde uzmanlaşmış lider bir ihracat şirketi haline geldi.",
   },
   storyText2: {
     en: 'From the fertile lands of the Nile Delta to markets across the globe, we bridge the gap between Egyptian farmers and international buyers with our commitment to quality and reliability.',
@@ -50,11 +50,11 @@ const defaultAbout = {
         tr: 'Şirketin Kuruluşu',
       },
       description: {
-        en: 'EgyField was established in Cairo with a mission to export high-quality Egyptian fresh crops.',
+        en: 'Delta Harvest was established in Cairo with a mission to export high-quality Egyptian fresh crops.',
         ar: 'تأسست إيجي فيلد في القاهرة بهدف تصدير المحاصيل المصرية الطازجة عالية الجودة.',
-        fr: "EgyField a été créée au Caire avec pour mission d'exporter des cultures fraîches égyptiennes de haute qualité.",
-        it: "EgyField è stata fondata al Cairo con la missione di esportare colture fresche egiziane di alta qualità.",
-        tr: "EgyField, yüksek kaliteli Mısır taze ürünlerini ihraç etmek amacıyla Kahire'de kuruldu.",
+        fr: "Delta Harvest a été créée au Caire avec pour mission d'exporter des cultures fraîches égyptiennes de haute qualité.",
+        it: "Delta Harvest è stata fondata al Cairo con la missione di esportare colture fresche egiziane di alta qualità.",
+        tr: "Delta Harvest, yüksek kaliteli Mısır taze ürünlerini ihraç etmek amacıyla Kahire'de kuruldu.",
       },
     },
     {

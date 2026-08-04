@@ -15,7 +15,7 @@ const { protect, requirePermission } = require('../middleware/authMiddleware');
 const partnerStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: 'egyfield/partners',
+    folder: 'deltaharvest/partners',
     format: async () => 'png', // Logos are usually transparent, PNG is preferred
     transformation: [{ width: 400, height: 400, crop: 'limit', quality: 'auto' }],
   },

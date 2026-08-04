@@ -11,23 +11,23 @@ const bcrypt = require('bcryptjs');
     // Check if admin exists
     const { data: existing } = await supabase.from('admins').select('id').limit(1);
     if (existing && existing.length > 0) {
-      console.log('Admin already exists. Login with admin@egyfield.com / EgyField@2024');
+      console.log('Admin already exists. Login with admin@deltaharvest.com / Delta Harvest@2024');
       process.exit(0);
     }
 
     // Create admin
     const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
+    const hashedPassword = await bcrypt.hash('Delta Harvest@2024', salt);
     const { error } = await supabase.from('admins').insert([{
       username: 'admin',
-      email: 'admin@egyfield.com',
+      email: 'admin@deltaharvest.com',
       password: hashedPassword,
       role: 'superadmin',
       permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
     }]).select().single();
 
     if (error) throw error;
-    console.log('Admin created: admin@egyfield.com / EgyField@2024');
+    console.log('Admin created: admin@deltaharvest.com / Delta Harvest@2024');
     process.exit(0);
   } catch (err) {
     console.error('Error:', err.message);

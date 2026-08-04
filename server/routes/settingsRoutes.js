@@ -19,7 +19,7 @@ const { protect, requirePermission } = require('../middleware/authMiddleware');
 const heroStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: 'egyfield/hero',
+    folder: 'deltaharvest/hero',
     format: async () => 'webp',
     transformation: [{ width: 1920, crop: 'limit', quality: 'auto:best' }],
   },

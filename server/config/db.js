@@ -24,10 +24,10 @@ const connectDB = async () => {
     const { count } = await supabase.from('admins').select('*', { count: 'exact', head: true });
     if (!count || count === 0) {
       const salt = await bcrypt.genSalt(12);
-      const hashedPassword = await bcrypt.hash('EgyField@2024', salt);
+      const hashedPassword = await bcrypt.hash('Delta Harvest@2024', salt);
       const { error: insErr } = await supabase.from('admins').insert([{
         username: 'admin',
-        email: 'admin@egyfield.com',
+        email: 'admin@deltaharvest.com',
         password: hashedPassword,
         role: 'superadmin',
         permissions: ['products', 'articles', 'inquiries', 'settings', 'admins'],
@@ -36,7 +36,7 @@ const connectDB = async () => {
         console.error('Admin seed failed:', insErr.message);
         throw insErr;
       }
-      console.log('Default superadmin seeded: admin@egyfield.com / EgyField@2024');
+      console.log('Default superadmin seeded: admin@deltaharvest.com / Delta Harvest@2024');
     }
     connected = true;
   } catch (error) {

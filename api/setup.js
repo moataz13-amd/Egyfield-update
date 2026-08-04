@@ -23,8 +23,8 @@ module.exports = async function handler(req, res) {
       auth: { persistSession: false },
     });
 
-    const email = req.body?.email || 'admin@egyfield.com';
-    const password = req.body?.password || 'EgyField@2024';
+    const email = req.body?.email || 'admin@deltaharvest.com';
+    const password = req.body?.password || 'DeltaHarvest@2024';
     const username = req.body?.username || 'admin';
 
     const salt = await bcrypt.genSalt(12);
