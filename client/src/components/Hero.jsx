@@ -64,7 +64,7 @@ const Hero = () => {
             src={img.url} 
             alt="" 
             className="hero-bg-img" 
-            fetchpriority={index === 0 ? 'high' : 'low'}
+            fetchPriority={index === 0 ? 'high' : 'low'}
             loading={index === 0 ? 'eager' : 'lazy'}
             decoding="async"
             width="1920"

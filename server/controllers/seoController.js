@@ -28,13 +28,18 @@ const updateGlobalSeo = asyncHandler(async (req, res) => {
 // ========================
 
 const getSeoPages = asyncHandler(async (req, res) => {
-  const { referenceType, referenceId, page } = req.query;
-  const query = {};
-  if (referenceType) query.referenceType = referenceType;
-  if (referenceId) query.referenceId = referenceId;
-  if (page) query.page = page;
-  const seoPages = await SeoPage.find(query).sort({ createdAt: -1 });
-  res.json(seoPages);
+  try {
+    const { referenceType, referenceId, page } = req.query;
+    const query = {};
+    if (referenceType) query.referenceType = referenceType;
+    if (referenceId) query.referenceId = referenceId;
+    if (page) query.page = page;
+    const seoPages = await SeoPage.find(query).sort({ createdAt: -1 });
+    res.json(seoPages);
+  } catch (err) {
+    console.error('getSeoPages error:', err);
+    res.json([]);
+  }
 });
 
 const getSeoPage = asyncHandler(async (req, res) => {
