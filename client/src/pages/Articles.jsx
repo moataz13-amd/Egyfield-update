@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import SeoMeta from '../components/SeoMeta';
 import { useLanguage } from '../hooks/useLanguage';
 import { useSEO } from '../hooks/useSEO';
 import { Search, Calendar, Eye, ArrowRight, Loader, FileText } from 'lucide-react';
@@ -11,6 +11,7 @@ import { ar, enUS } from 'date-fns/locale';
 
 const Articles = () => {
   const { t, language } = useLanguage();
+  const isAr = language === 'ar';
   const seo = useSEO('/articles');
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
