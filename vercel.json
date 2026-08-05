@@ -4,6 +4,12 @@
   "buildCommand": "npm run vercel-build",
   "outputDirectory": "client/dist",
   "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/ping",
+      "schedule": "0 0 * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/login",
