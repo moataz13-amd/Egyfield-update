@@ -54,7 +54,7 @@
   background: var(--active-color, var(--primary));
   border-color: var(--active-color, var(--primary));
   color: var(--white);
-  box-shadow: 0 4px 12px rgba(123, 180, 69, 0.15);
+  box-shadow: 0 4px 12px rgba(113, 132, 90, 0.15);
 }
 
 .category-filter-item.active .category-filter-item-icon {

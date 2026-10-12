@@ -17,12 +17,12 @@ const CategoriesList = () => {
   const [editing, setEditing] = useState(null);
   const [toggling, setToggling] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445', imageUrl: '', imagePublicId: '' });
+  const [form, setForm] = useState({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#71845A', imageUrl: '', imagePublicId: '' });
 
-  const openAdd = () => { setEditing(null); setForm({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#7BB445', imageUrl: '', imagePublicId: '' }); setModal(true); };
+  const openAdd = () => { setEditing(null); setForm({ nameEn: '', nameAr: '', slug: '', icon: '', color: '#71845A', imageUrl: '', imagePublicId: '' }); setModal(true); };
   const openEdit = (c) => {
     setEditing(c);
-    setForm({ nameEn: c.name?.en || '', nameAr: c.name?.ar || '', slug: c.slug || '', icon: c.icon || '', color: c.color || '#7BB445', imageUrl: c.image?.url || '', imagePublicId: c.image?.publicId || '' });
+    setForm({ nameEn: c.name?.en || '', nameAr: c.name?.ar || '', slug: c.slug || '', icon: c.icon || '', color: c.color || '#71845A', imageUrl: c.image?.url || '', imagePublicId: c.image?.publicId || '' });
     setModal(true);
   };
 
@@ -116,7 +116,7 @@ const CategoriesList = () => {
               {categories?.map(c => (
                 <tr key={c._id}>
                   <td>{c.image?.url ? <img src={c.image.url} alt="" style={{ width: 48, height: 36, borderRadius: 6, objectFit: 'cover' }} /> : <div style={{ width: 48, height: 36, borderRadius: 6, background: 'var(--admin-bg)' }} />}</td>
-                  <td><div style={{ width: 28, height: 28, borderRadius: 8, background: c.color || '#7BB445' }} /></td>
+                  <td><div style={{ width: 28, height: 28, borderRadius: 8, background: c.color || '#71845A' }} /></td>
                   <td style={{ fontWeight: 600 }}>{c.name?.en}</td>
                   <td style={{ direction: 'rtl', color: '#64748B' }}>{c.name?.ar}</td>
                   <td><code style={{ fontSize: 12, color: '#64748B', background: 'var(--admin-surface-2)', padding: '2px 8px', borderRadius: 4 }}>{c.slug}</code></td>

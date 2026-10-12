@@ -55,7 +55,7 @@ const ContactForm = ({ productInterest = '' }) => {
           width: 80,
           height: 80,
           borderRadius: '50%',
-          background: 'rgba(123, 180, 69, 0.1)',
+          background: 'rgba(113, 132, 90, 0.1)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

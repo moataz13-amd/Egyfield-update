@@ -52,9 +52,9 @@ const Home = () => {
   ];
 
   const whyCards = [
-    { icon: <Shield size={28} />, title: t('why.quality'), desc: t('why.qualityDesc'), color: '#7BB445', bg: 'rgba(123, 180, 69, 0.08)' },
+    { icon: <Shield size={28} />, title: t('why.quality'), desc: t('why.qualityDesc'), color: '#71845A', bg: 'rgba(113, 132, 90, 0.08)' },
     { icon: <Globe size={28} />, title: t('why.shipping'), desc: t('why.shippingDesc'), color: '#5BA8C8', bg: 'rgba(91, 168, 200, 0.08)' },
-    { icon: <Package size={28} />, title: t('why.packaging'), desc: t('why.packagingDesc'), color: '#D4A843', bg: 'rgba(212, 168, 67, 0.08)' },
+    { icon: <Package size={28} />, title: t('why.packaging'), desc: t('why.packagingDesc'), color: '#71845A', bg: 'rgba(113, 132, 90, 0.08)' },
     { icon: <CalendarCheck size={28} />, title: t('why.supply'), desc: t('why.supplyDesc'), color: '#9B6DD7', bg: 'rgba(155, 109, 215, 0.08)' },
   ];
 

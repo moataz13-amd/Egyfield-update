@@ -79,7 +79,7 @@ const ProductsList = () => {
         {/* Stats Cards */}
         <div className="pl-stats-row">
           <div className="pl-stat-card">
-            <div className="pl-stat-icon" style={{ background: 'rgba(123, 180, 69, 0.12)', color: '#7BB445' }}>
+            <div className="pl-stat-icon" style={{ background: 'rgba(113, 132, 90, 0.12)', color: '#71845A' }}>
               <Package size={18} />
             </div>
             <div className="pl-stat-info">
@@ -88,7 +88,7 @@ const ProductsList = () => {
             </div>
           </div>
           <div className="pl-stat-card">
-            <div className="pl-stat-icon" style={{ background: 'rgba(35, 134, 54, 0.12)', color: '#238636' }}>
+            <div className="pl-stat-icon" style={{ background: 'rgba(113, 132, 90, 0.12)', color: '#71845A' }}>
               <CheckCircle size={18} />
             </div>
             <div className="pl-stat-info">
@@ -97,7 +97,7 @@ const ProductsList = () => {
             </div>
           </div>
           <div className="pl-stat-card">
-            <div className="pl-stat-icon" style={{ background: 'rgba(212, 168, 67, 0.12)', color: '#D4A843' }}>
+            <div className="pl-stat-icon" style={{ background: 'rgba(113, 132, 90, 0.12)', color: '#71845A' }}>
               <Star size={18} />
             </div>
             <div className="pl-stat-info">
@@ -186,7 +186,7 @@ const ProductsList = () => {
                     <span
                       className="pl-category-badge"
                       style={{
-                        '--badge-color': p.category?.color || '#7BB445',
+                        '--badge-color': p.category?.color || '#71845A',
                       }}
                     >
                       <span className="pl-badge-dot" />

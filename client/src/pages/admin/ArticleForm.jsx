@@ -138,7 +138,7 @@ const ArticleForm = () => {
               display: 'inline-flex', alignItems: 'center', gap: 6,
               padding: '7px 14px', borderRadius: 20, border: '1px solid',
               borderColor: isActive ? 'var(--admin-success)' : 'var(--admin-border)',
-              background: isActive ? 'rgba(35,134,54,0.08)' : 'var(--admin-surface-2)',
+              background: isActive ? 'rgba(113, 132, 90, 0.08)' : 'var(--admin-surface-2)',
               color: isActive ? 'var(--admin-success)' : 'var(--admin-text-muted)',
               fontSize: 12, fontWeight: 600, cursor: 'pointer',
               transition: 'all 0.2s'
@@ -220,7 +220,7 @@ const ArticleForm = () => {
                   display: 'flex', alignItems: 'center', gap: 8,
                   marginBottom: 20, padding: '8px 14px',
                   background: 'var(--admin-primary-glow)', borderRadius: 8,
-                  border: '1px solid rgba(123,180,69,0.15)'
+                  border: '1px solid rgba(113, 132, 90, 0.15)'
                 }}>
                   <span style={{ fontSize: 18 }}>{currentLang.flag}</span>
                   <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--admin-primary)' }}>
@@ -362,9 +362,9 @@ const ArticleForm = () => {
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '12px 14px', borderRadius: 10,
-                  background: isActive ? 'rgba(35,134,54,0.05)' : 'var(--admin-surface-2)',
+                  background: isActive ? 'rgba(113, 132, 90, 0.05)' : 'var(--admin-surface-2)',
                   border: '1px solid',
-                  borderColor: isActive ? 'rgba(35,134,54,0.15)' : 'var(--admin-border)',
+                  borderColor: isActive ? 'rgba(113, 132, 90, 0.15)' : 'var(--admin-border)',
                   transition: 'all 0.2s', marginBottom: 16
                 }}>
                   <div>

@@ -89,10 +89,10 @@ const Hero = () => {
         <div className="hero-circle hero-circle-1"></div>
         <div className="hero-circle hero-circle-2"></div>
         <div className="hero-circle hero-circle-3"></div>
-        <div className="hero-leaf hero-leaf-1"><Sprout size={24} style={{ color: 'rgba(123, 180, 69, 0.4)' }} /></div>
-        <div className="hero-leaf hero-leaf-2"><Sprout size={32} style={{ color: 'rgba(79, 146, 0, 0.4)' }} /></div>
-        <div className="hero-leaf hero-leaf-3"><Sprout size={20} style={{ color: 'rgba(168, 212, 122, 0.4)' }} /></div>
-        <div className="hero-leaf hero-leaf-4"><Sprout size={28} style={{ color: 'rgba(212, 168, 67, 0.4)' }} /></div>
+        <div className="hero-leaf hero-leaf-1"><Sprout size={24} style={{ color: 'rgba(113, 132, 90, 0.4)' }} /></div>
+        <div className="hero-leaf hero-leaf-2"><Sprout size={32} style={{ color: 'rgba(113, 132, 90, 0.4)' }} /></div>
+        <div className="hero-leaf hero-leaf-3"><Sprout size={20} style={{ color: 'rgba(113, 132, 90, 0.4)' }} /></div>
+        <div className="hero-leaf hero-leaf-4"><Sprout size={28} style={{ color: 'rgba(113, 132, 90, 0.4)' }} /></div>
       </div>
 
       {/* Text content overlay */}

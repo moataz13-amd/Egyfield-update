@@ -103,7 +103,7 @@ const ArticleDetail = () => {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#fafafa' }}>
+      <div style={{ minHeight: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#F5F1E7' }}>
         <Loader className="spin" size={40} style={{ color: 'var(--primary)' }} />
       </div>
     );
@@ -111,7 +111,7 @@ const ArticleDetail = () => {
 
   if (error || !article) {
     return (
-      <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: '#fafafa', padding: 20 }}>
+      <div style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: '#F5F1E7', padding: 20 }}>
         <FileText size={48} style={{ color: '#dc3545', marginBottom: 16 }} />
         <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--dark)', marginBottom: 8 }}>
           {language === 'ar' ? 'المقال غير موجود!' : 'Article Not Found'}

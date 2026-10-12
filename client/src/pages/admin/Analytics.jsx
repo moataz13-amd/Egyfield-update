@@ -5,7 +5,7 @@ import { LanguageContext } from '../../context/LanguageContext';
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { MessageSquare, Globe, Award, TrendingUp, Sprout } from 'lucide-react';
 
-const COLORS = ['#7BB445', '#4F9200', '#388BFD', '#D4A843', '#DA3633', '#8B949E'];
+const COLORS = ['#71845A', '#71845A', '#388BFD', '#71845A', '#DA3633', '#8B949E'];
 
 const Analytics = () => {
   const { t, language } = useContext(LanguageContext);
@@ -114,7 +114,7 @@ const Analytics = () => {
       <div className="stats-row">
         <div className="stat-card">
           <div className="stat-card-header">
-            <div className="stat-card-icon" style={{ background: 'rgba(123, 180, 69, 0.15)', color: '#7BB445' }}>
+            <div className="stat-card-icon" style={{ background: 'rgba(113, 132, 90, 0.15)', color: '#71845A' }}>
               <MessageSquare size={20} />
             </div>
           </div>
@@ -140,7 +140,7 @@ const Analytics = () => {
 
         <div className="stat-card">
           <div className="stat-card-header">
-            <div className="stat-card-icon" style={{ background: 'rgba(212, 168, 67, 0.15)', color: '#D4A843' }}>
+            <div className="stat-card-icon" style={{ background: 'rgba(113, 132, 90, 0.15)', color: '#71845A' }}>
               <Sprout size={20} />
             </div>
           </div>
@@ -177,8 +177,8 @@ const Analytics = () => {
               <AreaChart data={localizedInquiries}>
                 <defs>
                   <linearGradient id="glowInquiries" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#7BB445" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#7BB445" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#71845A" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#71845A" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="glowReplied" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#388BFD" stopOpacity={0.3} />
@@ -190,7 +190,7 @@ const Analytics = () => {
                 <YAxis tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<ChartTooltip />} />
                 <Legend verticalAlign="top" height={36} />
-                <Area type="monotone" dataKey="count" name={language === 'ar' ? 'إجمالي الاستفسارات' : 'Total Inquiries'} stroke="#7BB445" fill="url(#glowInquiries)" strokeWidth={2} />
+                <Area type="monotone" dataKey="count" name={language === 'ar' ? 'إجمالي الاستفسارات' : 'Total Inquiries'} stroke="#71845A" fill="url(#glowInquiries)" strokeWidth={2} />
                 <Area type="monotone" dataKey="repliedCount" name={language === 'ar' ? 'تم الرد عليها' : 'Replied/Done'} stroke="#388BFD" fill="url(#glowReplied)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>

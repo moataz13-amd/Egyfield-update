@@ -11,8 +11,8 @@
 }
 
 .rich-text-editor-container:focus-within {
-  border-color: var(--admin-primary, #7BB445);
-  box-shadow: 0 0 0 4px rgba(123, 180, 69, 0.15);
+  border-color: var(--admin-primary, #71845A);
+  box-shadow: 0 0 0 4px rgba(113, 132, 90, 0.15);
 }
 
 .rich-editor-toolbar {
@@ -45,8 +45,8 @@
 }
 
 .toolbar-btn.active {
-  background: var(--admin-primary-glow, rgba(123, 180, 69, 0.08));
-  color: var(--admin-primary, #7BB445);
+  background: var(--admin-primary-glow, rgba(113, 132, 90, 0.08));
+  color: var(--admin-primary, #71845A);
 }
 
 .toolbar-divider {
@@ -133,7 +133,7 @@
 }
 
 .rich-editor-content a {
-  color: var(--admin-primary, #7BB445);
+  color: var(--admin-primary, #71845A);
   text-decoration: underline;
 }
 

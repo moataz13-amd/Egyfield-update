@@ -295,7 +295,7 @@ const Settings = () => {
                 <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '24px 0' }} />
 
                 {/* Partners Page Toggle */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: 'rgba(123, 180, 69, 0.04)', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: 'rgba(113, 132, 90, 0.04)', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--admin-text)', marginBottom: 4 }}>
                       {language === 'ar' ? 'صفحة الشركاء' : 'Partners Page'}
@@ -531,7 +531,7 @@ const Settings = () => {
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.borderColor = 'var(--primary)';
-                      e.currentTarget.style.background = 'rgba(123, 180, 69, 0.02)';
+                      e.currentTarget.style.background = 'rgba(113, 132, 90, 0.02)';
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.borderColor = 'var(--admin-border)';
@@ -598,7 +598,7 @@ const Settings = () => {
                     marginBottom: 16 
                   }}>
                     <div style={{ fontWeight: '600', fontSize: 13, marginBottom: 12, color: 'var(--primary-light)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ padding: '2px 6px', background: 'rgba(123, 180, 69, 0.15)', borderRadius: 4, fontSize: 11 }}>{lang.code.toUpperCase()}</span>
+                      <span style={{ padding: '2px 6px', background: 'rgba(113, 132, 90, 0.15)', borderRadius: 4, fontSize: 11 }}>{lang.code.toUpperCase()}</span>
                       {lang.name}
                     </div>
 

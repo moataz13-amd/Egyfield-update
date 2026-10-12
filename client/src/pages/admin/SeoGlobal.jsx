@@ -181,7 +181,7 @@ const SeoGlobal = () => {
                 <textarea className="admin-form-control" value={form.robotsTxt} onChange={e => setForm({ ...form, robotsTxt: e.target.value })} rows={6} placeholder={isAr ? 'اترك فارغاً لاستخدام الافتراضي' : 'Leave empty to use default'} style={{ fontFamily: 'monospace', fontSize: 12 }} />
               </div>
               <hr style={{ border: '0', height: '1px', background: 'var(--admin-border)', margin: '24px 0' }} />
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: 'rgba(123, 180, 69, 0.04)', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 16px', background: 'rgba(113, 132, 90, 0.04)', borderRadius: 10, border: '1px solid var(--admin-border)' }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--admin-text)', marginBottom: 4 }}>
                     {isAr ? 'تفعيل hreflang' : 'Enable hreflang'}

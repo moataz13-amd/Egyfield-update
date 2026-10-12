@@ -12,10 +12,10 @@ const RichTextEditor = ({ value, onChange, placeholder, dir }) => {
 
   const colors = [
     { name: 'Dark', value: '#1E293B' },
-    { name: 'Primary Green', value: '#7BB445' },
-    { name: 'Primary Dark', value: '#4F9200' },
+    { name: 'Primary Green', value: '#71845A' },
+    { name: 'Primary Dark', value: '#71845A' },
     { name: 'Info Blue', value: '#388BFD' },
-    { name: 'Warning Gold', value: '#D4A843' },
+    { name: 'Warning Gold', value: '#71845A' },
     { name: 'Danger Red', value: '#DA3633' },
   ];
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../hooks/useLanguage';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import api, { resolveField } from '../services/api';
-import Logo from './Logo';
+import footerLogoUrl from '../assets/delta-harvest-footer.svg';
 import './Footer.css';
 
 const Footer = () => {
@@ -31,7 +31,7 @@ const Footer = () => {
           <div className="footer-grid">
             <div className="footer-brand">
               <div className="footer-logo">
-                <Logo className="footer-logo-img" variant="light" />
+                <img src={footerLogoUrl} alt="Delta Harvest" className="footer-logo-img" width="224.6" height="39.13" decoding="async" />
               </div>
               <p className="footer-description">
                 {resolveField(settings?.tagline, currentLang) || t('footer.description')}

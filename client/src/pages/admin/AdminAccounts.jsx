@@ -194,7 +194,7 @@ const AdminAccounts = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div style={{
                         width: 36, height: 36, borderRadius: '50%',
-                        background: isSuper ? 'rgba(212,168,67,0.1)' : 'var(--admin-primary-glow)',
+                        background: isSuper ? 'rgba(113, 132, 90, 0.1)' : 'var(--admin-primary-glow)',
                         color: isSuper ? 'var(--admin-warning)' : 'var(--admin-primary)',
                         display: 'flex', alignItems: 'center', justify: 'center',
                         justifyContent: 'center', flexShrink: 0
@@ -226,7 +226,7 @@ const AdminAccounts = () => {
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', gap: 4,
                       padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 700,
-                      background: isSuper ? 'rgba(212,168,67,0.12)' : 'var(--admin-primary-glow)',
+                      background: isSuper ? 'rgba(113, 132, 90, 0.12)' : 'var(--admin-primary-glow)',
                       color: isSuper ? 'var(--admin-warning)' : 'var(--admin-primary)'
                     }}>
                       {isSuper ? (isAr ? 'مدير عام' : 'Super Admin') : (isAr ? 'مسؤول فرعي' : 'Sub Admin')}
@@ -391,7 +391,7 @@ const AdminAccounts = () => {
                               padding: '10px 12px', borderRadius: 8,
                               background: checked ? 'var(--admin-primary-glow)' : 'var(--admin-surface-2)',
                               border: '1px solid',
-                              borderColor: checked ? 'rgba(123, 180, 69, 0.2)' : 'var(--admin-border)',
+                              borderColor: checked ? 'rgba(113, 132, 90, 0.2)' : 'var(--admin-border)',
                               cursor: 'pointer', transition: 'all 0.2s', margin: 0
                             }}
                           >

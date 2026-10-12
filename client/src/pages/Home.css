@@ -11,7 +11,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   background: var(--white);
-  border: 1px solid rgba(123, 180, 69, 0.12);
+  border: 1px solid rgba(113, 132, 90, 0.12);
   border-radius: var(--radius-lg);
   padding: 30px 40px;
   box-shadow: var(--shadow-lg);
@@ -62,7 +62,7 @@
   color: var(--primary-dark);
   letter-spacing: 1px;
   margin-bottom: 12px;
-  background: rgba(123, 180, 69, 0.08);
+  background: rgba(113, 132, 90, 0.08);
   padding: 6px 16px;
   border-radius: var(--radius-full);
 }
@@ -183,7 +183,7 @@
   padding: 36px 24px;
   text-align: center;
   background: var(--white);
-  border: 1px solid rgba(123, 180, 69, 0.1);
+  border: 1px solid rgba(113, 132, 90, 0.1);
   border-radius: var(--radius-lg);
   transition: var(--transition-slow);
 }
@@ -191,7 +191,7 @@
 .why-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(123, 180, 69, 0.2);
+  border-color: rgba(113, 132, 90, 0.2);
 }
 
 .why-card-icon {
@@ -226,7 +226,7 @@
 /* ===== CTA Section with Orbs ===== */
 .cta-section {
   padding: 110px 0;
-  background: linear-gradient(145deg, #0F1A08 0%, #1A2A0E 40%, #2A4018 100%);
+  background: linear-gradient(145deg, #71845A 0%, #71845A 40%, #71845A 100%);
   position: relative;
   overflow: hidden;
 }
@@ -439,7 +439,7 @@
   padding: 40px 30px;
   text-align: center;
   background: var(--white);
-  border: 1px solid rgba(123, 180, 69, 0.1);
+  border: 1px solid rgba(113, 132, 90, 0.1);
   border-radius: var(--radius-lg);
   transition: var(--transition-slow);
 }
@@ -447,7 +447,7 @@
 .home-cert-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(123, 180, 69, 0.2);
+  border-color: rgba(113, 132, 90, 0.2);
 }
 
 .home-cert-icon {

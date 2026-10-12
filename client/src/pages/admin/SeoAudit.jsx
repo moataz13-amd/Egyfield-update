@@ -146,7 +146,7 @@ const SeoAudit = () => {
                 </div>
 
                 {Object.keys(analysis.duplicateTitles || {}).length > 0 && (
-                  <div style={{ padding: 16, marginBottom: 12, borderRadius: 8, background: 'rgba(212, 168, 67, 0.08)', border: '1px solid rgba(212, 168, 67, 0.2)' }}>
+                  <div style={{ padding: 16, marginBottom: 12, borderRadius: 8, background: 'rgba(113, 132, 90, 0.08)', border: '1px solid rgba(113, 132, 90, 0.2)' }}>
                     <strong style={{ fontSize: 14 }}>{isAr ? 'عناوين SEO مكررة:' : 'Duplicate SEO Titles:'}</strong>
                     <ul style={{ margin: '8px 0 0', fontSize: 12, paddingLeft: 20 }}>
                       {Object.entries(analysis.duplicateTitles).map(([title, count]) => (
@@ -156,7 +156,7 @@ const SeoAudit = () => {
                   </div>
                 )}
                 {Object.keys(analysis.duplicateDescriptions || {}).length > 0 && (
-                  <div style={{ padding: 16, borderRadius: 8, background: 'rgba(212, 168, 67, 0.08)', border: '1px solid rgba(212, 168, 67, 0.2)' }}>
+                  <div style={{ padding: 16, borderRadius: 8, background: 'rgba(113, 132, 90, 0.08)', border: '1px solid rgba(113, 132, 90, 0.2)' }}>
                     <strong style={{ fontSize: 14 }}>{isAr ? 'أوصاف SEO مكررة:' : 'Duplicate Meta Descriptions:'}</strong>
                     <ul style={{ margin: '8px 0 0', fontSize: 12, paddingLeft: 20 }}>
                       {Object.entries(analysis.duplicateDescriptions).map(([desc, count]) => (

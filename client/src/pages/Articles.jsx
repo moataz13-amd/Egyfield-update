@@ -64,7 +64,7 @@ const Articles = () => {
         language={language}
         jsonld={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: isAr ? 'المقالات' : 'Articles', isPartOf: { '@type': 'WebSite', name: 'Delta Harvest', url: 'https://deltaharvest.com' } }}
       />
-      <div className="articles-page" style={{ minHeight: '100vh', background: '#fafafa' }}>
+      <div className="articles-page" style={{ minHeight: '100vh', background: '#F5F1E7' }}>
       {/* Page Cover */}
       <PageCover
         pageKey="articles"
@@ -160,7 +160,7 @@ const Articles = () => {
                   className="article-card"
                   onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-6px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(123, 180, 69, 0.1)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(113, 132, 90, 0.1)';
                   }}
                   onMouseLeave={e => {
                     e.currentTarget.style.transform = 'translateY(0)';

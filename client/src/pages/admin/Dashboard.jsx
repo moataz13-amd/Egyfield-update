@@ -8,7 +8,7 @@ import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContaine
 import { formatDistanceToNow } from 'date-fns';
 import { ar as arLocale, enUS as enLocale } from 'date-fns/locale';
 
-const COLORS = ['#7BB445', '#4F9200', '#5BA8C8', '#D4A843', '#DA3633', '#388BFD'];
+const COLORS = ['#71845A', '#71845A', '#5BA8C8', '#71845A', '#DA3633', '#388BFD'];
 
 const Dashboard = () => {
   const { t, language } = useContext(LanguageContext);
@@ -52,12 +52,12 @@ const Dashboard = () => {
   }
 
   const stats = [
-    { icon: <Package size={20} />, label: t('admin.totalProducts'), value: overview?.totalProducts || 0, trend: `+${overview?.thisWeekProducts || 0} ${t('admin.thisWeek')}`, up: true, color: '#7BB445' },
-    { icon: <Tags size={20} />, label: t('admin.totalCategories'), value: overview?.totalCategories || 0, trend: t('admin.activeAll'), up: true, color: '#4F9200' },
+    { icon: <Package size={20} />, label: t('admin.totalProducts'), value: overview?.totalProducts || 0, trend: `+${overview?.thisWeekProducts || 0} ${t('admin.thisWeek')}`, up: true, color: '#71845A' },
+    { icon: <Tags size={20} />, label: t('admin.totalCategories'), value: overview?.totalCategories || 0, trend: t('admin.activeAll'), up: true, color: '#71845A' },
     { icon: <MessageSquare size={20} />, label: t('admin.totalInquiries'), value: overview?.totalInquiries || 0, trend: `${overview?.newInquiries || 0} ${t('admin.unread')}`, up: true, color: '#388BFD' },
     { icon: <Globe size={20} />, label: t('admin.activeMarkets'), value: `${overview?.totalCountries || 0}+`, trend: t('admin.exportDest'), up: true, color: '#5BA8C8' },
-    { icon: <Star size={20} />, label: t('admin.featuredProducts'), value: overview?.featuredProducts || 0, trend: t('admin.productsLabel'), up: true, color: '#D4A843' },
-    { icon: <CalendarDays size={20} />, label: t('admin.thisMonthInquiries'), value: overview?.thisMonthInquiries || 0, trend: `${overview?.monthChange > 0 ? '+' : ''}${overview?.monthChange || 0}%`, up: (overview?.monthChange || 0) >= 0, color: '#7BB445' },
+    { icon: <Star size={20} />, label: t('admin.featuredProducts'), value: overview?.featuredProducts || 0, trend: t('admin.productsLabel'), up: true, color: '#71845A' },
+    { icon: <CalendarDays size={20} />, label: t('admin.thisMonthInquiries'), value: overview?.thisMonthInquiries || 0, trend: `${overview?.monthChange > 0 ? '+' : ''}${overview?.monthChange || 0}%`, up: (overview?.monthChange || 0) >= 0, color: '#71845A' },
   ];
 
   const ChartTooltip = ({ active, payload, label }) => {
@@ -128,15 +128,15 @@ const Dashboard = () => {
             <AreaChart data={inquiriesChart}>
               <defs>
                 <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#7BB445" stopOpacity={0.3} />
-                  <stop offset="100%" stopColor="#7BB445" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#71845A" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#71845A" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
               <XAxis dataKey="label" tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: '#64748B', fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="count" name={t('admin.inquiries')} stroke="#7BB445" fill="url(#gArea)" strokeWidth={2} />
+              <Area type="monotone" dataKey="count" name={t('admin.inquiries')} stroke="#71845A" fill="url(#gArea)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
         </div>

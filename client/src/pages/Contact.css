@@ -7,7 +7,7 @@
 /* ===== Hero ===== */
 .contact-hero {
   position: relative;
-  background: linear-gradient(145deg, #0F1A08 0%, #1A2A0E 40%, #2A4018 100%);
+  background: linear-gradient(145deg, #71845A 0%, #71845A 40%, #71845A 100%);
   padding: 90px 0 70px;
   text-align: center;
   overflow: hidden;
@@ -62,8 +62,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(123, 180, 69, 0.12);
-  border: 1px solid rgba(123, 180, 69, 0.25);
+  background: rgba(113, 132, 90, 0.12);
+  border: 1px solid rgba(113, 132, 90, 0.25);
   color: var(--primary-light);
   padding: 8px 20px;
   border-radius: var(--radius-full);
@@ -109,7 +109,7 @@
   gap: 14px;
   padding: 20px 18px;
   background: var(--white);
-  border: 1px solid rgba(123, 180, 69, 0.1);
+  border: 1px solid rgba(113, 132, 90, 0.1);
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: var(--transition);
@@ -134,7 +134,7 @@
 .contact-info-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(123, 180, 69, 0.2);
+  border-color: rgba(113, 132, 90, 0.2);
 }
 
 .contact-info-card:hover::after {
@@ -265,13 +265,13 @@
   font-size: 13px;
   font-weight: 800;
   flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(123, 180, 69, 0.3);
+  box-shadow: 0 3px 10px rgba(113, 132, 90, 0.3);
 }
 
 /* Form Wrapper */
 .contact-form-wrapper {
   background: var(--white);
-  border: 1px solid rgba(123, 180, 69, 0.12);
+  border: 1px solid rgba(113, 132, 90, 0.12);
   border-radius: var(--radius-lg);
   padding: 36px 32px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);

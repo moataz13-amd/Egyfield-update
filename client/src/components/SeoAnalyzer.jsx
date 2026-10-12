@@ -16,9 +16,9 @@ const STATUS_COLORS = {
 };
 
 const GRADE_CONFIG = {
-  perfect: { color: '#238636', bg: 'rgba(35,134,54,0.1)', labelEn: 'Perfect', labelAr: 'ممتاز' },
-  good: { color: '#7BB445', bg: 'rgba(123,180,69,0.1)', labelEn: 'Good', labelAr: 'جيد' },
-  average: { color: '#D4A843', bg: 'rgba(212,168,67,0.1)', labelEn: 'Average', labelAr: 'متوسط' },
+  perfect: { color: '#71845A', bg: 'rgba(113, 132, 90, 0.1)', labelEn: 'Perfect', labelAr: 'ممتاز' },
+  good: { color: '#71845A', bg: 'rgba(113, 132, 90, 0.1)', labelEn: 'Good', labelAr: 'جيد' },
+  average: { color: '#71845A', bg: 'rgba(113, 132, 90, 0.1)', labelEn: 'Average', labelAr: 'متوسط' },
   poor: { color: '#DA3633', bg: 'rgba(218,54,51,0.1)', labelEn: 'Needs Work', labelAr: 'بحاجة لتحسين' },
   bad: { color: '#DA3633', bg: 'rgba(218,54,51,0.15)', labelEn: 'Bad', labelAr: 'سيء' },
 };

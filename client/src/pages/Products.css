@@ -7,7 +7,7 @@
 /* Hero Section */
 .products-hero {
   position: relative;
-  background: linear-gradient(145deg, #0F1A08 0%, #1A2A0E 40%, #2A4018 100%);
+  background: linear-gradient(145deg, #71845A 0%, #71845A 40%, #71845A 100%);
   padding: 90px 0 70px;
   text-align: center;
   overflow: hidden;
@@ -62,8 +62,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(123, 180, 69, 0.12);
-  border: 1px solid rgba(123, 180, 69, 0.25);
+  background: rgba(113, 132, 90, 0.12);
+  border: 1px solid rgba(113, 132, 90, 0.25);
   color: var(--primary-light);
   padding: 8px 20px;
   border-radius: var(--radius-full);
@@ -108,7 +108,7 @@
 
 .products-sticky-card {
   background: var(--white);
-  border: 1px solid rgba(123, 180, 69, 0.12);
+  border: 1px solid rgba(113, 132, 90, 0.12);
   border-radius: var(--radius-lg);
   padding: 28px 24px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
@@ -170,7 +170,7 @@
 
 .products-search-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(123, 180, 69, 0.12);
+  box-shadow: 0 0 0 4px rgba(113, 132, 90, 0.12);
 }
 
 .products-search-input:focus ~ .search-icon {
@@ -255,10 +255,10 @@
 }
 
 .pagination-btn-active {
-  background: var(--gold-gradient);
-  border-color: #ecd06c;
+  background: var(--cta-background);
+  border-color: #71845A;
   color: var(--dark) !important;
-  box-shadow: 0 4px 12px var(--gold-shadow);
+  box-shadow: 0 4px 12px var(--cta-shadow);
 }
 
 .pagination-btn-active:hover {
@@ -269,7 +269,7 @@
 .products-empty-card {
   text-align: center;
   padding: 80px 40px;
-  border: 1px solid rgba(123, 180, 69, 0.12);
+  border: 1px solid rgba(113, 132, 90, 0.12);
   background: var(--white);
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
@@ -472,8 +472,8 @@
 .cover-search-input:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.2);
-  border-color: #ecd06c; /* Gold brand color */
-  box-shadow: 0 0 0 4px rgba(236, 208, 108, 0.25);
+  border-color: #71845A; /* CTA brand color */
+  box-shadow: 0 0 0 4px rgba(113, 132, 90, 0.25);
 }
 
 .cover-search-wrapper .search-icon {
@@ -490,13 +490,13 @@
 }
 
 .cover-search-input:focus ~ .search-icon {
-  color: #ecd06c;
+  color: #71845A;
 }
 
 .cover-search-wrapper .search-loading-icon {
   position: absolute;
   right: 18px;
-  color: #ecd06c;
+  color: #71845A;
 }
 
 [dir="rtl"] .cover-search-wrapper .search-loading-icon {
@@ -519,9 +519,9 @@
 .cover-filter-wrapper .category-filter-item {
   width: auto;
   padding: 10px 18px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--off-white);
+  border: 1px solid var(--off-white);
+  color: var(--dark);
   border-radius: var(--radius-full);
   font-size: 0.88rem;
   transition: all 0.25s ease;
@@ -533,23 +533,23 @@
 }
 
 .cover-filter-wrapper .category-filter-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #ecd06c; /* Gold brand color */
-  color: var(--white);
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--dark);
   transform: translateY(-2px);
 }
 
 .cover-filter-wrapper .category-filter-item.active {
-  background: var(--active-color, var(--primary));
-  border-color: var(--active-color, var(--primary));
-  color: var(--white);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  background: var(--white);
+  border-color: var(--dark);
+  color: var(--dark);
+  box-shadow: 0 0 0 2px var(--off-white), 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 .cover-clear-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--white);
+  background: var(--off-white);
+  border: 1px solid var(--off-white);
+  color: var(--dark);
   padding: 8px 18px;
   border-radius: var(--radius-full);
   font-size: 0.8rem;
@@ -559,9 +559,9 @@
 }
 
 .cover-clear-btn:hover {
-  background: var(--danger);
-  border-color: var(--danger);
-  color: var(--white);
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--dark);
 }
 
 @media (max-width: 900px) {
@@ -614,7 +614,7 @@
   .mobile-search-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(123, 180, 69, 0.12);
+    box-shadow: 0 0 0 4px rgba(113, 132, 90, 0.12);
   }
 
   .mobile-search-wrapper .search-icon {
@@ -681,7 +681,7 @@
     background: var(--active-color, var(--primary));
     border-color: var(--active-color, var(--primary));
     color: var(--white);
-    box-shadow: 0 4px 10px rgba(123, 180, 69, 0.15);
+    box-shadow: 0 4px 10px rgba(113, 132, 90, 0.15);
   }
 
   .mobile-clear-btn {
